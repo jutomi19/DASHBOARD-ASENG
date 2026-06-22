@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* ═══ THEME GOLD NEON ═══ */
+    /* ===== THEME GOLD NEON ===== */
     :root {
       --bg: #080c18;
       --bg-card: rgba(14,21,40,0.75);
@@ -92,7 +92,6 @@
     .p-badge.b-gold i { color:var(--gold); }
     .p-badge.b-coral i { color:var(--coral); }
 
-    /* Toolbar */
     .toolbar {
       display:flex; align-items:center; gap:10px;
       margin-bottom:20px; flex-wrap:wrap;
@@ -118,14 +117,12 @@
       box-shadow:0 8px 28px var(--gold-glow);
     }
 
-    /* Grid Notes */
     .notes-grid {
       display:grid;
       grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
       gap:18px;
     }
 
-    /* Note Card */
     .note-card {
       background:var(--bg-card);
       backdrop-filter:blur(12px);
@@ -242,7 +239,6 @@
       background:var(--gold-bg);
     }
 
-    /* Pinned indicator */
     .note-card.pinned {
       border-color:rgba(245,200,66,0.25);
       background:rgba(245,200,66,0.04);
@@ -251,7 +247,6 @@
       color:var(--gold);
     }
 
-    /* Empty state */
     .empty-state {
       grid-column:1/-1;
       text-align:center;
@@ -411,7 +406,6 @@
       background:var(--gold-bg);
     }
 
-    /* Toast */
     .toast {
       position:fixed; bottom:24px; right:24px; z-index:3000;
       display:flex; align-items:center; gap:12px; padding:14px 20px;
@@ -509,11 +503,10 @@
   const modalClose = $('modalClose');
   const modalCloseBtn = $('modalCloseBtn');
 
-  // Data
   let notes = [];
   const STORAGE_KEY = 'latoto_notes';
 
-  // Default notes (4 pinned contoh)
+  // Default notes
   const DEFAULT_NOTES = [
     {
       id: 'mqpqxsbbaq4h',
@@ -573,7 +566,6 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
     }
   ];
 
-  // Load from localStorage
   function loadNotes() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -585,23 +577,19 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
         }
       }
     } catch(e) {}
-    // Jika tidak ada data, set default
     notes = JSON.parse(JSON.stringify(DEFAULT_NOTES));
     localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
   }
 
-  // Save to localStorage
   function saveNotes() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
     render();
   }
 
-  // Generate ID
   function genId() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
   }
 
-  // Format date
   function formatDate(ts) {
     const d = new Date(ts);
     const now = new Date();
@@ -615,14 +603,12 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
     return d.toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) + `, ${time}`;
   }
 
-  // Escape HTML
   function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
   }
 
-  // Render notes
   function render() {
     const sorted = [...notes].sort((a,b) => {
       if (a.pinned && !b.pinned) return -1;
@@ -664,14 +650,19 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
       </div>
     `).join('');
 
-    // Attach event listeners
+    // Event listeners
     grid.querySelectorAll('.note-card').forEach(card => {
       const id = card.dataset.id;
 
-      // Title input
+      // Title - simpan saat blur (bukan input)
       const titleInput = card.querySelector('.note-title');
-      titleInput.addEventListener('input', function() {
-        updateNoteField(id, 'title', this.value);
+      titleInput.addEventListener('blur', function() {
+        const note = notes.find(n => n.id === id);
+        if (note && note.title !== this.value) {
+          note.title = this.value;
+          note.updatedAt = Date.now();
+          saveNotes(); // render ulang setelah blur
+        }
       });
 
       // Pin button
@@ -695,7 +686,7 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
         openModal(id);
       });
 
-      // Double-click on card also opens modal (but not on input/button)
+      // Double-click card (but not on input/button)
       card.addEventListener('dblclick', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
         openModal(id);
@@ -703,21 +694,6 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
     });
   }
 
-  // Update field
-  function updateNoteField(id, field, value) {
-    const note = notes.find(n => n.id === id);
-    if (!note) return;
-    note[field] = value;
-    note.updatedAt = Date.now();
-    // Re-render only if field is title (body preview updated via separate mechanism)
-    // For body, we update the preview text in real-time? We'll just save and rerender after typing stops? Better to update on blur.
-    // But for simplicity, we save and rerender only on blur or after debounce.
-    // We'll use a simple approach: save immediately but render without full re-render? 
-    // We'll just save and re-render to keep consistency.
-    saveNotes();
-  }
-
-  // Toggle pin
   function togglePin(id) {
     const note = notes.find(n => n.id === id);
     if (!note) return;
@@ -727,7 +703,6 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
     toast(note.pinned ? 'Catatan disematkan' : 'Pin dilepas');
   }
 
-  // Delete note
   function deleteNote(id) {
     if (!confirm('Hapus catatan ini?')) return;
     notes = notes.filter(n => n.id !== id);
@@ -735,7 +710,6 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
     toast('Catatan dihapus');
   }
 
-  // Add new note
   function addNote() {
     const now = Date.now();
     const newNote = {
@@ -781,14 +755,12 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
     activeModalId = null;
   }
 
-  // Copy modal content
   function copyModalContent() {
     const text = modalContent.textContent;
     if (!text) return;
     navigator.clipboard.writeText(text).then(() => {
       toast('Isi catatan disalin ke clipboard');
     }).catch(() => {
-      // Fallback
       const textarea = document.createElement('textarea');
       textarea.value = text;
       document.body.appendChild(textarea);
@@ -799,7 +771,6 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
     });
   }
 
-  // Modal events
   modalClose.addEventListener('click', closeModal);
   modalCloseBtn.addEventListener('click', closeModal);
   modalOverlay.addEventListener('click', function(e) {
@@ -810,7 +781,6 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
   });
   modalCopy.addEventListener('click', copyModalContent);
 
-  // Toast
   function toast(msg, sub='') {
     $('tMsg').textContent = msg;
     $('tSub').textContent = sub || '';
@@ -820,7 +790,6 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
     t._t = setTimeout(() => t.classList.remove('on'), 2500);
   }
 
-  // Clock
   function updateClock() {
     const now = new Date();
     clockEl.textContent = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
@@ -828,11 +797,9 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
   updateClock();
   setInterval(updateClock, 10000);
 
-  // Init
   loadNotes();
   render();
 
-  // Add button
   $('btnAddNote').addEventListener('click', addNote);
 
   // Theme sync
