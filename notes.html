@@ -136,6 +136,7 @@
       position:relative;
       display:flex;
       flex-direction:column;
+      cursor:default;
     }
     .note-card:hover {
       border-color:var(--border-hover);
@@ -162,30 +163,46 @@
       padding:2px 4px;
       border-radius:4px;
       transition:var(--ease);
+      cursor:text;
     }
     .note-title:focus {
       background:rgba(245,200,66,0.06);
       box-shadow:0 0 0 2px var(--gold);
     }
-    .note-body {
+    .note-body-preview {
       font-size:0.78rem;
       color:var(--text-2);
-      background:transparent;
-      border:none;
-      outline:none;
-      resize:vertical;
-      width:100%;
-      min-height:60px;
-      font-family:'Outfit',sans-serif;
-      padding:4px 4px;
+      line-height:1.5;
+      max-height: 120px;
+      overflow: hidden;
+      position: relative;
+      cursor:pointer;
+      padding:4px;
       border-radius:4px;
       transition:var(--ease);
-      line-height:1.5;
-      flex:1;
+      white-space:pre-wrap;
+      word-break:break-word;
     }
-    .note-body:focus {
+    .note-body-preview:hover {
       background:rgba(245,200,66,0.04);
-      box-shadow:0 0 0 2px var(--gold);
+    }
+    .note-body-preview::after {
+      content: '…';
+      position:absolute;
+      bottom:0;
+      right:0;
+      background:linear-gradient(to right, transparent, var(--bg-card) 60%);
+      padding-left:20px;
+    }
+    .note-card.pinned .note-body-preview::after {
+      background:linear-gradient(to right, transparent, rgba(245,200,66,0.04) 60%);
+    }
+    .note-body-preview .expand-hint {
+      display:block;
+      font-size:0.6rem;
+      color:var(--gold);
+      margin-top:6px;
+      opacity:0.6;
     }
     .note-footer {
       display:flex;
@@ -254,9 +271,149 @@
       color:var(--text-2);
     }
 
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position:fixed;
+      inset:0;
+      background:rgba(4,8,16,0.92);
+      backdrop-filter:blur(30px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:2000;
+      padding:20px;
+      opacity:0;
+      visibility:hidden;
+      transition:var(--ease);
+    }
+    .modal-overlay.active {
+      opacity:1;
+      visibility:visible;
+    }
+    .modal-box {
+      background:linear-gradient(165deg,rgba(15,25,48,0.97),rgba(10,16,30,0.99));
+      border:1px solid var(--border);
+      border-radius:20px;
+      width:100%;
+      max-width:700px;
+      max-height:90vh;
+      overflow:hidden;
+      transform:scale(0.93) translateY(30px);
+      transition:transform 0.4s cubic-bezier(.34,1.56,.64,1);
+      box-shadow:0 40px 80px rgba(0,0,0,0.5);
+      position:relative;
+      display:flex;
+      flex-direction:column;
+    }
+    .modal-overlay.active .modal-box {
+      transform:scale(1) translateY(0);
+    }
+    .modal-box::before {
+      content:'';
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:2px;
+      background:linear-gradient(90deg,transparent,var(--gold),transparent);
+      opacity:0.5;
+    }
+    .modal-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 24px;
+      border-bottom:1px solid var(--border);
+      flex-shrink:0;
+    }
+    .modal-title {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:1.2rem;
+      letter-spacing:1.5px;
+      color:var(--text);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      padding-right:14px;
+    }
+    .modal-close {
+      width:36px;
+      height:36px;
+      border-radius:var(--r-sm);
+      border:1px solid var(--border);
+      background:transparent;
+      color:var(--text-3);
+      font-size:0.9rem;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:var(--ease);
+      flex-shrink:0;
+    }
+    .modal-close:hover {
+      background:var(--coral-bg);
+      border-color:rgba(248,113,113,0.2);
+      color:var(--coral);
+      transform:rotate(90deg);
+    }
+    .modal-body {
+      padding:24px;
+      overflow-y:auto;
+      flex:1;
+      max-height:calc(90vh - 140px);
+    }
+    .modal-body .modal-note-content {
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-size:0.9rem;
+      line-height:1.7;
+      color:var(--text-2);
+    }
+    .modal-footer {
+      padding:16px 24px;
+      border-top:1px solid var(--border);
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      flex-shrink:0;
+    }
+    .modal-btn {
+      padding:10px 20px;
+      border-radius:var(--r-sm);
+      font-family:'Outfit',sans-serif;
+      font-weight:600;
+      font-size:0.8rem;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      transition:var(--ease);
+      border:none;
+    }
+    .modal-btn-copy {
+      background:linear-gradient(135deg,var(--gold),#b8860b);
+      color:#0a0e1a;
+      box-shadow:0 4px 18px var(--gold-glow);
+    }
+    .modal-btn-copy:hover {
+      transform:translateY(-2px);
+      box-shadow:0 8px 28px var(--gold-glow);
+    }
+    .modal-btn-close {
+      background:rgba(255,255,255,0.03);
+      border:1px solid var(--border);
+      color:var(--text-2);
+    }
+    .modal-btn-close:hover {
+      border-color:var(--border-hover);
+      color:var(--text);
+      background:var(--gold-bg);
+    }
+
     /* Toast */
     .toast {
-      position:fixed; bottom:24px; right:24px; z-index:1100;
+      position:fixed; bottom:24px; right:24px; z-index:3000;
       display:flex; align-items:center; gap:12px; padding:14px 20px;
       background:rgba(12,20,38,0.95); backdrop-filter:blur(16px);
       border:1px solid rgba(245,200,66,0.15); border-radius:var(--r);
@@ -275,6 +432,12 @@
       .panel-badges{width:100%;}
       .toolbar{flex-direction:column;align-items:stretch;}
       .notes-grid{grid-template-columns:1fr;}
+      .modal-box{max-width:100%;margin:10px;}
+      .modal-header{padding:14px 16px;}
+      .modal-title{font-size:1rem;}
+      .modal-body{padding:16px;}
+      .modal-footer{flex-direction:column;}
+      .modal-btn{justify-content:center;}
     }
     ::-webkit-scrollbar { width:5px; height:5px; }
     ::-webkit-scrollbar-track { background:transparent; }
@@ -309,6 +472,23 @@
   <div class="notes-grid" id="notesGrid"></div>
 </div>
 
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Judul</div>
+      <button class="modal-close" id="modalClose"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-note-content" id="modalContent"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-copy" id="modalCopy"><i class="fas fa-copy"></i> Salin Isi</button>
+      <button class="modal-btn modal-btn-close" id="modalCloseBtn">Tutup</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast">
   <div class="toast-ic"><i class="fas fa-check"></i></div>
@@ -322,18 +502,92 @@
   const countBadge = $('countBadge');
   const pinnedBadge = $('pinnedBadge');
   const clockEl = $('clock');
+  const modalOverlay = $('modalOverlay');
+  const modalTitle = $('modalTitle');
+  const modalContent = $('modalContent');
+  const modalCopy = $('modalCopy');
+  const modalClose = $('modalClose');
+  const modalCloseBtn = $('modalCloseBtn');
 
   // Data
   let notes = [];
   const STORAGE_KEY = 'latoto_notes';
 
+  // Default notes (4 pinned contoh)
+  const DEFAULT_NOTES = [
+    {
+      id: 'mqpqxsbbaq4h',
+      title: 'Withdraw Pending QRIS',
+      body: `Untuk perihal penarikan dana withdraw anda dengan nominal xxx , saat ini masih dalam proses pengecekan oleh tim kami ya bosku. tidak perlu khawatir saldo anda aman dan akan langsung kami proses setelah pengecekan selesai. mohon kesabarannya untuk menunggu Estimasi tidak dapat kami pastikan ya bosku 
+=====
+
+Terkait penarikan dana withdraw anda saat ini masih dalam proses pengecekan oleh tim kami. saldo pengajuan withdraw anda tetap aman dan akan segera kami proses setelah pengecekan selesai ya bosku.
+
+=====
+
+Kami informasikan bahwa proses withdraw akan saat ini dalam pengecekan tim kami. silakan cek mutasi rekening anda secara berkala ya bosku Dan untuk estimasi Tidak dapat kami pastikan , Hingga Pengchekan selesai dilakukan ya bosku .
+Terima kasih atas perhatian anda.`,
+      pinned: true,
+      createdAt: Date.now() - 3600000,
+      updatedAt: Date.now() - 3600000
+    },
+    {
+      id: 'mqpr2vpmu0ii',
+      title: 'DANA Ke QRIS',
+      body: `Yth, Member setia LATOTO, Kami ingin menginformasikan untuk saat ini perihal deposit E-Wallet DANA sedang di alihkan ke QRIS terlebih dahulu dan silahkan melakukan deposit menggunakan scan barcode tersebut ya. Terimakasih.`,
+      pinned: true,
+      createdAt: Date.now() - 7200000,
+      updatedAt: Date.now() - 7200000
+    },
+    {
+      id: 'mqpr83nxfmgw',
+      title: 'Lucky Wheel',
+      body: `Yth Member Setia LATOTO,Kami informasikan saat ini kami memiliki fitur terbaru yaitu Lucky Wheel yang bisa anda dapatkan setiap harinya dengan syarat dan ketentuan sebagai berikut :
+
+1.Memiliki transaksi deposit di hari sebelumnya
+2. Apabila ditemukan kecurangan atau transaksi tidak normal, maka bonus dianggap hangus.
+3. Semua keputusan management bersifat mutlak dan tidak dapat diganggu gugat.
+
+List Bonus Freespin :
+
+1. Free chips Rp. 5.000,- ( Bonus langsung masuk ke saldo akun anda ).
+2. Bonus deposit 15%, Bonus deposit, diambil dari last deposit di hari sebelumnya kemudian di kali dengan angka persentase bonus. Contoh deposit terakhir adalah 100.000 x 15% = 15.000,-
+3. Bonus cashback kekalahan 5%, Bonus cashback kekalahan, nilai kekalahan diambil dari keseluruhan nilai kalah di hari sebelumnya di kali dengan persentase bonus. Contoh di hari sebelumnya 00.01 wib se 23.59 wib total kalahnya 100.000 x 5% = 5.000,-
+4. Bonus rollingan turnover 1%, Bonus rolling turnover, nilai turnover diambil dari keseluruhan turnover di hari sebelumnya. Contoh TO 00.01 sd 23.59 di hari sebelumnya adalah 1.000.000 x 1% = 10.000,-
+5. Zonk artinya anda belum beruntung dan tidak mendapatkan bonus. Silahkan dicoba kembali di hari berikutnya`,
+      pinned: true,
+      createdAt: Date.now() - 10800000,
+      updatedAt: Date.now() - 10800000
+    },
+    {
+      id: 'mqpr8m99yusw',
+      title: 'Bonus kekalahan',
+      body: `Untuk pembagian Bonus Cashback Kekalahan Sportbook, Live Games & Slot Games yang jadwalnya pada hari Senin mohon ditunggu paling lambat dalam waktu 1x24 jam ya bosku.
+======================
+Untuk perihal Bonus Cashback mohon ditunggu paling lambat 1x24 jam ya bosku, karena masih dalam perhitungan dan jika sudah sesuai dengan syarat & ketentuan maka akan otomatis masuk ke dalam akun anda ya bosku.
+====================
+Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 jam ya bosku.`,
+      pinned: true,
+      createdAt: Date.now() - 14400000,
+      updatedAt: Date.now() - 14400000
+    }
+  ];
+
   // Load from localStorage
   function loadNotes() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) notes = JSON.parse(raw);
-      else notes = [];
-    } catch(e) { notes = []; }
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          notes = parsed;
+          return;
+        }
+      }
+    } catch(e) {}
+    // Jika tidak ada data, set default
+    notes = JSON.parse(JSON.stringify(DEFAULT_NOTES));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
   }
 
   // Save to localStorage
@@ -361,9 +615,15 @@
     return d.toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) + `, ${time}`;
   }
 
+  // Escape HTML
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
   // Render notes
   function render() {
-    // Sort: pinned first, then by updatedAt desc
     const sorted = [...notes].sort((a,b) => {
       if (a.pinned && !b.pinned) return -1;
       if (!a.pinned && b.pinned) return 1;
@@ -388,10 +648,13 @@
         <div class="note-header">
           <input class="note-title" type="text" value="${escapeHtml(note.title)}" placeholder="Judul catatan..." data-field="title">
           <button class="btn-pin" data-action="pin" title="${note.pinned ? 'Lepas pin' : 'Sematkan'}">
-            <i class="fas ${note.pinned ? 'fa-thumbtack' : 'fa-thumbtack'}" style="${note.pinned ? 'color:var(--gold);transform:rotate(-45deg);' : 'opacity:0.4;'}"></i>
+            <i class="fas fa-thumbtack" style="${note.pinned ? 'color:var(--gold);transform:rotate(-45deg);' : 'opacity:0.4;'}"></i>
           </button>
         </div>
-        <textarea class="note-body" placeholder="Tulis catatan di sini..." data-field="body">${escapeHtml(note.body)}</textarea>
+        <div class="note-body-preview" data-action="open-modal">
+          ${escapeHtml(note.body).replace(/\n/g, '<br>')}
+          <span class="expand-hint"><i class="fas fa-expand"></i> Klik untuk lihat lengkap</span>
+        </div>
         <div class="note-footer">
           <span class="note-date"><i class="far fa-clock"></i> ${formatDate(note.updatedAt)}</span>
           <div class="note-actions">
@@ -401,7 +664,7 @@
       </div>
     `).join('');
 
-    // Attach event listeners to each note
+    // Attach event listeners
     grid.querySelectorAll('.note-card').forEach(card => {
       const id = card.dataset.id;
 
@@ -409,12 +672,6 @@
       const titleInput = card.querySelector('.note-title');
       titleInput.addEventListener('input', function() {
         updateNoteField(id, 'title', this.value);
-      });
-
-      // Body textarea
-      const bodyInput = card.querySelector('.note-body');
-      bodyInput.addEventListener('input', function() {
-        updateNoteField(id, 'body', this.value);
       });
 
       // Pin button
@@ -430,14 +687,20 @@
         e.stopPropagation();
         deleteNote(id);
       });
-    });
-  }
 
-  // Helper escape HTML
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+      // Preview click -> open modal
+      const preview = card.querySelector('[data-action="open-modal"]');
+      preview.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openModal(id);
+      });
+
+      // Double-click on card also opens modal (but not on input/button)
+      card.addEventListener('dblclick', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+        openModal(id);
+      });
+    });
   }
 
   // Update field
@@ -446,6 +709,11 @@
     if (!note) return;
     note[field] = value;
     note.updatedAt = Date.now();
+    // Re-render only if field is title (body preview updated via separate mechanism)
+    // For body, we update the preview text in real-time? We'll just save and rerender after typing stops? Better to update on blur.
+    // But for simplicity, we save and rerender only on blur or after debounce.
+    // We'll use a simple approach: save immediately but render without full re-render? 
+    // We'll just save and re-render to keep consistency.
     saveNotes();
   }
 
@@ -482,7 +750,6 @@
     saveNotes();
     toast('Catatan baru ditambahkan');
 
-    // Focus on the title of the new note after render
     setTimeout(() => {
       const firstCard = grid.querySelector('.note-card');
       if (firstCard) {
@@ -494,6 +761,54 @@
       }
     }, 50);
   }
+
+  // ===== MODAL =====
+  let activeModalId = null;
+
+  function openModal(id) {
+    const note = notes.find(n => n.id === id);
+    if (!note) return;
+    activeModalId = id;
+    modalTitle.textContent = note.title || 'Tanpa Judul';
+    modalContent.textContent = note.body || '(Kosong)';
+    modalOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modalOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+    activeModalId = null;
+  }
+
+  // Copy modal content
+  function copyModalContent() {
+    const text = modalContent.textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      toast('Isi catatan disalin ke clipboard');
+    }).catch(() => {
+      // Fallback
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      toast('Isi catatan disalin ke clipboard');
+    });
+  }
+
+  // Modal events
+  modalClose.addEventListener('click', closeModal);
+  modalCloseBtn.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+  modalCopy.addEventListener('click', copyModalContent);
 
   // Toast
   function toast(msg, sub='') {
