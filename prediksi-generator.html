@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LATOTO Prediksi Bola Generator</title>
+    <style>
+        /* --- ANIMASI GOLD NEON LATOTO --- */
+        @keyframes neonPulse {
+            0% { box-shadow: 0 0 14px rgba(245,200,66,0.32), inset 0 0 10px rgba(245,200,66,0.10); border-color: #c49e1f; }
+            50% { box-shadow: 0 0 34px rgba(245,200,66,0.88), 0 0 18px rgba(245,200,66,0.45), inset 0 0 22px rgba(255,176,0,0.30); border-color: #f5c842; }
+            100% { box-shadow: 0 0 14px rgba(245,200,66,0.32), inset 0 0 10px rgba(245,200,66,0.10); border-color: #c49e1f; }
+        }
+        @keyframes textGlowFlow {
+            0% { text-shadow: 0 0 5px rgba(255,255,255,0.40), 0 0 8px rgba(245,200,66,0.35); color: #FFF5CC; }
+            50% { text-shadow: 0 0 18px rgba(245,200,66,0.98), 0 0 30px rgba(245,200,66,0.65), 0 0 28px rgba(245,200,66,0.45); color: #f5c842; }
+            100% { text-shadow: 0 0 5px rgba(255,255,255,0.40), 0 0 8px rgba(245,200,66,0.35); color: #FFF5CC; }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes laserVerticalScan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        @keyframes lightRayMove {
+            0% { left: -150%; }
+            50% { left: 150%; }
+            100% { left: 150%; }
+        }
+        @keyframes elementFall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes seaBlueSparkle {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes seaBlueShineMove {
+            0% { left: -45%; opacity: 0; }
+            20% { opacity: .95; }
+            55% { opacity: .95; }
+            100% { left: 120%; opacity: 0; }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background: #050505;
+            background-image: radial-gradient(circle at 16% 10%, rgba(245,200,66,.35) 0%, transparent 30%), radial-gradient(circle at 88% 16%, rgba(245,200,66,.40) 0%, transparent 35%), radial-gradient(circle at 50% 100%, rgba(245,200,66,.18) 0%, transparent 38%), linear-gradient(135deg,#050505,#1a1500 46%,#050505 100%);
+            min-height: 100vh;
+            color: #fff;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        .falling-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .falling-item {
+            position: absolute; font-size: 16px; user-select: none; pointer-events: none;
+            animation: elementFall linear infinite;
+        }
+        .container {
+            max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 1;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            text-align: center; margin-bottom: 30px; padding: 30px;
+            background: linear-gradient(135deg, #050505, #1a1500, #c49e1f, #f5c842, #050505);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite, neonPulse 4s infinite ease-in-out;
+            border-radius: 15px; border: 2px solid #c49e1f;
+            position: relative; overflow: hidden;
+        }
+        .header h1 {
+            color: #f5c842; font-size: 2.6em;
+            animation: textGlowFlow 3s infinite ease-in-out;
+            margin-bottom: 8px; font-weight: 900; letter-spacing: 3px;
+        }
+        .header p {
+            color: #ffffff; font-size: 1.05em; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* --- PANEL --- */
+        .panel {
+            background: rgba(5, 5, 5, 0.94); border-radius: 15px; padding: 25px; margin-bottom: 30px;
+            border: 2px solid #c49e1f;
+            box-shadow: 0 0 25px rgba(245,200,66,0.20), inset 0 0 18px rgba(245,200,66,.08);
+        }
+        .input-section label {
+            display: block; margin-bottom: 12px; color: #f5c842; font-size: 1.15em; font-weight: bold; letter-spacing: 0.5px;
+        }
+        textarea {
+            width: 100%; height: 220px; padding: 18px;
+            background: rgba(5, 5, 5, 0.95);
+            border: 2px solid #c49e1f; border-radius: 10px;
+            color: #ffffff; font-size: 14px; line-height: 1.6; resize: vertical; transition: all 0.3s;
+        }
+        textarea:focus { outline: none; border-color: #f5c842; box-shadow: 0 0 15px rgba(245,200,66,0.38); }
+
+        .buttons { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+        .btn {
+            padding: 15px 30px; border: none; border-radius: 8px; font-size: 1em; font-weight: bold;
+            cursor: pointer; transition: all 0.3s; flex: 1; min-width: 190px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .btn-generate {
+            background: linear-gradient(90deg, #f5c842, #c49e1f, #f5c842);
+            background-size: 200% auto; color: #000;
+            box-shadow: 0 0 20px rgba(245,200,66,0.38);
+        }
+        .btn-generate:hover { background-position: right center; transform: translateY(-2px); box-shadow: 0 0 30px rgba(245,200,66,0.76); }
+        .btn-copy {
+            background: #000; color: #f5c842; border: 2px solid #f5c842;
+            box-shadow: inset 0 0 10px rgba(245,200,66,0.20);
+        }
+        .btn-copy:hover { background: #f5c842; color: #000; transform: translateY(-2px); box-shadow: 0 0 25px rgba(245,200,66,0.55); }
+
+        /* --- SETTINGS --- */
+        .settings-panel {
+            background: linear-gradient(135deg, rgba(5,5,5,.94), rgba(26,21,0,.88));
+            border-radius: 12px; padding: 25px; margin: 25px 0;
+            border: 1px solid #c49e1f;
+        }
+        .settings-title {
+            color: #f5c842; font-size: 1.25em; margin-bottom: 20px; font-weight: bold;
+            display: flex; align-items: center; gap: 10px; text-shadow: 0 0 8px rgba(245,200,66,0.28);
+        }
+        .settings-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;
+        }
+        .setting-group { margin-bottom: 5px; }
+        .setting-group label { display: block; color: #ffffff; margin-bottom: 8px; font-weight: bold; font-size: 0.9em; }
+        .color-picker-wrapper { display: flex; gap: 10px; align-items: center; }
+        .color-block-preview { width: 32px; height: 32px; border-radius: 6px; border: 2px solid #c49e1f; }
+        input[type="color"] { width: 55px; height: 36px; border: 2px solid #c49e1f; border-radius: 6px; background: transparent; cursor: pointer; }
+        input[type="range"] { width: 100%; height: 6px; background: #1a1500; border-radius: 3px; outline: none; accent-color: #f5c842; }
+        .range-info { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
+        .range-value { color: #f5c842; font-weight: bold; font-size: 0.9em; }
+        .font-dropdown {
+            width: 100%; padding: 11px; background: #000; border: 2px solid #c49e1f;
+            border-radius: 6px; color: white; font-size: 13px; cursor: pointer;
+        }
+        .font-quick-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 8px; margin-top: 10px;
+        }
+        .font-mini-card {
+            padding: 8px; background: rgba(0,0,0,0.5); border: 1px solid #c49e1f;
+            border-radius: 6px; cursor: pointer; text-align: center; font-size: 11px; transition: all 0.2s; color: #bbb;
+        }
+        .font-mini-card:hover, .font-mini-card.active { border-color: #f5c842; background: rgba(245,200,66,0.12); color: #fff; }
+        .preset-container { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .preset-pill {
+            padding: 8px 15px; background: #1a1500; border: 1px solid #c49e1f;
+            border-radius: 20px; color: #fff; cursor: pointer; font-size: 11px; font-weight: bold; transition: all 0.2s;
+        }
+        .preset-pill:hover { border-color: #f5c842; background: #1a1500; }
+
+        /* --- LIVE PREVIEW --- */
+        .vip-card-glowbox {
+            margin-bottom: 30px; border-radius: 12px; overflow: hidden; position: relative;
+            background: #000; border: 2px solid var(--border-color, #c49e1f);
+            animation: neonPulse 4.5s infinite ease-in-out;
+        }
+        .vip-card-glowbox::before {
+            content: ''; position: absolute; top: 0; width: 40%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(245,200,66,0.14), transparent);
+            transform: skewX(-25deg); pointer-events: none; animation: lightRayMove 6s infinite linear; z-index: 1;
+        }
+        .vip-card-glowbox::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(245,200,66,0.07), transparent);
+            pointer-events: none; height: 200%; animation: laserVerticalScan 3.5s linear infinite; z-index: 1;
+        }
+        .vip-card-titlebar {
+            background: linear-gradient(90deg, #000000, var(--header-bg-color, #c49e1f), var(--header-flash-color, #f5c842), var(--header-bg-color, #c49e1f), #000000);
+            background-size: 400% 100%; animation: gradientShift 7s infinite linear;
+            color: #fff; padding: 15px; text-align: center; font-weight: bold; font-size: 1.35em;
+            letter-spacing: 1.5px; text-shadow: 0 0 8px rgba(0,0,0,0.9), 0 0 4px var(--border-color, #c49e1f);
+            border-bottom: 2px solid var(--border-color, #c49e1f); position: relative; z-index: 2;
+        }
+        .vip-table-core { width: 100%; border-collapse: collapse; position: relative; z-index: 2; background: rgba(0,0,0,0.88); }
+        .vip-table-core th {
+            background: rgba(245,200,66,0.10); color: var(--border-color, #f5c842);
+            padding: 12px 14px; font-weight: bold; text-align: left;
+            border-bottom: 1px solid rgba(245,200,66,0.30); font-size: 0.85em; letter-spacing: 0.5px;
+        }
+        .vip-table-core td { padding: 14px; border-bottom: 1px solid rgba(245,200,66,0.13); color: #e5e5e5; }
+        .vip-table-core tr:hover td { background: rgba(245,200,66,0.07); }
+
+        /* --- LEAGUE BLOCK --- */
+        .league-block {
+            margin-bottom:30px; border:2px solid var(--border-color,#c49e1f); border-radius:16px;
+            overflow:hidden; background:linear-gradient(180deg,#080808,#151515);
+            box-shadow:0 0 22px rgba(245,200,66,.38), inset 0 0 22px rgba(245,200,66,.08);
+            position:relative;
+        }
+        .league-title-new {
+            display:flex; align-items:center; justify-content:center; gap:9px;
+            padding:10px 54px 10px 54px;
+            background:linear-gradient(90deg,#000,#1a1500,#c49e1f,#1a1500,#000);
+            color:#f5c842; font-weight:900; letter-spacing:2px; text-align:center; text-transform:uppercase;
+            font-size:16px; text-shadow:0 1px 0 #fff7b0,0 2px 0 #c49e1f,0 0 6px rgba(245,200,66,.55);
+            border-bottom:2px solid rgba(245,200,66,.85);
+            position:relative; overflow:hidden; isolation:isolate;
+            animation:seaBlueSparkle 5s ease infinite; background-size:300% 100%;
+        }
+        .league-title-new::before {
+            content:""; position:absolute; top:0; left:-45%; width:32%; height:100%;
+            background:linear-gradient(90deg,transparent,rgba(255,247,176,.85),transparent);
+            transform:skewX(-24deg); animation:seaBlueShineMove 3.6s ease-in-out infinite;
+            pointer-events:none; z-index:-1;
+        }
+        .league-count {
+            position:absolute; right:12px; top:50%; transform:translateY(-50%);
+            background:#f5c842; color:#111; border-radius:20px; padding:3px 9px;
+            font-size:10px; letter-spacing:0; box-shadow:0 0 10px rgba(245,200,66,.5);
+        }
+        .match-card-new {
+            background:linear-gradient(180deg,#1a1500,#0a0800);
+            border-bottom:1px solid rgba(245,200,66,.22); transition:.25s;
+        }
+        .match-card-new:nth-child(even){background:linear-gradient(180deg,#1f1800,#0a0800)}
+        .match-card-new:hover{background:linear-gradient(90deg,#2a2000,#1a1500);}
+        .match-row-new {
+            display:grid; grid-template-columns:minmax(0,1fr) 108px minmax(0,1fr);
+            align-items:center; min-height:74px; padding:9px 12px; gap:10px;
+        }
+        .team-side-new {
+            display:flex; align-items:center; gap:9px;
+            color:#FFF5CC; font-weight:900; font-size:14px;
+            text-shadow:0 1px 2px #000,0 0 5px rgba(245,200,66,.25);
+            min-width:0;
+        }
+        .team-side-new.right{justify-content:flex-end;text-align:right;}
+        .team-name-new{white-space:normal;line-height:1.2;word-break:break-word;}
+        .club-logo-new {
+            width:34px; height:34px; object-fit:contain; flex:0 0 34px;
+            background:transparent; padding:0; border-radius:0; border:none;
+            box-shadow:none; filter:drop-shadow(0 0 4px rgba(245,200,66,.22));
+        }
+        .club-logo-fallback {
+            width:34px; height:34px; flex:0 0 34px;
+            display:inline-flex; align-items:center; justify-content:center;
+            border-radius:0; background:transparent; border:none; box-shadow:none; filter:none;
+        }
+        .score-mid-new {
+            text-align:center; color:#f5c842; -webkit-text-fill-color:#f5c842;
+            background:none; font-weight:900; font-size:30px; line-height:1;
+            text-shadow:none; letter-spacing:1px;
+        }
+        .date-mid-new {
+            color:#f5c842; -webkit-text-fill-color:#f5c842;
+            font-size:12px; font-weight:900; margin-top:8px; line-height:1.15;
+            text-shadow:0 0 4px #000;
+        }
+        .chev-new{color:rgba(245,200,66,.65);font-size:14px;margin-left:5px;cursor:pointer;transition:.25s;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;}
+        .match-card-new.open .chev-new{transform:rotate(180deg);color:#f5c842;}
+        .prediction-panel-new {
+            display:none; margin:0; padding:13px 16px 14px 16px; border:none!important; outline:none!important;
+            background:#1a1500; border-radius:0; grid-template-columns:repeat(4,1fr);
+            gap:8px; position:relative; z-index:3; box-shadow:none!important;
+        }
+        .match-card-new.open .prediction-panel-new{display:grid;}
+        .prediction-item-new {
+            min-height:82px; border:1px solid rgba(245,200,66,.45); border-radius:7px;
+            background:#1a1500; display:flex; flex-direction:column; align-items:center;
+            justify-content:center; text-align:center; padding:8px 5px;
+            box-shadow:inset 0 0 12px rgba(245,200,66,.08);
+        }
+        .prediction-label-new{font-size:9px;color:#c49e1f;text-transform:uppercase;font-weight:900;letter-spacing:.8px;margin-bottom:7px;}
+        .prediction-value-new{font-size:13px;color:#00ff6a;font-weight:900;line-height:1.15;text-transform:uppercase;}
+        .prediction-value-new.red{color:#ff4040;}.prediction-value-new.gold{color:#f5c842;}
+        .prediction-small-new{font-size:9px;color:rgba(255,255,255,.45);margin-top:5px;line-height:1.15;}
+
+        @media(max-width:640px){
+            .match-row-new{grid-template-columns:1fr 80px 1fr;padding:8px 7px;gap:5px;min-height:70px;}
+            .team-side-new{font-size:11px;gap:5px;}
+            .club-logo-new,.club-logo-fallback{width:26px;height:26px;flex-basis:26px;}
+            .score-mid-new{font-size:22px;}
+            .date-mid-new{font-size:10px;}
+            .league-title-new{font-size:12px;letter-spacing:1px;padding-left:34px;padding-right:46px;}
+            .league-count{right:7px;font-size:8px;padding:2px 6px;}
+        }
+
+        .preview-area {
+            background: #000; border-radius: 10px; padding: 18px; margin-top: 15px;
+            border: 2px solid #c49e1f; max-height: 350px; overflow-y: auto;
+            box-shadow: inset 0 0 15px rgba(245,200,66,.14), 0 0 12px rgba(245,200,66,.12);
+        }
+        #previewOutput {
+            color: #FFF5CC; font-family: 'Courier New', monospace; font-size: 12px;
+            white-space: pre-wrap; word-break: break-all;
+        }
+
+        .notification {
+            position: fixed; bottom: 25px; right: 25px;
+            background: linear-gradient(135deg, #f5c842, #c49e1f);
+            color: #000; padding: 16px 28px; border-radius: 8px; font-weight: bold;
+            opacity: 0; transform: translateY(20px); transition: all 0.3s; z-index: 1000;
+            box-shadow: 0 0 20px rgba(245,200,66,0.55);
+        }
+        .notification.show { opacity: 1; transform: translateY(0); }
+
+        .footer {
+            text-align: center; margin-top: 45px; padding: 20px;
+            color: #c49e1f; font-size: 0.9em; border-top: 1px solid rgba(245,200,66,0.20);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="falling-container" id="fallingContainer"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>✨ LATOTO PREDIKSI BOLA ✨</h1>
+            <p>Sistem Pembuat Tabel Pasaran Premium dengan Efek Sinar Menyala & Animasi Objek Jatuh</p>
+        </div>
+
+        <div class="panel">
+            <div class="input-section">
+                <label for="matchInput">📝 INPUT JADWAL / PASARAN LAGA BOLA:</label>
+                <textarea id="matchInput" placeholder="Tempelkan data pasaran di sini..."></textarea>
+
+                <div class="buttons">
+                    <button class="btn btn-generate" onclick="generateTables()">🚀 GENERATE TABEL</button>
+                    <button class="btn btn-copy" onclick="copyHTML()">📋 COPY KODE HTML BLOG</button>
+                </div>
+            </div>
+
+            <div class="settings-panel">
+                <div class="settings-title">🎨 Pengaturan Tampilan Kustom</div>
+                <div class="settings-grid">
+                    <div class="setting-group">
+                        <label>🎨 Warna Border:</label>
+                        <div class="color-picker-wrapper">
+                            <div class="color-block-preview" id="borderColorPreview" style="background: #c49e1f;"></div>
+                            <input type="color" id="borderColor" value="#c49e1f" onchange="updateBorderColor(this.value)">
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label>🌈 Warna Header:</label>
+                        <div class="color-picker-wrapper">
+                            <div class="color-block-preview" id="headerColorPreview" style="background: #c49e1f;"></div>
+                            <input type="color" id="headerColor" value="#c49e1f" onchange="updateHeaderColor(this.value)">
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label>⭐ Warna Skor:</label>
+                        <div class="color-picker-wrapper">
+                            <div class="color-block-preview" id="scoreColorPreview" style="background: #f5c842;"></div>
+                            <input type="color" id="scoreColor" value="#f5c842" onchange="updateScoreColor(this.value)">
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label>📏 Ukuran Teks:</label>
+                        <input type="range" id="fontSize" min="11" max="18" value="13" step="1" oninput="updateFontSize(this.value)">
+                        <div class="range-info">
+                            <span style="color:#666; font-size:11px;">Min: 11px</span>
+                            <span class="range-value" id="fontSizeValue">13px</span>
+                            <span style="color:#666; font-size:11px;">Max: 18px</span>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label>🔤 Tipe Font:</label>
+                        <select id="fontFamilySelect" class="font-dropdown" onchange="updateFontFamily(this.value)">
+                            <option value="'Segoe UI', sans-serif">Segoe UI Premium</option>
+                            <option value="Arial, sans-serif">Arial Standard</option>
+                            <option value="'Impact', sans-serif">Impact Bold</option>
+                            <option value="'Courier New', monospace">Courier Tech</option>
+                            <option value="Georgia, serif">Georgia Classic</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <label style="color: #f5c842; font-size:12px; font-weight: bold; display: block; margin-bottom: 5px;">⚡ AKSES FONT CEPAT:</label>
+                    <div class="font-quick-grid">
+                        <div class="font-mini-card" onclick="quickSelectFont('Arial, sans-serif')">Arial</div>
+                        <div class="font-mini-card" onclick="quickSelectFont('Georgia, serif')">Georgia</div>
+                        <div class="font-mini-card" onclick="quickSelectFont('Courier New, monospace')">Courier</div>
+                        <div class="font-mini-card active" onclick="quickSelectFont('Segoe UI, sans-serif')">Segoe UI</div>
+                        <div class="font-mini-card" onclick="quickSelectFont('Impact, sans-serif')">Impact</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <label style="color: #f5c842; font-size:12px; font-weight: bold; display: block; margin-bottom: 5px;">🎨 PRESET TEMA:</label>
+                    <div class="preset-container">
+                        <button class="preset-pill" onclick="applyPreset('emas')" style="color:#f5c842;">EMAS ROYAL</button>
+                        <button class="preset-pill" onclick="applyPreset('hijau')" style="color:#00ff6a;">HIJAU NEON</button>
+                        <button class="preset-pill" onclick="applyPreset('cyan')" style="color:#00eaff;">CYAN GLOW</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 35px;">
+                <label style="color: #f5c842; font-size: 1.25em; font-weight: bold; display: block; margin-bottom: 15px;">
+                    📊 LIVE PREVIEW VIP TABEL (SINAR MENYALA & BERGERAK):
+                </label>
+                <div id="tablesContainer"></div>
+
+                <label style="color: #f5c842; font-size: 1.15em; margin-top: 35px; display: block; font-weight: bold;">
+                    📝 HTML BLOG SCRIPT OUTPUT (KODE TINGGAL SALIN KE BLOG):
+                </label>
+                <div class="preview-area">
+                    <pre id="previewOutput">Silakan klik "GENERATE TABEL" untuk merender data...</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">LATOTO MANAGEMENT DASHBOARD SYSTEM • ANIMATED SOCCER PARTICLES</div>
+    </div>
+
+    <div class="notification" id="notification">✓ BERHASIL!</div>
+
+    <script>
+        // ============================================
+        // DATABASE LOGO CLUB (disederhanakan)
+        // ============================================
+        const CLUB_LOGO_DB = {
+            "Arsenal": "https://r2.thesportsdb.com/images/media/team/badge/uyhbfe1612467038.png",
+            "Chelsea": "https://r2.thesportsdb.com/images/media/team/badge/yvwvtu1448813215.png",
+            "Liverpool": "https://r2.thesportsdb.com/images/media/team/badge/kfaher1737969724.png",
+            "Manchester City": "https://r2.thesportsdb.com/images/media/team/badge/vwpvry1467462651.png",
+            "Manchester United": "https://r2.thesportsdb.com/images/media/team/badge/xzqdr11517660252.png",
+            "Tottenham Hotspur": "https://r2.thesportsdb.com/images/media/team/badge/dfyfhl1604094109.png",
+            "Real Madrid": "https://cdn.prod.website-files.com/68f550992570ca0322737dc2/68f5566127330a66b90dd22a_real-madrid-footballlogos-org.svg",
+            "Barcelona": "https://assets.football-logos.cc/logos/spain/256x256/barcelona.779f8f0f.png",
+            "Atletico Madrid": "https://r2.thesportsdb.com/images/media/team/badge/0ulh3q1719984315.png",
+            "Bayern Munchen": "https://assets.football-logos.cc/logos/germany/256x256/bayern-munchen.6c38f13a.png",
+            "AC Milan": "https://r2.thesportsdb.com/images/media/team/badge/wvspur1448806617.png",
+            "Inter Milan": "https://r2.thesportsdb.com/images/media/team/badge/8s4blx1742982853.png",
+            "Juventus": "https://r2.thesportsdb.com/images/media/team/badge/uxf0gr1742983727.png",
+            "AS Roma": "https://media.api-sports.io/football/teams/497.png",
+            "Ajax": "https://r2.thesportsdb.com/images/media/team/badge/zg9tii1755495289.png",
+            "PSV Eindhoven": "https://r2.thesportsdb.com/images/media/team/badge/u82t291754953198.png",
+            "Feyenoord": "https://r2.thesportsdb.com/images/media/team/badge/qct7ny1755493707.png",
+            "Benfica": "https://r2.thesportsdb.com/images/media/team/badge/eyvvpw1448223728.png",
+            "Porto": "https://r2.thesportsdb.com/images/media/team/badge/jikrhp1473534667.png",
+            "Sporting Lisbon": "https://apiv2.allsportsapi.com/logo/177_sporting-cp.jpg",
+            "Marseille": "https://r2.thesportsdb.com/images/media/team/badge/3gpcbw1583842604.png",
+            "Lyon": "https://r2.thesportsdb.com/images/media/team/badge/25yn6w1656932845.png",
+            "PSG": "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg",
+            "Borussia Dortmund": "https://r2.thesportsdb.com/images/media/team/badge/ji4rfa1744866942.png",
+            "RB Leipzig": "https://r2.thesportsdb.com/images/media/team/badge/fn54n21704615897.png",
+            "Atalanta": "https://r2.thesportsdb.com/images/media/team/badge/utb6k41629556254.png",
+            "Napoli": "https://r2.thesportsdb.com/images/media/team/badge/l8qyxv1742982541.png",
+            "Lazio": "https://r2.thesportsdb.com/images/media/team/badge/hwmrqu1655382305.png",
+            "Fiorentina": "https://r2.thesportsdb.com/images/media/team/badge/6o2pjt1655384945.png",
+            "Roma": "https://r2.thesportsdb.com/images/media/team/badge/y1h1c01655553353.png",
+            "Valencia": "https://assets.football-logos.cc/logos/spain/256x256/valencia.f9d9eee2.png",
+            "Villarreal": "https://r2.thesportsdb.com/images/media/team/badge/vrypqy1473503073.png",
+            "Sevilla": "https://assets.football-logos.cc/logos/spain/256x256/sevilla.b741a6ce.png",
+            "Betis": "https://assets.football-logos.cc/logos/spain/256x256/real-betis.7bb10421.png",
+            "Athletic Bilbao": "https://r2.thesportsdb.com/images/media/team/badge/68w7fe1639408210.png",
+            "Real Sociedad": "https://cdn.prod.website-files.com/68f550992570ca0322737dc2/68f57cd739e52d48a094280a_real-sociedad-footballlogos-org.svg",
+            "Celta Vigo": "https://cdn.prod.website-files.com/68f550992570ca0322737dc2/68f573ceae8839f16958ef48_celta-vigo-footballlogos-org.svg",
+            "Getafe": "https://assets.football-logos.cc/logos/spain/256x256/getafe.edd42c3d.png",
+            "Osasuna": "https://cdn.prod.website-files.com/68f550992570ca0322737dc2/68f57679889b70d360e72166_osasuna-footballlogos-org.svg",
+            "Espanyol": "https://crests.football-data.org/80.png",
+            "Alaves": "https://media.api-sports.io/football/teams/542.png",
+            "Mallorca": "https://assets.football-logos.cc/logos/spain/256x256/mallorca.d244a18a.png",
+            "Rayo Vallecano": "https://r2.thesportsdb.com/images/media/team/badge/nzhu941655595465.png",
+            "Girona": "https://crests.football-data.org/298.png",
+            "Leganes": "https://r2.thesportsdb.com/images/media/team/badge/tm0adr1616443898.png",
+            "Cadiz": "https://assets.football-logos.cc/logos/spain/256x256/cadiz.7a92622e.png",
+            "Granada": "https://r2.thesportsdb.com/images/media/team/badge/f9iss11677472689.png",
+            "Las Palmas": "https://r2.thesportsdb.com/images/media/team/badge/mmhyb11616443601.png",
+            "Almeria": "https://r2.thesportsdb.com/images/media/team/badge/yswsww1473503818.png",
+            "Elche": "https://crests.football-data.org/285.png",
+            "Mallorca": "https://assets.football-logos.cc/logos/spain/256x256/mallorca.d244a18a.png",
+            "Bournemouth": "https://r2.thesportsdb.com/images/media/team/badge/gh5hc31761433174.png",
+            "Aston Villa": "https://r2.thesportsdb.com/images/media/team/badge/jykrpv1717309891.png",
+            "Fulham": "https://r2.thesportsdb.com/images/media/team/badge/xwwvyt1448811086.png",
+            "Newcastle": "https://r2.thesportsdb.com/images/media/team/badge/lhwuiz1621593302.png",
+            "West Ham": "https://r2.thesportsdb.com/images/media/team/badge/yutyxs1467459956.png",
+            "Crystal Palace": "https://r2.thesportsdb.com/images/media/team/badge/ia6i3m1656014992.png",
+            "Everton": "https://r2.thesportsdb.com/images/media/team/badge/eqayrf1523184794.png",
+            "Leeds": "https://r2.thesportsdb.com/images/media/team/badge/jcgrml1756649030.png",
+            "Leicester": "https://r2.thesportsdb.com/images/media/team/badge/28d35e1730805602.png",
+            "Wolves": "https://r2.thesportsdb.com/images/media/team/badge/u9qr031621593327.png",
+            "Nottingham Forest": "https://r2.thesportsdb.com/images/media/team/badge/bk4qjs1546440351.png",
+            "Brentford": "https://r2.thesportsdb.com/images/media/team/badge/grv1aw1546453779.png",
+            "Brighton": "https://cdn.prod.website-files.com/68f550992570ca0322737dc2/68f587afb29d49b3350c852d_brighton-hove-footballlogos-org.svg",
+            "Southampton": "https://r2.thesportsdb.com/images/media/team/badge/qjjdb41686366145.png",
+            "Wolfsburg": "https://media.api-sports.io/football/teams/161.png",
+            "Stuttgart": "https://crests.football-data.org/10.png",
+            "Dortmund": "https://r2.thesportsdb.com/images/media/team/badge/ji4rfa1744866942.png",
+            "Leverkusen": "https://r2.thesportsdb.com/images/media/team/badge/oc7rlt1545669580.png",
+            "M'gladbach": "https://r2.thesportsdb.com/images/media/team/badge/qqq5ml1579699264.png",
+            "Frankfurt": "https://r2.thesportsdb.com/images/media/team/badge/9d6nbn1579698930.png",
+            "Hoffenheim": "https://r2.thesportsdb.com/images/media/team/badge/59m6js1559114842.png",
+            "Augsburg": "https://r2.thesportsdb.com/images/media/team/badge/9b6dpj1579701014.png",
+            "Mainz": "https://r2.thesportsdb.com/images/media/team/badge/kh2jsp1473535608.png",
+            "Hertha BSC": "https://r2.thesportsdb.com/images/media/team/badge/m3o4021641036178.png",
+            "Koln": "https://r2.thesportsdb.com/images/media/team/badge/gvrmnx1579701474.png",
+            "Werder Bremen": "https://r2.thesportsdb.com/images/media/team/badge/gdhj011766546473.png",
+            "Union Berlin": "https://r2.thesportsdb.com/images/media/team/badge/px4cp71704376414.png",
+            "Schalke 04": "https://r2.thesportsdb.com/images/media/team/badge/2lnx4k1619532310.png",
+            "Bochum": "https://r2.thesportsdb.com/images/media/team/badge/dsqrvt1579689407.png",
+            "Freiburg": "https://r2.thesportsdb.com/images/media/team/badge/wv44yl1473535606.png",
+            "Celtic": "https://cdn.prod.website-files.com/68f550992570ca0322737dc2/68f64bedd483457aeb512430_celtic-footballlogos-org.svg",
+            "Rangers": "https://r2.thesportsdb.com/images/media/team/badge/3iy41n1565276503.png",
+            "England": "https://flagcdn.com/w320/gb-eng.png",
+            "Spain": "https://flagcdn.com/w320/es.png",
+            "Italy": "https://flagcdn.com/w320/it.png",
+            "Germany": "https://flagcdn.com/w320/de.png",
+            "France": "https://flagcdn.com/w320/fr.png",
+            "Portugal": "https://flagcdn.com/w320/pt.png",
+            "Netherlands": "https://flagcdn.com/w320/nl.png",
+            "Brazil": "https://flagcdn.com/w320/br.png",
+            "Argentina": "https://flagcdn.com/w320/ar.png"
+        };
+
+        // ============================================
+        // SETTINGS
+        // ============================================
+        let settings = {
+            borderColor: '#c49e1f',
+            headerColor: '#c49e1f',
+            scoreColor: '#f5c842',
+            fontSize: '13',
+            fontFamily: "'Segoe UI', sans-serif"
+        };
+
+        function getClubLogo(teamName) {
+            const raw = String(teamName || '').trim();
+            // hapus [nomor]
+            const clean = raw.replace(/\[\d+\]\s*/g, '').trim();
+            for (const [key, val] of Object.entries(CLUB_LOGO_DB)) {
+                if (clean.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(clean.toLowerCase())) {
+                    return val;
+                }
+            }
+            return '';
+        }
+
+        function logoTag(teamName, size) {
+            const url = getClubLogo(teamName);
+            const safe = String(teamName || '').replace(/"/g, '&quot;');
+            if (!url) return '<span class="club-logo-fallback">⚽</span>';
+            return '<img class="club-logo-new" src="' + url + '" alt="' + safe + '" onerror="this.outerHTML=\'<span class=&quot;club-logo-fallback&quot;>⚽</span>\'">';
+        }
+
+        function syncCSSVariables() {
+            const root = document.documentElement;
+            root.style.setProperty('--border-color', settings.borderColor);
+            root.style.setProperty('--score-color', settings.scoreColor);
+            root.style.setProperty('--header-bg-color', shadeColor(settings.headerColor, -60));
+            root.style.setProperty('--header-flash-color', settings.headerColor);
+        }
+
+        function shadeColor(color, percent) {
+            let num = parseInt(color.replace("#",""), 16),
+                amt = Math.round(2.55 * percent),
+                R = (num >> 16) + amt,
+                G = (num >> 8 & 0x00FF) + amt,
+                B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R<255?R<0?0:R:255)*0x1000000 + (G<255?G<0?0:G:255)*0x100 + (B<255?B<0?0:B:255)).toString(16).slice(1);
+        }
+
+        function parseInput(inputText) {
+            const lines = inputText.split('\n');
+            const leagues = [];
+            let currentLeague = null;
+
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (!trimmed) continue;
+                const isLeagueName = !/\bVS\b/i.test(trimmed);
+                if (isLeagueName) {
+                    if (currentLeague && currentLeague.matches.length > 0) leagues.push(currentLeague);
+                    currentLeague = { name: trimmed, matches: [] };
+                } else if (currentLeague) {
+                    const regex = /(\d{2}\/\d{2})\s+(\d{2}[.:]\d{2})\s+(\w+)\s+(.+?)\s+VS\s+(.+?)\s+(\d+(?:\s+\d+)?(?:\/\d+)?)\s*:\s*(\d+(?:\s+\d+)?(?:\/\d+)?)/i;
+                    const match = trimmed.match(regex);
+                    if (match) {
+                        let team1 = match[4].trim().replace(/\[\d+\]\s*/, '');
+                        let team2 = match[5].trim().replace(/\[\d+\]\s*/, '');
+                        let waktu = match[2].replace(/\./, ':');
+                        currentLeague.matches.push({
+                            date: match[1],
+                            time: waktu,
+                            timezone: match[3],
+                            team1: team1,
+                            team2: team2,
+                            scoreDisplay: `${match[6]} : ${match[7]}`
+                        });
+                    }
+                }
+            }
+            if (currentLeague && currentLeague.matches.length > 0) leagues.push(currentLeague);
+            return leagues;
+        }
+
+        function renderTeamSide(teamName, side) {
+            const logo = logoTag(teamName);
+            const name = '<span class="team-name-new">' + teamName + '</span>';
+            if (side === 'right') {
+                return '<div class="team-side-new right" role="button" tabindex="0">' + name + logo + '<span class="chev-new">⌄</span></div>';
+            }
+            return '<div class="team-side-new">' + logo + name + '</div>';
+        }
+
+        function extractScoreNums(scoreDisplay) {
+            const nums = String(scoreDisplay || '').match(/\d+/g) || ['0','0'];
+            return {home: parseInt(nums[0] || '0', 10), away: parseInt(nums[1] || '0', 10)};
+        }
+
+        function predictionData(match) {
+            const sc = extractScoreNums(match.scoreDisplay);
+            const total = sc.home + sc.away;
+            const winner = sc.home > sc.away ? 'HOME WIN' : (sc.away > sc.home ? 'AWAY WIN' : 'DRAW');
+            const pickTeam = sc.home >= sc.away ? match.team1 : match.team2;
+            const handicap = sc.home === sc.away ? (match.team1 + ' +0.5') : (pickTeam + ' -0.5');
+            const ou = (total >= 4 ? 'OVER ' : 'UNDER ') + (total >= 4 ? '3.5' : '3.5');
+            return {handicap, ou, winner, score: match.scoreDisplay.replace(/\s*/g,'').replace(':',' - '), pickTeam};
+        }
+
+        function renderPredictionPanel(match) {
+            const p = predictionData(match);
+            return `<div class="prediction-panel-new">
+                <div class="prediction-item-new"><div class="prediction-label-new">HANDICAP</div><div class="prediction-value-new">${p.handicap}</div><div class="prediction-small-new">Home unggul</div></div>
+                <div class="prediction-item-new"><div class="prediction-label-new">OVER / UNDER</div><div class="prediction-value-new red">${p.ou}</div><div class="prediction-small-new">Pertahanan Solid</div></div>
+                <div class="prediction-item-new"><div class="prediction-label-new">1X2</div><div class="prediction-value-new">${p.winner}</div><div class="prediction-small-new">${p.pickTeam}</div></div>
+                <div class="prediction-item-new"><div class="prediction-label-new">SKOR AKURAT</div><div class="prediction-value-new gold">${p.score}</div><div class="prediction-small-new">Top Pick</div></div>
+            </div>`;
+        }
+
+        function buildLeagueCards(leagues) {
+            let out = '';
+            for (const league of leagues) {
+                let cards = '';
+                for (let i = 0; i < league.matches.length; i++) {
+                    const match = league.matches[i];
+                    cards += `<div class="match-card-new ${i % 2 ? 'odd' : 'even'}" data-teams="${match.team1} ${match.team2}">
+                        <div class="match-row-new">
+                            ${renderTeamSide(match.team1, 'left')}
+                            <div class="score-mid-new">
+                                <div>${match.scoreDisplay}</div>
+                                <div class="date-mid-new">${match.date}<br>${match.time} ${match.timezone}</div>
+                            </div>
+                            ${renderTeamSide(match.team2, 'right')}
+                        </div>
+                        ${renderPredictionPanel(match)}
+                    </div>`;
+                }
+                out += `<div class="league-block" data-league="${league.name}">
+                    <div class="league-title-new">🏆 ${league.name} 🏆 <span class="league-count">${league.matches.length} MATCH</span></div>
+                    <div class="league-inner-new">${cards}</div>
+                </div>`;
+            }
+            return out;
+        }
+
+        // ============================================
+        // GENERATE & COPY
+        // ============================================
+        function generateTables() {
+            syncCSSVariables();
+            const input = document.getElementById('matchInput').value;
+            const leagues = parseInput(input);
+            const container = document.getElementById('tablesContainer');
+            const preview = document.getElementById('previewOutput');
+
+            if (!leagues.length) {
+                container.innerHTML = '<div style="color:#ff4444;text-align:center;padding:25px;font-weight:bold;border:1px dashed #ff4444;border-radius:8px;">❌ Format data tidak valid. Silakan periksa kembali input Anda.</div>';
+                preview.textContent = '// Data kosong atau pola tidak sesuai.';
+                return;
+            }
+
+            container.innerHTML = buildLeagueCards(leagues);
+
+            // === OUTPUT HTML BLOG (LATOTO STYLE) ===
+            let htmlOutput = `<div id="latoto-root-container" style="background: transparent; padding: 20px; font-family: Arial, sans-serif; color: white; border-radius: 25px;">
+<div style="background: rgba(226,122,3,0.1); border: 1px solid ${settings.borderColor}; border-radius: 50px; padding: 8px; margin-bottom: 15px; overflow: hidden;">
+<marquee scrollamount="5" style="color: #ffd700; font-weight: bold;"> 🔥 Selamat Datang Di Prediksi Bola LATOTO - Prediksi Sepakbola Paling Akurat Seasia &bull; Prediksi Bola Terupdate &bull; Analisis Akurat &bull; Hanya Di LATOTO 🔥 </marquee>
+</div>
+<div style="text-align: center; margin-bottom: 25px;">
+<div style="display: inline-block; border: 2px solid ${settings.borderColor}; border-radius: 50px; padding: 10px 40px; color: #ffffff; font-weight: bold; font-size: 18px; box-shadow: 0 0 15px rgba(196,158,31,0.6); background: #000000;">◈ ${new Date().toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'}).toUpperCase()} ◈</div>
+</div>
+<div style="margin-bottom: 20px; border: 1px solid ${settings.borderColor}; padding: 15px; border-radius: 15px; background: rgba(0,0,0,0.3);">
+<label style="color: ${settings.borderColor}; font-size: 12px; font-weight: bold; margin-bottom: 8px; display: block;">🏆 FILTER LIGA</label>
+<select onchange="document.querySelectorAll('.liga-item-latoto').forEach(el => el.style.display = (this.value === 'all' || el.getAttribute('data-liga') === this.value) ? 'block' : 'none')" style="width: 100%; background: #0d1117; color: #ffd700; border: 1px solid ${settings.borderColor}; padding: 12px; border-radius: 10px; outline: none; cursor: pointer; font-weight: bold;">
+<option value="all">Semua Liga</option>`;
+
+            leagues.forEach((league, idx) => {
+                const ligaId = league.name.toUpperCase().replace(/[^A-Z0-9-]/g, '-');
+                htmlOutput += `<option value="${ligaId}">🏆 ${league.name}</option>`;
+            });
+
+            htmlOutput += `</select></div><div id="content-tabel">`;
+
+            // Tabel per liga
+            leagues.forEach((league) => {
+                const ligaId = league.name.toUpperCase().replace(/[^A-Z0-9-]/g, '-');
+                htmlOutput += `<div class="liga-item-latoto" data-liga="${ligaId}">
+<table width="100%" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 25px; overflow: hidden; border: 2px solid ${settings.borderColor}; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); background: #161b22;">
+<thead>
+<tr style="background-color: #e27a03;">
+<th colspan="3" style="padding: 20px; color: #ffffff; text-align: center; text-transform: uppercase; font-size: 16px; letter-spacing: 1px;">🏆 ${league.name} 🏆</th>
+</tr>
+<tr style="background-color: ${settings.borderColor};">
+<th style="padding: 12px; color: #000; width: 25%; font-size: 11px; border-right: 1px solid rgba(0,0,0,0.1);">WAKTU</th>
+<th style="padding: 12px; color: #000; width: 50%; font-size: 11px; border-right: 1px solid rgba(0,0,0,0.1);">PERTANDINGAN</th>
+<th style="padding: 12px; color: #000; width: 25%; font-size: 11px;">PREDIKSI</th>
+</tr>
+</thead>
+<tbody>`;
+
+                league.matches.forEach((match, i) => {
+                    const bg = i % 2 === 0 ? '#404244' : '#7f7a7f';
+                    const p = predictionData(match);
+                    htmlOutput += `<tr style="background-color: ${bg};">
+<td style="padding: 18px; text-align: center; color: #f5f5f5; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05);">${match.date} ${match.time} WIB</td>
+<td style="padding: 18px; text-align: center; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.05);">
+<div style="font-weight: bold; font-size: 15px;">${match.team1}</div>
+<div style="color: #000000; font-weight: bold; font-size: 10px; margin: 5px 0; background: ${settings.borderColor}; display: inline-block; padding: 2px 10px; border-radius: 15px;">VS</div>
+<div style="font-weight: bold; font-size: 15px;">${match.team2}</div>
+</td>
+<td style="padding: 18px; text-align: center; color: #fffafa; border-bottom: 1px solid rgba(255,255,255,0.05);">
+<div style="font-size: 22px; color: #ffd700; font-weight: 900; text-shadow: 2px 2px 4px #000;">${match.scoreDisplay}</div>
+<div style="color: #1eff00; font-size: 10px; font-weight: bold; margin-top: 8px;">Akurasi 98%</div>
+</td>
+</tr>`;
+                });
+
+                htmlOutput += `</tbody></table></div>`;
+            });
+
+            htmlOutput += `</div></div>`;
+
+            window.htmlForBlog = htmlOutput;
+            preview.textContent = htmlOutput;
+            showNotification(`✓ Berhasil memuat ${leagues.reduce((a,b) => a + b.matches.length, 0)} pertandingan!`, true);
+        }
+
+        function copyHTML() {
+            if (!window.htmlForBlog) {
+                showNotification('Generate data terlebih dahulu!', false);
+                return;
+            }
+            const kodeHTML = window.htmlForBlog;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(kodeHTML)
+                    .then(() => showNotification('✓ HTML BERHASIL DISALIN!', true))
+                    .catch(() => fallbackCopyHTML(kodeHTML));
+            } else {
+                fallbackCopyHTML(kodeHTML);
+            }
+        }
+
+        function fallbackCopyHTML(kodeHTML) {
+            const textArea = document.createElement('textarea');
+            textArea.value = kodeHTML;
+            textArea.setAttribute('readonly', '');
+            textArea.style.position = 'fixed';
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.width = '1px';
+            textArea.style.height = '1px';
+            textArea.style.opacity = '0';
+            textArea.style.zIndex = '-1';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            textArea.setSelectionRange(0, 99999999);
+            let berhasil = false;
+            try { berhasil = document.execCommand('copy'); } catch(e) { berhasil = false; }
+            document.body.removeChild(textArea);
+            if (berhasil) {
+                showNotification('✓ HTML BERHASIL DISALIN!', true);
+            } else {
+                const preview = document.getElementById('previewOutput');
+                if (preview) {
+                    const range = document.createRange();
+                    range.selectNodeContents(preview);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+                showNotification('Kode sudah diblok, tekan CTRL + C', false);
+            }
+        }
+
+        function updateBorderColor(color) { settings.borderColor = color; document.getElementById('borderColorPreview').style.background = color; if (document.getElementById('matchInput').value) generateTables(); }
+        function updateHeaderColor(color) { settings.headerColor = color; document.getElementById('headerColorPreview').style.background = color; if (document.getElementById('matchInput').value) generateTables(); }
+        function updateScoreColor(color) { settings.scoreColor = color; document.getElementById('scoreColorPreview').style.background = color; if (document.getElementById('matchInput').value) generateTables(); }
+        function updateFontSize(size) { settings.fontSize = size; document.getElementById('fontSizeValue').textContent = size + 'px'; if (document.getElementById('matchInput').value) generateTables(); }
+        function updateFontFamily(font) { settings.fontFamily = font; if (document.getElementById('matchInput').value) generateTables(); }
+
+        function quickSelectFont(font) {
+            settings.fontFamily = font;
+            document.getElementById('fontFamilySelect').value = font;
+            document.querySelectorAll('.font-mini-card').forEach(card => {
+                if (font.includes(card.textContent)) card.classList.add('active');
+                else card.classList.remove('active');
+            });
+            if (document.getElementById('matchInput').value) generateTables();
+            showNotification(`Font diganti ke: ${font.split(',')[0]}`, true);
+        }
+
+        function applyPreset(type) {
+            const presets = {
+                emas: { border: '#c49e1f', header: '#c49e1f', score: '#f5c842' },
+                hijau: { border: '#00ff6a', header: '#00cc55', score: '#00ff6a' },
+                cyan: { border: '#00eaff', header: '#00ccdd', score: '#00eaff' }
+            };
+            const p = presets[type];
+            if (p) {
+                settings.borderColor = p.border; settings.headerColor = p.header; settings.scoreColor = p.score;
+                document.getElementById('borderColor').value = p.border; document.getElementById('headerColor').value = p.header; document.getElementById('scoreColor').value = p.score;
+                document.getElementById('borderColorPreview').style.background = p.border; document.getElementById('headerColorPreview').style.background = p.header; document.getElementById('scoreColorPreview').style.background = p.score;
+                if (document.getElementById('matchInput').value) generateTables();
+                showNotification(`✓ Preset ${type.toUpperCase()} diaktifkan`, true);
+            }
+        }
+
+        function showNotification(msg, success) {
+            const n = document.getElementById('notification');
+            n.textContent = msg;
+            n.style.background = success ? 'linear-gradient(135deg, #f5c842, #c49e1f)' : '#ff3333';
+            n.style.color = success ? '#000' : '#fff';
+            n.classList.add('show');
+            setTimeout(() => n.classList.remove('show'), 2000);
+        }
+
+        function createFallingElements() {
+            const container = document.getElementById('fallingContainer');
+            const items = ['⚽', '🏆', '⭐', '🔥'];
+            const maxElements = 20;
+            for (let i = 0; i < maxElements; i++) {
+                const el = document.createElement('div');
+                el.className = 'falling-item';
+                el.textContent = items[Math.floor(Math.random() * items.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (Math.random() * 8 + 6) + 's';
+                el.style.animationDelay = (Math.random() * -12) + 's';
+                el.style.fontSize = (Math.random() * 12 + 12) + 'px';
+                container.appendChild(el);
+            }
+        }
+
+        // ============================================
+        // INTERAKSI KLIK UNTUK TOGGLE PREDIKSI
+        // ============================================
+        document.addEventListener('click', function(e) {
+            const t = e.target.closest && e.target.closest('.team-side-new.right, .chev-new');
+            if (t) {
+                e.preventDefault();
+                const card = t.closest('.match-card-new');
+                if (card) card.classList.toggle('open');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const t = e.target.closest && e.target.closest('.team-side-new.right');
+                if (t) {
+                    e.preventDefault();
+                    const card = t.closest('.match-card-new');
+                    if (card) card.classList.toggle('open');
+                }
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', function() {
+            createFallingElements();
+            document.getElementById('matchInput').value = `ENGLISH PREMIER LEAGUE
+23/06 02.00 WIB [18] West Ham United VS [20] Wolverhampton Wanderers 0 : 1/2
+
+SPAIN LA LIGA
+23/06 03.00 WIB [2] Real Madrid VS [12] Girona FC 0 : 1 1/2
+
+ITALY SERIE A
+23/06 01.45 WIB [6] AS Roma VS [20] Pisa 0 : 1 1/2
+
+GERMANY BUNDESLIGA
+23/06 01.30 WIB [11] Augsburg VS [5] TSG Hoffenheim 1/2 : 0`;
+            generateTables();
+        });
+    </script>
+</body>
+</html>
