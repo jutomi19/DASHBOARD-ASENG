@@ -6,9 +6,12 @@
     <meta name="theme-color" content="#0a0e1a">
     <title>LATOTO · Dashboard CS</title>
 
+    <!-- Preconnect for Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -32,8 +35,7 @@
             --gold-dark: #c9a227;
             --gold-glow: rgba(245, 200, 66, 0.25);
             --gold-gradient: linear-gradient(135deg, #b8860b, #ffd700 45%, #f5c842 70%, #b8860b);
-            --gold-gradient-hover: linear-gradient(135deg, #d4a017, #ffea70 50%, #d4a017);
-
+            
             --border: rgba(255, 215, 0, 0.08);
             --border-active: rgba(245, 200, 66, 0.35);
             --radius-lg: 16px;
@@ -50,16 +52,9 @@
             --font-mono: 'JetBrains Mono', monospace;
         }
 
-        /* Reset */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            outline: none;
-        }
-
+        /* Reset & Base */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
         body {
             font-family: var(--font-main);
             background: var(--bg-body);
@@ -69,33 +64,14 @@
             display: flex;
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        button {
-            border: none;
-            background: none;
-            cursor: pointer;
-            color: inherit;
-            font-family: inherit;
-        }
+        a { text-decoration: none; color: inherit; }
+        button { border: none; background: none; cursor: pointer; color: inherit; font-family: inherit; }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 215, 0, 0.15);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--gold);
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 215, 0, 0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
         /* ========================================
            AMBIENT GLOW
@@ -110,16 +86,8 @@
             z-index: -1;
             pointer-events: none;
         }
-        .glow-1 {
-            top: -250px;
-            right: -150px;
-            background: radial-gradient(circle, var(--gold), transparent);
-        }
-        .glow-2 {
-            bottom: -250px;
-            left: -150px;
-            background: radial-gradient(circle, #f5c842, transparent);
-        }
+        .glow-1 { top: -250px; right: -150px; background: radial-gradient(circle, var(--gold), transparent); }
+        .glow-2 { bottom: -250px; left: -150px; background: radial-gradient(circle, #f5c842, transparent); }
 
         /* ========================================
            SIDEBAR
@@ -285,18 +253,6 @@
             margin-top: 1px;
         }
 
-        .nav-badge {
-            margin-left: auto;
-            padding: 2px 10px;
-            background: var(--gold-gradient);
-            color: #0a0e1a;
-            font-size: 0.55rem;
-            font-weight: 800;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px var(--gold-glow);
-            letter-spacing: 0.5px;
-        }
-
         /* ========================================
            MAIN CONTENT
            ======================================== */
@@ -374,10 +330,6 @@
             font-size: 0.85rem;
             color: var(--gold);
             box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .clock-widget i {
-            opacity: 0.6;
         }
 
         /* Iframe */
@@ -479,93 +431,46 @@
            ANIMATIONS
            ======================================== */
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
         @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                box-shadow: 0 0 14px var(--gold);
-            }
-            50% {
-                opacity: 0.4;
-                box-shadow: 0 0 4px var(--gold);
-            }
+            0%, 100% { opacity: 1; box-shadow: 0 0 14px var(--gold); }
+            50% { opacity: 0.4; box-shadow: 0 0 4px var(--gold); }
         }
 
         /* ========================================
            RESPONSIVE
            ======================================== */
         @media (max-width: 992px) {
-            body {
-                flex-direction: column;
-            }
+            body { flex-direction: column; }
             .sidebar {
                 position: fixed;
-                top: 0;
-                left: 0;
-                bottom: 0;
+                top: 0; left: 0; bottom: 0;
                 transform: translateX(-100%);
                 box-shadow: var(--shadow-xl);
                 width: 85%;
                 max-width: 300px;
             }
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            .mobile-header {
-                display: flex;
-            }
-            .main-content {
-                padding: 12px;
-                gap: 12px;
-            }
-            .top-header {
-                display: none;
-            }
-            .content-frame-wrapper {
-                border-radius: var(--radius-md);
-            }
+            .sidebar.active { transform: translateX(0); }
+            .mobile-header { display: flex; }
+            .main-content { padding: 12px; gap: 12px; }
+            .top-header { display: none; }
+            .content-frame-wrapper { border-radius: var(--radius-md); }
         }
 
         @media (min-width: 993px) {
-            .mobile-header {
-                display: none !important;
-            }
-            .backdrop {
-                display: none !important;
-            }
+            .mobile-header { display: none !important; }
+            .backdrop { display: none !important; }
         }
 
         @media (max-width: 480px) {
-            .brand-section {
-                padding: 18px 14px 14px;
-            }
-            .brand-logo img {
-                height: 38px;
-            }
-            .status-badge {
-                font-size: 0.55rem;
-                padding: 4px 12px;
-            }
-            .nav-item {
-                padding: 10px 12px;
-            }
-            .nav-icon {
-                width: 32px;
-                height: 32px;
-                min-width: 32px;
-                font-size: 0.85rem;
-                margin-right: 10px;
-            }
-            .nav-title {
-                font-size: 0.75rem;
-            }
-            .nav-desc {
-                font-size: 0.55rem;
-            }
+            .brand-section { padding: 18px 14px 14px; }
+            .brand-logo img { height: 38px; }
+            .status-badge { font-size: 0.55rem; padding: 4px 12px; }
+            .nav-item { padding: 10px 12px; }
+            .nav-icon { width: 32px; height: 32px; min-width: 32px; font-size: 0.85rem; margin-right: 10px; }
+            .nav-title { font-size: 0.75rem; }
+            .nav-desc { font-size: 0.55rem; }
         }
     </style>
 </head>
@@ -640,6 +545,15 @@
                 <div class="nav-text">
                     <span class="nav-title">RRN Qiris</span>
                     <span class="nav-desc">Lampiran RRN</span>
+                </div>
+            </button>
+
+            <!-- Catatan Penting -->
+            <button class="nav-item" onclick="navigate(this, 'notes.html', 'Catatan Penting', 'Simpan &amp; kelola catatan', 'fa-sticky-note')">
+                <div class="nav-icon"><i class="fa-solid fa-sticky-note"></i></div>
+                <div class="nav-text">
+                    <span class="nav-title">Catatan Penting</span>
+                    <span class="nav-desc">Simpan &amp; kelola</span>
                 </div>
             </button>
 
