@@ -195,6 +195,82 @@
         .vip-table-core td { padding: 14px; border-bottom: 1px solid rgba(245,200,66,0.13); color: #e5e5e5; }
         .vip-table-core tr:hover td { background: rgba(245,200,66,0.07); }
 
+        /* --- FILTER LIGA (LIVE PREVIEW) --- */
+        .ht-filter-box {
+            background: linear-gradient(180deg,#050505,#0b0b0b);
+            border: 2px solid var(--border-color, #c49e1f);
+            border-radius: 12px;
+            padding: 13px 14px;
+            margin: 0 0 22px 0;
+            box-shadow: 0 0 16px rgba(245,200,66,.35);
+            position: relative;
+            z-index: 3;
+        }
+        .ht-filter-label {
+            display: block;
+            color: #f5c842;
+            font-weight: 900;
+            font-size: 15px;
+            margin-bottom: 9px;
+            letter-spacing: .5px;
+            text-shadow: 0 1px 0 #000;
+        }
+        .ht-filter-label img.emoji {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+        .ht-select {
+            width: 100%;
+            padding: 11px 13px;
+            border-radius: 10px;
+            border: 2px solid #f5c842;
+            background: #050505;
+            color: #fff;
+            font-weight: 900;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: inherit;
+        }
+        .ht-select option {
+            background: #050505;
+            color: #fff;
+            font-weight: 800;
+        }
+
+        /* --- MARQUEE (LIVE PREVIEW) --- */
+        .ht-main-title {
+            background: linear-gradient(90deg,#000,#171100,#c49e1f,#171100,#000);
+            padding: 15px;
+            margin-bottom: 22px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color, #c49e1f);
+            text-align: center;
+            animation: neonPulse 4s infinite ease-in-out;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+        .ht-title-text {
+            display: inline-block;
+            white-space: nowrap;
+            color: #f5c842;
+            font-size: 21px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 1px 0 #fff7b0, 0 2px 0 #ffc400, 0 0 12px rgba(255,215,0,.9), 0 0 22px rgba(0,88,230,.45);
+        }
+        .ht-title-text img.emoji {
+            width: 28px;
+            height: 28px;
+            vertical-align: middle;
+            margin: 0 4px;
+        }
+
         /* --- LEAGUE BLOCK --- */
         .league-block {
             margin-bottom:30px; border:2px solid var(--border-color,#c49e1f); border-radius:16px;
@@ -289,6 +365,8 @@
             .date-mid-new{font-size:10px;}
             .league-title-new{font-size:12px;letter-spacing:1px;padding-left:34px;padding-right:46px;}
             .league-count{right:7px;font-size:8px;padding:2px 6px;}
+            .ht-title-text{font-size:14px;}
+            .ht-title-text img.emoji{width:20px;height:20px;}
         }
 
         .preview-area {
@@ -1963,7 +2041,7 @@
   "Zweigen Kanazawa": "https://r2.thesportsdb.com/images/media/team/badge/3v2fml1590071063.png"
 };
 
-        // --- ALIAS TAMBAHAN AGAR NAMA CLUB DARI INPUT TETAP TERBACA ---
+        // ALIAS TAMBAHAN
         CLUB_LOGO_DB["JJK Jyväskylä"] = CLUB_LOGO_DB["JJK Jyvaskyla"] || "https://r2.thesportsdb.com/images/media/team/badge/jyv0a1580926888.png";
         CLUB_LOGO_DB["JJK Jyvaskyla n"] = CLUB_LOGO_DB["JJK Jyvaskyla"] || "https://r2.thesportsdb.com/images/media/team/badge/jyv0a1580926888.png";
         CLUB_LOGO_DB["JJK Jyväskylä n"] = CLUB_LOGO_DB["JJK Jyvaskyla"] || "https://r2.thesportsdb.com/images/media/team/badge/jyv0a1580926888.png";
@@ -2003,21 +2081,17 @@
         CLUB_LOGO_DB["Seinajoen JK n"] = "https://static.flashscore.com/res/image/data/xzjdw0Da-nNbzs3cc.png";
         CLUB_LOGO_DB["Seinäjoen JK [n]"] = "https://static.flashscore.com/res/image/data/xzjdw0Da-nNbzs3cc.png";
         CLUB_LOGO_DB["Seinäjoen JK n"] = "https://static.flashscore.com/res/image/data/xzjdw0Da-nNbzs3cc.png";
+        CLUB_LOGO_DB["JIPPO Joensuu"] = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj48Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI1NSIgZmlsbD0iIzIwQjJBQSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjUiPjwvY2lyY2xlPjx0ZXh0IHg9IjUwJSIgeT0iNTUlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMDAwIiBmb250LXNpemU9IjM4IiBmb250LXdlaWdodD0iYm9sZCIgZm9udC1mYW1pbHk9IkFyaWFsIiBkeT0iLjNlbSI+Sko8L3RleHQ+PC9zdmc+";
 
-        // ============================================
-        // FUNGSI GET LOGO
-        // ============================================
+        // ===== FUNGSI GET LOGO =====
         function getClubLogo(teamName) {
             const raw = String(teamName || '').trim();
-            // hapus [nomor]
             const clean = raw.replace(/\[\d+\]\s*/g, '').trim();
-            // cari exact match di database (case insensitive)
+            // exact match (case insensitive)
             for (const [key, val] of Object.entries(CLUB_LOGO_DB)) {
-                if (clean.toLowerCase() === key.toLowerCase()) {
-                    return val;
-                }
+                if (clean.toLowerCase() === key.toLowerCase()) return val;
             }
-            // cari partial match (hanya jika panjang nama >= 3)
+            // partial match
             if (clean.length >= 3) {
                 for (const [key, val] of Object.entries(CLUB_LOGO_DB)) {
                     if (key.toLowerCase().includes(clean.toLowerCase()) || clean.toLowerCase().includes(key.toLowerCase())) {
@@ -2028,9 +2102,7 @@
             return '';
         }
 
-        // ============================================
-        // SETTINGS
-        // ============================================
+        // ===== SETTINGS =====
         let settings = {
             borderColor: '#c49e1f',
             headerColor: '#c49e1f',
@@ -2056,7 +2128,7 @@
             return "#" + (0x1000000 + (R<255?R<0?0:R:255)*0x1000000 + (G<255?G<0?0:G:255)*0x100 + (B<255?B<0?0:B:255)).toString(16).slice(1);
         }
 
-        // Parser input
+        // ===== PARSER =====
         function parseInput(inputText) {
             const lines = inputText.split('\n');
             const leagues = [];
@@ -2158,7 +2230,7 @@
             return out;
         }
 
-        // GENERATE
+        // ===== GENERATE =====
         function generateTables() {
             syncCSSVariables();
             const input = document.getElementById('matchInput').value;
@@ -2172,9 +2244,34 @@
                 return;
             }
 
-            container.innerHTML = buildLeagueCards(leagues);
+            // LIVE PREVIEW: Marquee + Filter + Table
+            let liveHTML = `
+            <div class="ht-main-title">
+                <marquee behavior="scroll" direction="left" scrollamount="6" class="ht-title-text">
+                    <img draggable="false" role="img" class="emoji" alt="🔥" src="https://s.w.org/images/core/emoji/17.0.2/svg/1f525.svg">
+                    <img draggable="false" role="img" class="emoji" alt="⚽" src="https://s.w.org/images/core/emoji/17.0.2/svg/26bd.svg">
+                    SELAMAT DATANG DI PREDIKSI BOLA LATOTO
+                    <img draggable="false" role="img" class="emoji" alt="⚽" src="https://s.w.org/images/core/emoji/17.0.2/svg/26bd.svg">
+                    <img draggable="false" role="img" class="emoji" alt="🔥" src="https://s.w.org/images/core/emoji/17.0.2/svg/1f525.svg">
+                </marquee>
+            </div>
+            <div class="ht-filter-box">
+                <label class="ht-filter-label">
+                    <img draggable="false" role="img" class="emoji" alt="🏆" src="https://s.w.org/images/core/emoji/17.0.2/svg/1f3c6.svg"> Pilih Liga
+                </label>
+                <select class="ht-select" onchange="filterLivePreview(this.value)">
+                    <option value="all">Semua Liga</option>`;
 
-            // HTML Blog Output
+            leagues.forEach((league, idx) => {
+                const safe = league.name.replace(/"/g, '&quot;');
+                liveHTML += `<option value="${idx}">🏆 ${safe}</option>`;
+            });
+
+            liveHTML += `</select></div><div id="livePreviewLeagues">${buildLeagueCards(leagues)}</div>`;
+
+            container.innerHTML = liveHTML;
+
+            // ===== HTML BLOG OUTPUT =====
             let htmlOutput = `<div id="latoto-root-container" style="background: transparent; padding: 20px; font-family: Arial, sans-serif; color: white; border-radius: 25px;">
 <div style="background: rgba(226,122,3,0.1); border: 1px solid ${settings.borderColor}; border-radius: 50px; padding: 8px; margin-bottom: 15px; overflow: hidden;">
 <marquee scrollamount="5" style="color: #ffd700; font-weight: bold;"> 🔥 Selamat Datang Di Prediksi Bola LATOTO - Prediksi Sepakbola Paling Akurat Seasia &bull; Prediksi Bola Terupdate &bull; Analisis Akurat &bull; Hanya Di LATOTO 🔥 </marquee>
@@ -2183,7 +2280,9 @@
 <div style="display: inline-block; border: 2px solid ${settings.borderColor}; border-radius: 50px; padding: 10px 40px; color: #ffffff; font-weight: bold; font-size: 18px; box-shadow: 0 0 15px rgba(196,158,31,0.6); background: #000000;">◈ ${new Date().toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'}).toUpperCase()} ◈</div>
 </div>
 <div style="margin-bottom: 20px; border: 1px solid ${settings.borderColor}; padding: 15px; border-radius: 15px; background: rgba(0,0,0,0.3);">
-<label style="color: ${settings.borderColor}; font-size: 12px; font-weight: bold; margin-bottom: 8px; display: block;">🏆 FILTER LIGA</label>
+<label style="color: ${settings.borderColor}; font-size: 12px; font-weight: bold; margin-bottom: 8px; display: block;">
+    <img draggable="false" role="img" class="emoji" alt="🏆" src="https://s.w.org/images/core/emoji/17.0.2/svg/1f3c6.svg"> FILTER LIGA
+</label>
 <select onchange="document.querySelectorAll('.liga-item-latoto').forEach(el => el.style.display = (this.value === 'all' || el.getAttribute('data-liga') === this.value) ? 'block' : 'none')" style="width: 100%; background: #0d1117; color: #ffd700; border: 1px solid ${settings.borderColor}; padding: 12px; border-radius: 10px; outline: none; cursor: pointer; font-weight: bold;">
 <option value="all">Semua Liga</option>`;
 
@@ -2237,6 +2336,19 @@
             showNotification(`✓ Berhasil memuat ${leagues.reduce((a,b) => a + b.matches.length, 0)} pertandingan!`, true);
         }
 
+        // ===== FILTER LIVE PREVIEW =====
+        function filterLivePreview(value) {
+            const blocks = document.querySelectorAll('.league-block');
+            blocks.forEach((block, idx) => {
+                if (value === 'all' || idx === parseInt(value)) {
+                    block.style.display = 'block';
+                } else {
+                    block.style.display = 'none';
+                }
+            });
+        }
+
+        // ===== COPY =====
         function copyHTML() {
             if (!window.htmlForBlog) {
                 showNotification('Generate data terlebih dahulu!', false);
@@ -2285,6 +2397,7 @@
             }
         }
 
+        // ===== SETTINGS FUNCTIONS =====
         function updateBorderColor(color) { settings.borderColor = color; document.getElementById('borderColorPreview').style.background = color; if (document.getElementById('matchInput').value) generateTables(); }
         function updateHeaderColor(color) { settings.headerColor = color; document.getElementById('headerColorPreview').style.background = color; if (document.getElementById('matchInput').value) generateTables(); }
         function updateScoreColor(color) { settings.scoreColor = color; document.getElementById('scoreColorPreview').style.background = color; if (document.getElementById('matchInput').value) generateTables(); }
@@ -2343,9 +2456,7 @@
             }
         }
 
-        // ============================================
-        // INTERAKSI KLIK UNTUK TOGGLE PREDIKSI
-        // ============================================
+        // ===== EVENT =====
         document.addEventListener('click', function(e) {
             const t = e.target.closest && e.target.closest('.team-side-new.right, .chev-new');
             if (t) {
