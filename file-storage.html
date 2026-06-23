@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Storage · LATOTO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===== THEME GOLD NEON ===== */
+        :root {
+            --bg: #080c18;
+            --bg-card: rgba(14,21,40,0.75);
+            --bg-card-hover: rgba(20,30,55,0.85);
+            --border: rgba(255,215,0,0.08);
+            --border-hover: rgba(245,200,66,0.25);
+            --gold: #f5c842;
+            --gold-bg: rgba(245,200,66,0.08);
+            --gold-glow: rgba(245,200,66,0.15);
+            --coral: #f87171;
+            --coral-bg: rgba(248,113,113,0.08);
+            --green: #34d399;
+            --green-bg: rgba(52,211,153,0.08);
+            --text: #f0ead8;
+            --text-2: #8899b0;
+            --text-3: #4a5a72;
+            --r: 14px;
+            --r-sm: 10px;
+            --ease: all 0.35s cubic-bezier(.4,0,.2,1);
+        }
+        [data-theme="light"] {
+            --bg: #f0ece4;
+            --bg-card: rgba(255,255,255,0.75);
+            --bg-card-hover: rgba(255,255,255,0.9);
+            --border: rgba(160,130,20,0.12);
+            --border-hover: rgba(245,200,66,0.3);
+            --gold: #b8860b;
+            --gold-bg: rgba(184,134,11,0.06);
+            --text: #1a1a2e;
+            --text-2: #4a5568;
+            --text-3: #8896aa;
+        }
+        [data-theme="cyan"] {
+            --bg: #061218;
+            --bg-card: rgba(8,28,38,0.75);
+            --bg-card-hover: rgba(12,36,48,0.85);
+            --border: rgba(0,212,180,0.12);
+            --border-hover: rgba(0,212,180,0.3);
+            --gold: #00d4b4;
+            --gold-bg: rgba(0,212,180,0.08);
+            --text: #d6f3f0;
+            --text-2: #8bc9c0;
+            --text-3: #4a8a7e;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            font-family: 'Outfit', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+            padding: 20px;
+            background-image: url('https://i.pinimg.com/1200x/46/69/22/46692271be65b815908f6f7a2c9f1e8a.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 12, 24, 0.75);
+            z-index: 0;
+        }
+        body > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== LOGIN PAGE ===== */
+        .login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: radial-gradient(ellipse at center, rgba(245,200,66,0.05) 0%, transparent 70%);
+        }
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 40px 36px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px var(--gold-glow);
+            backdrop-filter: blur(16px);
+        }
+        .login-box .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 30px var(--gold-glow);
+        }
+        .login-box .form-rows {
+            margin-bottom: 14px;
+        }
+        .login-box .form-rows input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            color: var(--text);
+            font-size: 0.85rem;
+            font-family: 'Outfit', sans-serif;
+            transition: var(--ease);
+            outline: none;
+        }
+        .login-box .form-rows input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+        .login-box .form-rows input::placeholder {
+            color: var(--text-3);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .login-box .line-change {
+            display: flex;
+            gap: 18px;
+            margin: 16px 0 20px;
+            justify-content: center;
+        }
+        .login-box .line-change input[type="radio"] {
+            display: none;
+        }
+        .login-box .line-change label {
+            padding: 6px 16px;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-3);
+            transition: var(--ease);
+        }
+        .login-box .line-change input[type="radio"]:checked + label {
+            border-color: var(--gold);
+            background: var(--gold-bg);
+            color: var(--gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--gold), #b8860b);
+            border: none;
+            border-radius: var(--r-sm);
+            color: #0a0e1a;
+            font-weight: 800;
+            font-size: 0.9rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--ease);
+            font-family: 'Outfit', sans-serif;
+            box-shadow: 0 4px 25px var(--gold-glow);
+        }
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 35px var(--gold-glow);
+        }
+        .user-ip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            font-size: 0.7rem;
+            color: var(--text-3);
+        }
+        .user-ip em {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .login-error {
+            color: var(--coral);
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* ===== DASHBOARD ===== */
+        .app-container {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .app-container.active {
+            display: block;
+        }
+
+        /* Header */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+            backdrop-filter: blur(12px);
+        }
+        .app-header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .app-header .brand img {
+            height: 36px;
+            width: auto;
+            filter: drop-shadow(0 0 14px var(--gold-glow));
+        }
+        .app-header .brand span {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--gold);
+        }
+        .app-header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .app-header .user-info .username {
+            color: var(--text-2);
+            font-weight: 600;
+        }
+        .app-header .user-info .username i {
+            color: var(--gold);
+            margin-right: 6px;
+        }
+        .btn-logout {
+            padding: 8px 18px;
+            border: 1px solid var(--coral);
+            border-radius: 50px;
+            background: transparent;
+            color: var(--coral);
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--ease);
+            font-family: 'Outfit', sans-serif;
+        }
+        .btn-logout:hover {
+            background: var(--coral-bg);
+            border-color: var(--coral);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 4px;
+        }
+        .tab-btn {
+            padding: 10px 22px;
+            border: none;
+            background: transparent;
+            color: var(--text-3);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: var(--r-sm);
+            transition: var(--ease);
+            font-family: 'Outfit', sans-serif;
+            border-bottom: 2px solid transparent;
+        }
+        .tab-btn:hover {
+            color: var(--text);
+            background: var(--bg-hover);
+        }
+        .tab-btn.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+            background: var(--gold-bg);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(8, 12, 24, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: var(--r);
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: var(--r);
+            padding: 40px 20px;
+            text-align: center;
+            transition: var(--ease);
+            cursor: pointer;
+            position: relative;
+        }
+        .upload-area:hover {
+            border-color: var(--gold);
+            background: var(--gold-bg);
+        }
+        .upload-area.dragover {
+            border-color: var(--gold);
+            background: var(--gold-bg);
+            box-shadow: 0 0 40px var(--gold-glow);
+        }
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--text-3);
+            margin-bottom: 12px;
+            display: block;
+        }
+        .upload-area p {
+            color: var(--text-2);
+            font-size: 0.9rem;
+        }
+        .upload-area .allowed-types {
+            font-size: 0.7rem;
+            color: var(--text-3);
+            margin-top: 8px;
+        }
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* File List */
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .file-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            padding: 14px 16px;
+            transition: var(--ease);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            backdrop-filter: blur(8px);
+        }
+        .file-item:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        .file-item .file-icon {
+            font-size: 1.8rem;
+            color: var(--gold);
+        }
+        .file-item .file-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            word-break: break-all;
+            flex: 1;
+        }
+        .file-item .file-size {
+            font-size: 0.65rem;
+            color: var(--text-3);
+        }
+        .file-item .file-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .file-item .file-actions button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: var(--r-sm);
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--ease);
+            font-family: 'Outfit', sans-serif;
+            flex: 1;
+        }
+        .btn-download {
+            background: var(--gold-bg);
+            color: var(--gold);
+            border: 1px solid rgba(245,200,66,0.15) !important;
+        }
+        .btn-download:hover {
+            background: var(--gold);
+            color: #0a0e1a;
+        }
+        .btn-delete {
+            background: var(--coral-bg);
+            color: var(--coral);
+            border: 1px solid rgba(248,113,113,0.15) !important;
+        }
+        .btn-delete:hover {
+            background: var(--coral);
+            color: #fff;
+        }
+
+        /* ===== DATABASE LOGIN ===== */
+        .db-login-container {
+            margin-top: 8px;
+        }
+        .db-login-toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .db-login-toolbar .search-box {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
+        .db-login-toolbar .search-box input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            outline: none;
+        }
+        .db-login-toolbar .search-box input:focus {
+            border-color: var(--gold);
+        }
+        .db-login-toolbar .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-3);
+        }
+        .db-login-toolbar .btn-add-account {
+            padding: 10px 20px;
+            background: var(--gold);
+            color: #0a0e1a;
+            border: none;
+            border-radius: var(--r-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--ease);
+            font-family: 'Outfit', sans-serif;
+            white-space: nowrap;
+        }
+        .db-login-toolbar .btn-add-account:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--gold-glow);
+        }
+
+        .db-login-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .db-login-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--text-3);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+        .db-login-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-2);
+            vertical-align: middle;
+        }
+        .db-login-table .platform-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: var(--gold-bg);
+            color: var(--gold);
+            border: 1px solid rgba(245,200,66,0.15);
+        }
+        .db-login-table .password-cell {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        .db-login-table .note-cell {
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-3);
+            font-size: 0.75rem;
+        }
+        .db-login-table .actions-cell button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-3);
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: var(--ease);
+            font-size: 0.75rem;
+        }
+        .db-login-table .actions-cell button:hover {
+            background: var(--coral-bg);
+            color: var(--coral);
+        }
+        .db-login-table .actions-cell button.edit:hover {
+            background: var(--gold-bg);
+            color: var(--gold);
+        }
+
+        .db-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-3);
+        }
+        .db-empty i {
+            font-size: 2rem;
+            opacity: 0.3;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        /* Modal for Add/Edit Account */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(4,8,16,0.92);
+            backdrop-filter: blur(30px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--ease);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            width: 100%;
+            max-width: 480px;
+            padding: 30px;
+            transform: scale(0.93) translateY(30px);
+            transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+            backdrop-filter: blur(16px);
+        }
+        .modal-overlay.active .modal-box {
+            transform: scale(1) translateY(0);
+        }
+        .modal-box h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        .modal-box .form-group {
+            margin-bottom: 14px;
+        }
+        .modal-box .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-3);
+            margin-bottom: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .modal-box .form-group input,
+        .modal-box .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+            transition: var(--ease);
+        }
+        .modal-box .form-group input:focus,
+        .modal-box .form-group textarea:focus {
+            border-color: var(--gold);
+        }
+        .modal-box .form-group textarea {
+            resize: vertical;
+            min-height: 50px;
+        }
+        .modal-box .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .modal-box .modal-actions button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: var(--r-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--ease);
+            font-family: 'Outfit', sans-serif;
+            flex: 1;
+        }
+        .modal-box .modal-actions .btn-save {
+            background: var(--gold);
+            color: #0a0e1a;
+        }
+        .modal-box .modal-actions .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--gold-glow);
+        }
+        .modal-box .modal-actions .btn-cancel {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-3);
+        }
+        .modal-box .modal-actions .btn-cancel:hover {
+            background: var(--bg-hover);
+            color: var(--text);
+        }
+
+        /* User Management */
+        .user-mgmt {
+            margin-top: 16px;
+        }
+        .user-mgmt .add-user-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .user-mgmt .add-user-form input {
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            outline: none;
+            flex: 1;
+            min-width: 140px;
+        }
+        .user-mgmt .add-user-form input:focus {
+            border-color: var(--gold);
+        }
+        .user-mgmt .add-user-form button {
+            padding: 10px 20px;
+            background: var(--gold);
+            color: #0a0e1a;
+            border: none;
+            border-radius: var(--r-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--ease);
+            font-family: 'Outfit', sans-serif;
+            white-space: nowrap;
+        }
+        .user-mgmt .add-user-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--gold-glow);
+        }
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        .user-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--text-3);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+        .user-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-2);
+        }
+        .user-table .user-actions button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-3);
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: var(--ease);
+            font-size: 0.75rem;
+        }
+        .user-table .user-actions button:hover {
+            background: var(--coral-bg);
+            color: var(--coral);
+        }
+        .user-table .user-actions button.edit:hover {
+            background: var(--gold-bg);
+            color: var(--gold);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background: rgba(12,20,38,0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(245,200,66,0.15);
+            border-radius: var(--r);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+            transform: translateX(calc(100% + 30px));
+            opacity: 0;
+            transition: all 0.45s cubic-bezier(.34,1.56,.64,1);
+        }
+        .toast.on { transform: translateX(0); opacity: 1; }
+        .toast-ic { width: 32px; height: 32px; border-radius: 9px; background: rgba(245,200,66,0.1); display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 0.8rem; flex-shrink: 0; }
+        .toast-msg { font-weight: 600; font-size: 0.8rem; color: var(--text); }
+        .toast-msg small { display: block; font-weight: 400; font-size: 0.65rem; color: var(--text-3); margin-top: 1px; }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-3);
+        }
+        .empty-state i {
+            font-size: 2.4rem;
+            opacity: 0.3;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        @media(max-width:640px){
+            .login-box { padding: 28px 20px; }
+            .app-header { padding: 12px 16px; flex-direction: column; align-items: stretch; text-align: center; }
+            .app-header .user-info { justify-content: center; }
+            .tabs { justify-content: center; }
+            .tab-btn { font-size: 0.75rem; padding: 8px 14px; }
+            .db-login-toolbar { flex-direction: column; align-items: stretch; }
+            .db-login-table { font-size: 0.7rem; display: block; overflow-x: auto; }
+            .db-login-table th, .db-login-table td { padding: 6px 8px; }
+            .user-mgmt .add-user-form { flex-direction: column; }
+            .file-list { grid-template-columns: 1fr; }
+            .modal-box { padding: 20px; }
+            .tab-content { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================
+    LOGIN PAGE
+    ========================================== -->
+    <div class="login-page" id="loginPage">
+        <div class="login-box">
+            <div class="logo" style="background-image: url('https://latoto83.com/resources/images/logo.png');"></div>
+            <div class="form-rows">
+                <input name="entered_login" placeholder="USERNAME" id="entered_login" autocomplete="off">
+            </div>
+            <div class="form-rows psw">
+                <input name="entered_password" placeholder="PASSWORD" id="entered_password" type="password" autocomplete="off">
+            </div>
+            <div class="line-change">
+                <input type="radio" name="line-radio" value="1" id="server1" checked>
+                <label for="server1">Server 1</label>
+                <input type="radio" name="line-radio" value="2" id="server2">
+                <label for="server2">Server 2</label>
+            </div>
+            <a href="javascript:;" class="submit-button" id="loginBtn">LOGIN</a>
+            <div class="login-error" id="loginError">❌ Username atau Password salah!</div>
+            <p class="user-ip"><i class="fas fa-globe"></i><span id="userIP">--.--.--.--</span><em style="background: var(--gold);"></em></p>
+        </div>
+    </div>
+
+    <!-- ==========================================
+    DASHBOARD APP
+    ========================================== -->
+    <div class="app-container" id="appContainer">
+
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="brand">
+                <img src="https://latoto83.com/resources/images/logo.png" alt="LATOTO">
+                <span>File Storage</span>
+            </div>
+            <div class="user-info">
+                <span class="username"><i class="fas fa-user"></i> <span id="displayUsername">admin</span></span>
+                <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="upload">📤 Upload File</button>
+            <button class="tab-btn" data-tab="files">📁 File Saya</button>
+            <button class="tab-btn" data-tab="db-login">📋 Database Login</button>
+            <button class="tab-btn" data-tab="users">👤 Kelola Akun</button>
+        </div>
+
+        <!-- TAB 1: UPLOAD -->
+        <div class="tab-content active" id="tab-upload">
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p><strong>Klik atau drag &amp; drop</strong> file di sini</p>
+                <div class="allowed-types">📦 Mendukung .4pk &amp; .zip (maks 100MB per file)</div>
+                <input type="file" id="fileInput" accept=".4pk,.zip" multiple>
+            </div>
+            <div style="margin-top: 12px; text-align: right; font-size: 0.7rem; color: var(--text-3);">
+                <span id="storageUsed">0</span> / <span id="storageTotal">500 MB</span> digunakan
+            </div>
+        </div>
+
+        <!-- TAB 2: FILE LIST -->
+        <div class="tab-content" id="tab-files">
+            <div id="fileListContainer">
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <p>Belum ada file. Upload file .4pk atau .zip sekarang!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: DATABASE LOGIN -->
+        <div class="tab-content" id="tab-db-login">
+            <div class="db-login-container">
+                <div class="db-login-toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="dbSearchInput" placeholder="Cari platform / username...">
+                    </div>
+                    <button class="btn-add-account" id="btnAddAccount"><i class="fas fa-plus"></i> Tambah</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="db-login-table">
+                        <thead>
+                            <tr>
+                                <th>Platform</th>
+                                <th>Username / Email</th>
+                                <th>Password</th>
+                                <th>Catatan</th>
+                                <th style="width:100px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dbTableBody"></tbody>
+                    </table>
+                </div>
+                <div id="dbEmpty" class="db-empty">
+                    <i class="fas fa-database"></i>
+                    <p>Belum ada data login. Klik <strong>Tambah</strong> untuk menambahkan akun.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: USER MANAGEMENT -->
+        <div class="tab-content" id="tab-users">
+            <div class="user-mgmt">
+                <div class="add-user-form">
+                    <input type="text" id="newUsername" placeholder="Username baru">
+                    <input type="text" id="newPassword" placeholder="Password">
+                    <button id="addUserBtn"><i class="fas fa-plus"></i> Tambah</button>
+                </div>
+                <div id="userTableContainer">
+                    <table class="user-table">
+                        <thead><tr><th>Username</th><th>Password</th><th style="width:120px;">Aksi</th></tr></thead>
+                        <tbody id="userTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+    MODAL (Add/Edit Account)
+    ========================================== -->
+    <div class="modal-overlay" id="accountModal">
+        <div class="modal-box">
+            <h3 id="modalTitle">Tambah Akun</h3>
+            <div class="form-group">
+                <label>Platform</label>
+                <input type="text" id="modalPlatform" placeholder="Contoh: Facebook, Instagram, Twitter">
+            </div>
+            <div class="form-group">
+                <label>Username / Email</label>
+                <input type="text" id="modalUsername" placeholder="Username atau email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="text" id="modalPassword" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <label>Catatan (opsional)</label>
+                <textarea id="modalNote" placeholder="Catatan tambahan..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-save" id="modalSaveBtn"><i class="fas fa-save"></i> Simpan</button>
+                <button class="btn-cancel" id="modalCancelBtn">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-ic"><i class="fas fa-check"></i></div>
+        <div class="toast-msg"><span id="tMsg">OK</span><small id="tSub"></small></div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ==========================================
+            // CONSTANTS & STATE
+            // ==========================================
+            const STORAGE_KEY = 'latoto_storage_users';
+            const DB_NAME = 'LatotoFileDB';
+            const STORE_NAME = 'files';
+            const MAX_STORAGE = 500 * 1024 * 1024; // 500 MB
+            const PLATFORM_KEY = 'latoto_platform_accounts';
+
+            let currentUser = null;
+            let db = null;
+            let editingAccountId = null;
+
+            // ==========================================
+            // DOM REFS
+            // ==========================================
+            const $ = id => document.getElementById(id);
+            const loginPage = $('loginPage');
+            const appContainer = $('appContainer');
+            const loginBtn = $('loginBtn');
+            const loginError = $('loginError');
+            const enteredLogin = $('entered_login');
+            const enteredPassword = $('entered_password');
+            const displayUsername = $('displayUsername');
+            const logoutBtn = $('logoutBtn');
+            const userIP = $('userIP');
+            const fileInput = $('fileInput');
+            const uploadArea = $('uploadArea');
+            const fileListContainer = $('fileListContainer');
+            const userTableBody = $('userTableBody');
+            const newUsername = $('newUsername');
+            const newPassword = $('newPassword');
+            const addUserBtn = $('addUserBtn');
+            const storageUsed = $('storageUsed');
+            const storageTotal = $('storageTotal');
+
+            // Database Login
+            const dbTableBody = $('dbTableBody');
+            const dbEmpty = $('dbEmpty');
+            const dbSearchInput = $('dbSearchInput');
+            const btnAddAccount = $('btnAddAccount');
+            const accountModal = $('accountModal');
+            const modalTitle = $('modalTitle');
+            const modalPlatform = $('modalPlatform');
+            const modalUsername = $('modalUsername');
+            const modalPassword = $('modalPassword');
+            const modalNote = $('modalNote');
+            const modalSaveBtn = $('modalSaveBtn');
+            const modalCancelBtn = $('modalCancelBtn');
+
+            // ==========================================
+            // USER MANAGEMENT
+            // ==========================================
+            function getUsers() {
+                try {
+                    const data = localStorage.getItem(STORAGE_KEY);
+                    if (data) return JSON.parse(data);
+                } catch(e) {}
+                const defaults = [
+                    { username: 'admin', password: 'admin123' },
+                    { username: 'user', password: 'user123' }
+                ];
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(defaults));
+                return defaults;
+            }
+
+            function saveUsers(users) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+            }
+
+            function authenticate(username, password) {
+                const users = getUsers();
+                return users.find(u => u.username === username && u.password === password);
+            }
+
+            function renderUserTable() {
+                const users = getUsers();
+                if (users.length === 0) {
+                    userTableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--text-3);padding:24px;">Belum ada akun</td></tr>`;
+                    return;
+                }
+                userTableBody.innerHTML = users.map((u, idx) => `
+                    <tr>
+                        <td><strong>${u.username}</strong></td>
+                        <td><span style="font-family:monospace;font-size:0.75rem;">${u.password}</span></td>
+                        <td class="user-actions">
+                            <button class="edit" onclick="editUser(${idx})" title="Edit"><i class="fas fa-pen"></i></button>
+                            <button onclick="deleteUser(${idx})" title="Hapus"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            window.deleteUser = function(idx) {
+                if (!confirm('Hapus akun ini?')) return;
+                const users = getUsers();
+                if (users.length <= 1) {
+                    toast('Tidak bisa menghapus akun terakhir!', 'Minimal 1 akun harus ada');
+                    return;
+                }
+                users.splice(idx, 1);
+                saveUsers(users);
+                renderUserTable();
+                toast('Akun dihapus');
+            };
+
+            window.editUser = function(idx) {
+                const users = getUsers();
+                const u = users[idx];
+                const newPass = prompt('Edit password untuk ' + u.username, u.password);
+                if (newPass !== null && newPass.trim() !== '') {
+                    u.password = newPass.trim();
+                    saveUsers(users);
+                    renderUserTable();
+                    toast('Password diubah');
+                }
+            };
+
+            function addUser() {
+                const username = newUsername.value.trim();
+                const password = newPassword.value.trim();
+                if (!username || !password) {
+                    toast('Isi username dan password!');
+                    return;
+                }
+                const users = getUsers();
+                if (users.find(u => u.username === username)) {
+                    toast('Username sudah ada!');
+                    return;
+                }
+                users.push({ username, password });
+                saveUsers(users);
+                renderUserTable();
+                newUsername.value = '';
+                newPassword.value = '';
+                toast('Akun ditambahkan');
+            }
+
+            // ==========================================
+            // DATABASE LOGIN (CRUD)
+            // ==========================================
+            function getPlatformAccounts() {
+                try {
+                    const data = localStorage.getItem(PLATFORM_KEY);
+                    if (data) return JSON.parse(data);
+                } catch(e) {}
+                const defaults = [
+                    { id: Date.now() + 1, platform: 'Facebook', username: 'admin_fb', password: 'fbpass123', note: 'Akun utama FB' },
+                    { id: Date.now() + 2, platform: 'Instagram', username: 'ig_user', password: 'igpass456', note: 'Instagram bisnis' },
+                    { id: Date.now() + 3, platform: 'Twitter', username: 'twit_x', password: 'twitpass789', note: 'Twitter untuk CS' }
+                ];
+                localStorage.setItem(PLATFORM_KEY, JSON.stringify(defaults));
+                return defaults;
+            }
+
+            function savePlatformAccounts(accounts) {
+                localStorage.setItem(PLATFORM_KEY, JSON.stringify(accounts));
+            }
+
+            function renderDbTable(filter = '') {
+                let accounts = getPlatformAccounts();
+                if (filter.trim()) {
+                    const q = filter.toLowerCase().trim();
+                    accounts = accounts.filter(a =>
+                        a.platform.toLowerCase().includes(q) ||
+                        a.username.toLowerCase().includes(q) ||
+                        (a.note && a.note.toLowerCase().includes(q))
+                    );
+                }
+                if (accounts.length === 0) {
+                    dbTableBody.innerHTML = '';
+                    dbEmpty.style.display = 'block';
+                    return;
+                }
+                dbEmpty.style.display = 'none';
+                dbTableBody.innerHTML = accounts.map(a => `
+                    <tr>
+                        <td><span class="platform-badge">${a.platform}</span></td>
+                        <td>${a.username}</td>
+                        <td class="password-cell">${a.password}</td>
+                        <td class="note-cell" title="${a.note || ''}">${a.note || '-'}</td>
+                        <td class="actions-cell">
+                            <button class="edit" onclick="editAccount('${a.id}')" title="Edit"><i class="fas fa-pen"></i></button>
+                            <button onclick="deleteAccount('${a.id}')" title="Hapus"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+                window._accounts = accounts;
+            }
+
+            window.deleteAccount = function(id) {
+                if (!confirm('Hapus akun ini?')) return;
+                let accounts = getPlatformAccounts();
+                accounts = accounts.filter(a => a.id != id);
+                savePlatformAccounts(accounts);
+                renderDbTable(dbSearchInput.value);
+                toast('Akun dihapus');
+            };
+
+            window.editAccount = function(id) {
+                const accounts = getPlatformAccounts();
+                const a = accounts.find(acc => acc.id == id);
+                if (!a) return;
+                editingAccountId = id;
+                modalTitle.textContent = 'Edit Akun';
+                modalPlatform.value = a.platform;
+                modalUsername.value = a.username;
+                modalPassword.value = a.password;
+                modalNote.value = a.note || '';
+                accountModal.classList.add('active');
+            };
+
+            function saveAccount() {
+                const platform = modalPlatform.value.trim();
+                const username = modalUsername.value.trim();
+                const password = modalPassword.value.trim();
+                const note = modalNote.value.trim();
+
+                if (!platform || !username || !password) {
+                    toast('Platform, Username, dan Password wajib diisi!');
+                    return;
+                }
+
+                let accounts = getPlatformAccounts();
+                if (editingAccountId) {
+                    const idx = accounts.findIndex(a => a.id == editingAccountId);
+                    if (idx !== -1) {
+                        accounts[idx] = { ...accounts[idx], platform, username, password, note };
+                    }
+                    toast('Akun diperbarui');
+                } else {
+                    const newAccount = {
+                        id: Date.now() + Math.random() * 1000,
+                        platform,
+                        username,
+                        password,
+                        note
+                    };
+                    accounts.push(newAccount);
+                    toast('Akun ditambahkan');
+                }
+                savePlatformAccounts(accounts);
+                closeModal();
+                renderDbTable(dbSearchInput.value);
+            }
+
+            function closeModal() {
+                accountModal.classList.remove('active');
+                editingAccountId = null;
+                modalTitle.textContent = 'Tambah Akun';
+                modalPlatform.value = '';
+                modalUsername.value = '';
+                modalPassword.value = '';
+                modalNote.value = '';
+            }
+
+            // ==========================================
+            // INDEXED DB - FILE STORAGE
+            // ==========================================
+            function openDB() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(DB_NAME, 1);
+                    request.onupgradeneeded = function(e) {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains(STORE_NAME)) {
+                            db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                        }
+                    };
+                    request.onsuccess = function(e) {
+                        db = e.target.result;
+                        resolve(db);
+                    };
+                    request.onerror = function(e) {
+                        reject(e.target.error);
+                    };
+                });
+            }
+
+            function saveFileToDB(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const data = e.target.result;
+                        const record = {
+                            name: file.name,
+                            size: file.size,
+                            type: file.type || 'application/octet-stream',
+                            data: data,
+                            uploadedAt: new Date().toISOString(),
+                            uploader: currentUser
+                        };
+                        const transaction = db.transaction([STORE_NAME], 'readwrite');
+                        const store = transaction.objectStore(STORE_NAME);
+                        const request = store.add(record);
+                        request.onsuccess = function() {
+                            resolve(record);
+                        };
+                        request.onerror = function() {
+                            reject(request.error);
+                        };
+                    };
+                    reader.onerror = function() {
+                        reject(reader.error);
+                    };
+                    reader.readAsArrayBuffer(file);
+                });
+            }
+
+            function getAllFiles() {
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([STORE_NAME], 'readonly');
+                    const store = transaction.objectStore(STORE_NAME);
+                    const request = store.getAll();
+                    request.onsuccess = function() {
+                        resolve(request.result);
+                    };
+                    request.onerror = function() {
+                        reject(request.error);
+                    };
+                });
+            }
+
+            function deleteFileFromDB(id) {
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([STORE_NAME], 'readwrite');
+                    const store = transaction.objectStore(STORE_NAME);
+                    const request = store.delete(id);
+                    request.onsuccess = function() {
+                        resolve();
+                    };
+                    request.onerror = function() {
+                        reject(request.error);
+                    };
+                });
+            }
+
+            function getTotalSize() {
+                return getAllFiles().then(files => {
+                    return files.reduce((sum, f) => sum + f.size, 0);
+                });
+            }
+
+            // ==========================================
+            // RENDER FILE LIST
+            // ==========================================
+            async function renderFileList() {
+                try {
+                    const files = await getAllFiles();
+                    if (files.length === 0) {
+                        fileListContainer.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-folder-open"></i>
+                                <p>Belum ada file. Upload file .4pk atau .zip sekarang!</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    files.sort((a,b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+
+                    fileListContainer.innerHTML = `<div class="file-list">${files.map((f, idx) => `
+                        <div class="file-item">
+                            <div class="file-icon"><i class="fas ${f.name.endsWith('.4pk') ? 'fa-file-archive' : 'fa-file-zipper'}"></i></div>
+                            <div class="file-name" title="${f.name}">${f.name}</div>
+                            <div class="file-size">${formatSize(f.size)} • ${new Date(f.uploadedAt).toLocaleDateString('id-ID')}</div>
+                            <div class="file-actions">
+                                <button class="btn-download" onclick="downloadFile(${idx})"><i class="fas fa-download"></i> Download</button>
+                                <button class="btn-delete" onclick="deleteFile(${idx})"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `).join('')}</div>`;
+
+                    window._fileList = files;
+                    const total = await getTotalSize();
+                    storageUsed.textContent = formatSize(total);
+
+                } catch(e) {
+                    console.error(e);
+                    toast('Gagal memuat file');
+                }
+            }
+
+            window.downloadFile = function(idx) {
+                const files = window._fileList || [];
+                const f = files[idx];
+                if (!f) return;
+                try {
+                    const blob = new Blob([f.data], { type: f.type });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = f.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    setTimeout(() => URL.revokeObjectURL(url), 5000);
+                    toast('Download dimulai');
+                } catch(e) {
+                    toast('Gagal download');
+                }
+            };
+
+            window.deleteFile = async function(idx) {
+                const files = window._fileList || [];
+                const f = files[idx];
+                if (!f) return;
+                if (!confirm(`Hapus file "${f.name}"?`)) return;
+                try {
+                    await deleteFileFromDB(f.id);
+                    await renderFileList();
+                    toast('File dihapus');
+                } catch(e) {
+                    toast('Gagal hapus file');
+                }
+            };
+
+            // ==========================================
+            // UPLOAD HANDLER
+            // ==========================================
+            async function handleFiles(fileList) {
+                const allowed = ['.4pk', '.zip'];
+                const files = Array.from(fileList).filter(f => {
+                    const ext = '.' + f.name.split('.').pop().toLowerCase();
+                    return allowed.includes(ext);
+                });
+
+                if (files.length === 0) {
+                    toast('Hanya .4pk dan .zip yang diizinkan!');
+                    return;
+                }
+
+                const currentSize = await getTotalSize();
+                const totalSize = files.reduce((sum, f) => sum + f.size, 0);
+                if (currentSize + totalSize > MAX_STORAGE) {
+                    toast('Penyimpanan penuh!', 'Maks 500 MB');
+                    return;
+                }
+
+                let success = 0;
+                for (const file of files) {
+                    try {
+                        await saveFileToDB(file);
+                        success++;
+                    } catch(e) {
+                        console.error('Gagal upload:', file.name, e);
+                    }
+                }
+
+                if (success > 0) {
+                    await renderFileList();
+                    toast(`Berhasil upload ${success} file`);
+                } else {
+                    toast('Gagal upload file');
+                }
+            }
+
+            // ==========================================
+            // LOGIN / LOGOUT
+            // ==========================================
+            function login() {
+                const username = enteredLogin.value.trim();
+                const password = enteredPassword.value.trim();
+                const user = authenticate(username, password);
+                if (!user) {
+                    loginError.style.display = 'block';
+                    return;
+                }
+                loginError.style.display = 'none';
+                currentUser = username;
+                localStorage.setItem('latoto_storage_session', username);
+                displayUsername.textContent = username;
+                loginPage.style.display = 'none';
+                appContainer.classList.add('active');
+
+                openDB().then(() => {
+                    renderFileList();
+                    renderUserTable();
+                    renderDbTable();
+                    storageTotal.textContent = '500 MB';
+                    getTotalSize().then(s => {
+                        storageUsed.textContent = formatSize(s);
+                    });
+                }).catch(err => {
+                    console.error('DB error:', err);
+                    toast('Gagal inisialisasi penyimpanan');
+                });
+            }
+
+            function logout() {
+                currentUser = null;
+                localStorage.removeItem('latoto_storage_session');
+                appContainer.classList.remove('active');
+                loginPage.style.display = 'flex';
+                enteredPassword.value = '';
+                enteredLogin.value = '';
+                loginError.style.display = 'none';
+            }
+
+            // ==========================================
+            // UTILITY
+            // ==========================================
+            function formatSize(bytes) {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            function toast(msg, sub='') {
+                $('tMsg').textContent = msg;
+                $('tSub').textContent = sub || '';
+                const t = $('toast');
+                t.classList.add('on');
+                clearTimeout(t._t);
+                t._t = setTimeout(() => t.classList.remove('on'), 2800);
+            }
+
+            // ==========================================
+            // GET USER IP
+            // ==========================================
+            fetch('https://api.ipify.org?format=json')
+                .then(r => r.json())
+                .then(data => {
+                    userIP.textContent = data.ip || '--.--.--.--';
+                })
+                .catch(() => {
+                    userIP.textContent = '--.--.--.--';
+                });
+
+            // ==========================================
+            // EVENT LISTENERS
+            // ==========================================
+            loginBtn.addEventListener('click', login);
+            enteredLogin.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+            enteredPassword.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+            logoutBtn.addEventListener('click', logout);
+
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+                    if (this.dataset.tab === 'db-login') {
+                        renderDbTable(dbSearchInput.value);
+                    }
+                });
+            });
+
+            // Upload file
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    handleFiles(this.files);
+                }
+                this.value = '';
+            });
+
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    handleFiles(e.dataTransfer.files);
+                }
+            });
+
+            // Add user
+            addUserBtn.addEventListener('click', addUser);
+            newUsername.addEventListener('keydown', e => { if (e.key === 'Enter') addUser(); });
+            newPassword.addEventListener('keydown', e => { if (e.key === 'Enter') addUser(); });
+
+            // Database Login - Search
+            dbSearchInput.addEventListener('input', function() {
+                renderDbTable(this.value);
+            });
+
+            // Add Account button
+            btnAddAccount.addEventListener('click', function() {
+                editingAccountId = null;
+                modalTitle.textContent = 'Tambah Akun';
+                modalPlatform.value = '';
+                modalUsername.value = '';
+                modalPassword.value = '';
+                modalNote.value = '';
+                accountModal.classList.add('active');
+            });
+
+            // Modal buttons
+            modalCancelBtn.addEventListener('click', closeModal);
+            accountModal.addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+            modalSaveBtn.addEventListener('click', saveAccount);
+
+            // Enter key in modal
+            modalPlatform.addEventListener('keydown', e => { if (e.key === 'Enter') saveAccount(); });
+            modalUsername.addEventListener('keydown', e => { if (e.key === 'Enter') saveAccount(); });
+            modalPassword.addEventListener('keydown', e => { if (e.key === 'Enter') saveAccount(); });
+            modalNote.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveAccount(); } });
+
+            // ==========================================
+            // THEME SYNC
+            // ==========================================
+            (function syncTheme() {
+                const valid = ['dark','light','cyan'];
+                const saved = localStorage.getItem('cs-theme');
+                if (saved && valid.includes(saved)) document.documentElement.setAttribute('data-theme', saved);
+                else document.documentElement.setAttribute('data-theme','dark');
+                window.addEventListener('storage', e => {
+                    if (e.key === 'cs-theme' && valid.includes(e.newValue)) {
+                        document.documentElement.setAttribute('data-theme', e.newValue);
+                    }
+                });
+                window.addEventListener('message', e => {
+                    if (e.data?.type === 'themeChange' && valid.includes(e.data.theme)) {
+                        document.documentElement.setAttribute('data-theme', e.data.theme);
+                    }
+                });
+            })();
+
+            // ==========================================
+            // SESSION CHECK
+            // ==========================================
+            const sessionUser = localStorage.getItem('latoto_storage_session');
+            if (sessionUser) {
+                currentUser = sessionUser;
+                displayUsername.textContent = sessionUser;
+                loginPage.style.display = 'none';
+                appContainer.classList.add('active');
+                openDB().then(() => {
+                    renderFileList();
+                    renderUserTable();
+                    renderDbTable();
+                    storageTotal.textContent = '500 MB';
+                    getTotalSize().then(s => {
+                        storageUsed.textContent = formatSize(s);
+                    });
+                }).catch(err => {
+                    console.error('DB error:', err);
+                    toast('Gagal inisialisasi penyimpanan');
+                });
+            }
+
+        })();
+    </script>
+</body>
+</html>
