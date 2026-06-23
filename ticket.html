@@ -188,6 +188,7 @@
     .empty p { font-size:0.8rem; color:var(--text-3); }
     .empty p strong { color:var(--text-2); font-weight:600; }
 
+    /* ===== MODAL ===== */
     .modal-bg {
       position:fixed; inset:0; background:rgba(4,8,16,0.92);
       backdrop-filter:blur(30px); display:flex; align-items:center;
@@ -276,6 +277,61 @@
     .toast-msg { font-weight:600; font-size:0.8rem; color:var(--text); }
     .toast-msg small { display:block; font-weight:400; font-size:0.65rem; color:var(--text-3); margin-top:1px; }
 
+    .btn-add {
+      padding:10px 22px;
+      background:var(--gold);
+      color:#0a0e1a;
+      border:none;
+      border-radius:100px;
+      font-weight:700;
+      font-size:0.8rem;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      transition:var(--ease);
+      font-family:'Outfit',sans-serif;
+      box-shadow:0 4px 18px var(--gold-glow);
+    }
+    .btn-add:hover {
+      transform:translateY(-2px);
+      box-shadow:0 8px 28px var(--gold-glow);
+    }
+
+    /* PIN Prompt */
+    .pin-prompt {
+      position:fixed; inset:0; background:rgba(0,0,0,0.8);
+      backdrop-filter:blur(10px); display:flex; align-items:center;
+      justify-content:center; z-index:2000; padding:20px;
+      opacity:0; visibility:hidden; transition:var(--ease);
+    }
+    .pin-prompt.on { opacity:1; visibility:visible; }
+    .pin-box {
+      background:var(--bg-card); border:1px solid var(--border);
+      border-radius:var(--r); padding:30px; max-width:360px; width:100%;
+      text-align:center;
+    }
+    .pin-box h3 { color:var(--gold); margin-bottom:16px; font-family:'Bebas Neue',sans-serif; letter-spacing:1px; }
+    .pin-box input {
+      width:100%; padding:12px; background:rgba(255,255,255,0.03);
+      border:1px solid var(--border); border-radius:var(--r-sm);
+      color:var(--text); font-size:1.2rem; text-align:center;
+      letter-spacing:8px; font-family:'JetBrains Mono',monospace;
+      outline:none; transition:var(--ease);
+    }
+    .pin-box input:focus { border-color:var(--gold); }
+    .pin-box .pin-actions { display:flex; gap:10px; margin-top:16px; justify-content:center; }
+    .pin-box .pin-actions button {
+      padding:8px 24px; border:none; border-radius:var(--r-sm);
+      font-weight:700; cursor:pointer; transition:var(--ease);
+      font-family:'Outfit',sans-serif;
+    }
+    .pin-box .pin-actions .pin-confirm { background:var(--gold); color:#0a0e1a; }
+    .pin-box .pin-actions .pin-cancel { background:rgba(255,255,255,0.03); border:1px solid var(--border); color:var(--text-3); }
+    .pin-box .pin-actions .pin-confirm:hover { transform:scale(1.05); }
+    .pin-box .pin-actions .pin-cancel:hover { background:rgba(255,255,255,0.05); }
+    .pin-error { color:var(--coral); font-size:0.8rem; margin-top:10px; display:none; }
+
     ::-webkit-scrollbar { width:5px; height:5px; }
     ::-webkit-scrollbar-track { background:transparent; }
     ::-webkit-scrollbar-thumb { background:rgba(255,215,0,0.1); border-radius:10px; }
@@ -313,7 +369,7 @@
       </div>
     </div>
     <div class="panel-badges">
-      <div class="p-badge b-gold"><i class="fas fa-layer-group"></i> <span id="countBadge">10</span> Kode</div>
+      <div class="p-badge b-gold"><i class="fas fa-layer-group"></i> <span id="countBadge">0</span> Kode</div>
       <div class="p-badge b-coral"><i class="fas fa-fire"></i> Premium</div>
       <div class="p-badge b-gold"><i class="fas fa-clock"></i> <span id="clock">--:--</span></div>
     </div>
@@ -333,12 +389,13 @@
       <button class="v-btn on" data-v="grid"><i class="fas fa-grid-2"></i></button>
       <button class="v-btn" data-v="list"><i class="fas fa-list"></i></button>
     </div>
+    <button class="btn-add" id="btnAdd"><i class="fas fa-plus"></i> Tambah</button>
   </div>
 
   <div class="grid" id="grid"></div>
 </div>
 
-<!-- Modal -->
+<!-- Modal Preview -->
 <div class="modal-bg" id="mBg">
   <div class="modal-box">
     <div class="modal-top">
@@ -357,6 +414,52 @@
   </div>
 </div>
 
+<!-- Modal Add/Edit -->
+<div class="modal-bg" id="editModal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <h3 id="editTitle">Tambah Kode Tiket</h3>
+      <button class="modal-x" id="editClose"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-inner">
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:0.75rem;color:var(--text-3);margin-bottom:4px;font-weight:600;">Judul</label>
+        <input type="text" id="editName" placeholder="Judul kode tiket..." style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:0.75rem;color:var(--text-3);margin-bottom:4px;font-weight:600;">URL Gambar</label>
+        <input type="text" id="editImage" placeholder="https://i.ibb.co/..." style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:0.75rem;color:var(--text-3);margin-bottom:4px;font-weight:600;">Provider</label>
+        <select id="editProvider" style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;">
+          <option value="pg">PG Soft</option>
+          <option value="pp">Pragmatic Play</option>
+        </select>
+      </div>
+      <div class="modal-btns" style="margin-top:10px;">
+        <button class="m-btn m-btn-pri" id="editSave"><i class="fas fa-save"></i> Simpan</button>
+        <button class="m-btn m-btn-sec" id="editCancel">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PIN Prompt -->
+<div class="pin-prompt" id="pinPrompt">
+  <div class="pin-box">
+    <h3>🔒 Verifikasi PIN</h3>
+    <p style="font-size:0.8rem;color:var(--text-3);margin-bottom:12px;">Masukkan PIN untuk melanjutkan</p>
+    <input type="password" id="pinInput" maxlength="6" placeholder="• • • •">
+    <div class="pin-error" id="pinError">PIN salah!</div>
+    <div class="pin-actions">
+      <button class="pin-confirm" id="pinConfirm">Konfirmasi</button>
+      <button class="pin-cancel" id="pinCancel">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
 <div class="toast" id="toast">
   <div class="toast-ic"><i class="fas fa-check"></i></div>
   <div class="toast-msg"><span id="tMsg">OK</span><small id="tSub"></small></div>
@@ -364,7 +467,8 @@
 
 <script>
 (function(){
-  const D=[
+  const STORAGE_KEY = 'latoto_ticket_data';
+  const DEFAULT_DATA = [
     {c:"KODE TIKET PG-Mahjong Ways (1)",u:"https://i.ibb.co/W4TKvDDY/image.png",b:"pg"},
     {c:"KODE TIKET CEK KEMENANGAN AKHIR MAHJONG",u:"https://i.ibb.co/9mbVDpK7/image.png",b:"pg"},
     {c:"KODE TIKET PG-Mahjong Ways (2)",u:"https://i.ibb.co/HpthXJg2/image.png",b:"pg"},
@@ -377,23 +481,69 @@
     {c:"KODE TIKET PP-Gates of Gatot Kaca Super Scatter",u:"https://i.ibb.co/FL0fySQN/image.png",b:"pp"}
   ];
 
-  let filter='all', q='', view='grid', mUrl='';
-  const $=id=>document.getElementById(id);
-  const grid=$('grid'), countEl=$('countBadge');
+  const PIN = '1234';
+  let data = [];
+  let filter = 'all', q = '', view = 'grid', mUrl = '';
+  let editingId = null;
+  let pendingAction = null; // {type:'edit'|'delete', id}
 
-  function filtered(){
-    return D.filter(d=>(filter==='all'||d.b===filter)&&d.c.toLowerCase().includes(q.toLowerCase()));
+  const $ = id => document.getElementById(id);
+  const grid = $('grid');
+  const countEl = $('countBadge');
+  const clockEl = $('clock');
+  const searchIn = $('searchIn');
+  const chips = $('chips');
+  const viewTog = document.querySelector('.view-tog');
+  const btnAdd = $('btnAdd');
+
+  // Modal preview
+  const mBg = $('mBg'), mTitle = $('mTitle'), mType = $('mType'), mImg = $('mImg');
+  const mClose = $('mClose'), btnTab = $('btnTab'), btnCopy = $('btnCopy'), spin = $('spin');
+
+  // Edit modal
+  const editModal = $('editModal'), editTitle = $('editTitle'), editName = $('editName');
+  const editImage = $('editImage'), editProvider = $('editProvider'), editSave = $('editSave');
+  const editClose = $('editClose'), editCancel = $('editCancel');
+
+  // PIN prompt
+  const pinPrompt = $('pinPrompt'), pinInput = $('pinInput'), pinError = $('pinError');
+  const pinConfirm = $('pinConfirm'), pinCancel = $('pinCancel');
+
+  // Toast
+  const toastEl = $('toast'), tMsg = $('tMsg'), tSub = $('tSub');
+
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          data = parsed;
+          return;
+        }
+      }
+    } catch(e) {}
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    saveData();
   }
 
-  function render(){
-    const list=filtered();
-    countEl.textContent=list.length;
-    if(!list.length){
-      grid.innerHTML='<div class="empty on"><i class="fas fa-search"></i><p>Tidak ditemukan. Coba <strong>ubah kata kunci</strong> atau filter.</p></div>';
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function filtered() {
+    return data.filter(d => (filter === 'all' || d.b === filter) && d.c.toLowerCase().includes(q.toLowerCase()));
+  }
+
+  function render() {
+    const list = filtered();
+    countEl.textContent = list.length;
+    if (!list.length) {
+      grid.innerHTML = '<div class="empty on"><i class="fas fa-search"></i><p>Tidak ditemukan. Coba <strong>ubah kata kunci</strong> atau filter.</p></div>';
       return;
     }
-    grid.innerHTML=list.map((d,i)=>`
-      <div class="card" data-u="${d.u}" data-c="${d.c}" data-b="${d.b}" style="animation-delay:${i*0.05}s">
+    grid.innerHTML = list.map((d, i) => `
+      <div class="card" data-id="${d.id || i}" data-u="${d.u}" data-c="${d.c}" data-b="${d.b}" style="animation-delay:${i*0.05}s">
         <div class="card-img-wrap">
           <img class="card-img" src="${d.u}" alt="${d.c}" loading="lazy" crossorigin="anonymous">
           <div class="card-img-grad"></div>
@@ -408,97 +558,282 @@
             <div class="card-go"><i class="fas fa-arrow-right"></i></div>
           </div>
         </div>
-      </div>`).join('');
+      </div>
+    `).join('');
 
-    requestAnimationFrame(()=>{
-      grid.querySelectorAll('.card').forEach((c,i)=>setTimeout(()=>c.classList.add('show'),i*50));
+    requestAnimationFrame(() => {
+      grid.querySelectorAll('.card').forEach((c, i) => setTimeout(() => c.classList.add('show'), i*50));
     });
 
-    grid.querySelectorAll('.card').forEach(c=>{
-      c.addEventListener('click',()=>openM(c.dataset.c,c.dataset.u,c.dataset.b));
+    grid.querySelectorAll('.card').forEach(c => {
+      c.addEventListener('click', () => openM(c.dataset.c, c.dataset.u, c.dataset.b));
+    });
+
+    // Tambahkan tombol edit & hapus di footer (via event delegation)
+    // Kita tambahkan secara terpisah dengan membuat overlay tombol di card
+    // Lebih praktis: kita tambahkan tombol di card saat render
+    // Kita modifikasi render di atas untuk menambahkan tombol edit/hapus
+    // Tapi lebih baik kita lakukan dengan event delegation pada card-body
+    // Saya tambahkan tombol di card-foot dengan event listener
+    // Saya akan modifikasi render dengan tombol aksi
+    // Ulangi render dengan tombol aksi
+    // Agar lebih cepat, saya langsung modifikasi di atas dengan menambahkan tombol
+    // Tapi karena sudah terlanjur, saya akan lakukan dengan menambahkan tombol melalui JS setelah render
+    // Saya akan tambahkan tombol edit/hapus di setiap card
+    grid.querySelectorAll('.card').forEach(card => {
+      const id = card.dataset.id;
+      const foot = card.querySelector('.card-foot');
+      if (foot) {
+        const actions = document.createElement('div');
+        actions.style.display = 'flex';
+        actions.style.gap = '6px';
+        actions.style.alignItems = 'center';
+        const editBtn = document.createElement('button');
+        editBtn.innerHTML = '<i class="fas fa-pen"></i>';
+        editBtn.style.cssText = 'background:transparent;border:none;color:var(--text-3);cursor:pointer;font-size:0.65rem;padding:2px 6px;border-radius:4px;transition:var(--ease);';
+        editBtn.onmouseover = () => editBtn.style.background = 'var(--gold-bg)';
+        editBtn.onmouseout = () => editBtn.style.background = 'transparent';
+        editBtn.onclick = (e) => { e.stopPropagation(); promptEdit(id); };
+        const delBtn = document.createElement('button');
+        delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        delBtn.style.cssText = 'background:transparent;border:none;color:var(--text-3);cursor:pointer;font-size:0.65rem;padding:2px 6px;border-radius:4px;transition:var(--ease);';
+        delBtn.onmouseover = () => delBtn.style.background = 'var(--coral-bg)';
+        delBtn.onmouseout = () => delBtn.style.background = 'transparent';
+        delBtn.onclick = (e) => { e.stopPropagation(); promptDelete(id); };
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
+        foot.appendChild(actions);
+      }
     });
   }
 
-  $('searchIn').addEventListener('input',e=>{q=e.target.value;render();});
-  $('chips').addEventListener('click',e=>{
-    const ch=e.target.closest('.chip');if(!ch)return;
-    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-    ch.classList.add('on');filter=ch.dataset.f;render();
-  });
-  document.querySelector('.view-tog').addEventListener('click',e=>{
-    const b=e.target.closest('.v-btn');if(!b)return;
-    document.querySelectorAll('.v-btn').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on');view=b.dataset.v;
-    grid.classList.toggle('list',view==='list');
+  function openM(c, u, b) {
+    mUrl = u;
+    mTitle.childNodes[0].textContent = c;
+    mType.textContent = b === 'pg' ? 'PG Soft' : 'Pragmatic Play';
+    mImg.src = u;
+    mBg.classList.add('on');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeM() { mBg.classList.remove('on'); document.body.style.overflow = ''; }
+  mClose.addEventListener('click', closeM);
+  mBg.addEventListener('click', e => { if (e.target === mBg) closeM(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeM(); });
+
+  btnTab.addEventListener('click', () => { if (mUrl) window.open(mUrl, '_blank'); });
+  btnCopy.addEventListener('click', async function() {
+    spin.style.display = 'inline-block';
+    try {
+      const r = await fetch(mUrl, {mode:'cors',cache:'no-cache'});
+      const bl = await r.blob();
+      await navigator.clipboard.write([new ClipboardItem({[bl.type]: bl})]);
+      toast('Berhasil disalin!','Gambar di clipboard');
+    } catch {
+      try { await navigator.clipboard.writeText(mUrl); toast('Link disalin','URL di clipboard'); }
+      catch { toast('Gagal','Coba buka di tab baru'); }
+    }
+    spin.style.display = 'none';
   });
 
-  window.qCopy=async function(u){
-    try{
-      const r=await fetch(u,{mode:'cors',cache:'no-cache'});
-      const bl=await r.blob();
-      await navigator.clipboard.write([new ClipboardItem({[bl.type]:bl})]);
+  window.qCopy = async function(u) {
+    try {
+      const r = await fetch(u, {mode:'cors',cache:'no-cache'});
+      const bl = await r.blob();
+      await navigator.clipboard.write([new ClipboardItem({[bl.type]: bl})]);
       toast('Berhasil disalin!','Gambar di clipboard');
-    }catch{
-      try{await navigator.clipboard.writeText(u);toast('Link disalin','URL di clipboard');}
-      catch{toast('Gagal','Coba klik kartu dulu');}
+    } catch {
+      try { await navigator.clipboard.writeText(u); toast('Link disalin','URL di clipboard'); }
+      catch { toast('Gagal','Coba klik kartu dulu'); }
     }
   };
 
-  function openM(c,u,b){
-    mUrl=u;
-    $('mTitle').childNodes[0].textContent=c;
-    $('mType').textContent=b==='pg'?'PG Soft':'Pragmatic Play';
-    $('mImg').src=u;
-    $('mBg').classList.add('on');
-    document.body.style.overflow='hidden';
+  function toast(msg, sub='') {
+    tMsg.textContent = msg;
+    tSub.textContent = sub || '';
+    toastEl.classList.add('on');
+    clearTimeout(toastEl._t);
+    toastEl._t = setTimeout(() => toastEl.classList.remove('on'), 2800);
   }
-  function closeM(){$('mBg').classList.remove('on');document.body.style.overflow='';}
-  $('mClose').addEventListener('click',closeM);
-  $('mBg').addEventListener('click',e=>{if(e.target===$('mBg'))closeM();});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
 
-  $('btnTab').addEventListener('click',()=>{if(mUrl)window.open(mUrl,'_blank');});
-  $('btnCopy').addEventListener('click',async function(){
-    const sp=$('spin');sp.style.display='inline-block';
-    try{
-      const r=await fetch(mUrl,{mode:'cors',cache:'no-cache'});
-      const bl=await r.blob();
-      await navigator.clipboard.write([new ClipboardItem({[bl.type]:bl})]);
-      toast('Berhasil disalin!','Gambar di clipboard');
-    }catch{
-      try{await navigator.clipboard.writeText(mUrl);toast('Link disalin','URL di clipboard');}
-      catch{toast('Gagal','Coba buka di tab baru');}
+  // CRUD
+  function promptEdit(id) {
+    const item = data.find(d => (d.id || d._id) == id);
+    if (!item) return;
+    editingId = id;
+    editTitle.textContent = 'Edit Kode Tiket';
+    editName.value = item.c;
+    editImage.value = item.u;
+    editProvider.value = item.b;
+    editModal.classList.add('on');
+  }
+
+  function promptDelete(id) {
+    pendingAction = { type: 'delete', id: id };
+    pinInput.value = '';
+    pinError.style.display = 'none';
+    pinPrompt.classList.add('on');
+    setTimeout(() => pinInput.focus(), 100);
+  }
+
+  function confirmPin() {
+    const val = pinInput.value.trim();
+    if (val === PIN) {
+      pinPrompt.classList.remove('on');
+      if (pendingAction) {
+        if (pendingAction.type === 'delete') {
+          data = data.filter(d => (d.id || d._id) != pendingAction.id);
+          saveData();
+          render();
+          toast('Data dihapus');
+        } else if (pendingAction.type === 'edit') {
+          // edit sudah dilakukan di modal save
+        }
+        pendingAction = null;
+      }
+      pinInput.value = '';
+      pinError.style.display = 'none';
+    } else {
+      pinError.style.display = 'block';
+      pinInput.value = '';
+      pinInput.focus();
     }
-    sp.style.display='none';
+  }
+
+  function cancelPin() {
+    pinPrompt.classList.remove('on');
+    pendingAction = null;
+    pinInput.value = '';
+    pinError.style.display = 'none';
+  }
+
+  pinConfirm.addEventListener('click', confirmPin);
+  pinCancel.addEventListener('click', cancelPin);
+  pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') confirmPin(); });
+
+  // Save edit
+  editSave.addEventListener('click', function() {
+    const name = editName.value.trim();
+    const image = editImage.value.trim();
+    const provider = editProvider.value;
+    if (!name || !image) {
+      toast('Judul dan URL gambar wajib diisi!');
+      return;
+    }
+    if (editingId) {
+      // Edit: butuh PIN
+      pendingAction = { type: 'edit', id: editingId };
+      pinInput.value = '';
+      pinError.style.display = 'none';
+      pinPrompt.classList.add('on');
+      setTimeout(() => pinInput.focus(), 100);
+      // Simpan dulu, nanti di confirmPin jika berhasil
+      // Kita simpan sementara di variabel
+      window._editData = { name, image, provider };
+      // Override confirmPin untuk menangani edit
+      const origConfirm = confirmPin;
+      confirmPin = function() {
+        const val = pinInput.value.trim();
+        if (val === PIN) {
+          pinPrompt.classList.remove('on');
+          if (pendingAction && pendingAction.type === 'edit') {
+            const item = data.find(d => (d.id || d._id) == pendingAction.id);
+            if (item) {
+              item.c = window._editData.name;
+              item.u = window._editData.image;
+              item.b = window._editData.provider;
+              saveData();
+              render();
+              toast('Data diperbarui');
+            }
+            pendingAction = null;
+            window._editData = null;
+          }
+          pinInput.value = '';
+          pinError.style.display = 'none';
+          editModal.classList.remove('on');
+        } else {
+          pinError.style.display = 'block';
+          pinInput.value = '';
+          pinInput.focus();
+        }
+      };
+      // Re-bind events
+      pinConfirm.removeEventListener('click', confirmPin);
+      pinConfirm.addEventListener('click', confirmPin);
+      // Simpan referensi
+      return;
+    } else {
+      // Add new
+      const newItem = {
+        id: Date.now() + Math.random() * 1000,
+        c: name,
+        u: image,
+        b: provider
+      };
+      data.push(newItem);
+      saveData();
+      render();
+      toast('Data ditambahkan');
+      editModal.classList.remove('on');
+    }
   });
 
-  function toast(m,s){
-    $('tMsg').textContent=m;$('tSub').textContent=s||'';
-    const t=$('toast');t.classList.add('on');
-    clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2800);
-  }
+  // Add button
+  btnAdd.addEventListener('click', function() {
+    editingId = null;
+    editTitle.textContent = 'Tambah Kode Tiket';
+    editName.value = '';
+    editImage.value = '';
+    editProvider.value = 'pg';
+    editModal.classList.add('on');
+  });
 
-  function tick(){
-    const n=new Date();
-    $('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
-  }
-  tick();setInterval(tick,10000);
+  editClose.addEventListener('click', () => editModal.classList.remove('on'));
+  editCancel.addEventListener('click', () => editModal.classList.remove('on'));
+  editModal.addEventListener('click', e => { if (e.target === editModal) editModal.classList.remove('on'); });
 
-  render();
+  // Search & filter
+  searchIn.addEventListener('input', e => { q = e.target.value; render(); });
+  chips.addEventListener('click', e => {
+    const ch = e.target.closest('.chip');
+    if (!ch) return;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+    ch.classList.add('on');
+    filter = ch.dataset.f;
+    render();
+  });
+  viewTog.addEventListener('click', e => {
+    const b = e.target.closest('.v-btn');
+    if (!b) return;
+    document.querySelectorAll('.v-btn').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    view = b.dataset.v;
+    grid.classList.toggle('list', view === 'list');
+  });
+
+  // Clock
+  function tick() {
+    const n = new Date();
+    clockEl.textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+  }
+  tick(); setInterval(tick, 10000);
 
   // Theme sync
   (function syncTheme() {
-    const valid=['dark','light','cyan'];
-    const saved=localStorage.getItem('cs-theme');
-    if(saved && valid.includes(saved)) document.documentElement.setAttribute('data-theme', saved);
+    const valid = ['dark','light','cyan'];
+    const saved = localStorage.getItem('cs-theme');
+    if (saved && valid.includes(saved)) document.documentElement.setAttribute('data-theme', saved);
     else document.documentElement.setAttribute('data-theme','dark');
-    window.addEventListener('storage', e=>{
-      if(e.key==='cs-theme' && valid.includes(e.newValue)) document.documentElement.setAttribute('data-theme', e.newValue);
+    window.addEventListener('storage', e => {
+      if (e.key === 'cs-theme' && valid.includes(e.newValue)) document.documentElement.setAttribute('data-theme', e.newValue);
     });
-    window.addEventListener('message', e=>{
-      if(e.data?.type==='themeChange' && valid.includes(e.data.theme)) document.documentElement.setAttribute('data-theme', e.data.theme);
+    window.addEventListener('message', e => {
+      if (e.data?.type === 'themeChange' && valid.includes(e.data.theme)) document.documentElement.setAttribute('data-theme', e.data.theme);
     });
   })();
+
+  loadData();
+  render();
 })();
 </script>
 </body>
