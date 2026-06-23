@@ -145,7 +145,7 @@
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
-      margin-bottom:6px;
+      margin-bottom:8px;
       gap:8px;
     }
     .note-title {
@@ -166,7 +166,9 @@
       background:rgba(245,200,66,0.06);
       box-shadow:0 0 0 2px var(--gold);
     }
-    .note-body-textarea {
+
+    /* ===== TEXTAREA BODY (BISA DIEDIT) ===== */
+    .note-body {
       font-size:0.78rem;
       color:var(--text-2);
       background:transparent;
@@ -174,27 +176,28 @@
       outline:none;
       resize:vertical;
       width:100%;
-      min-height:70px;
-      max-height:200px;
+      min-height:80px;
+      max-height:300px;
       font-family:'Outfit',sans-serif;
       padding:4px 4px;
       border-radius:4px;
       transition:var(--ease);
-      line-height:1.5;
+      line-height:1.6;
       flex:1;
-      cursor:text;
+      scrollbar-width:thin;
     }
-    .note-body-textarea:focus {
+    .note-body:focus {
       background:rgba(245,200,66,0.04);
       box-shadow:0 0 0 2px var(--gold);
     }
-    .note-body-textarea::-webkit-scrollbar {
+    .note-body::-webkit-scrollbar {
       width:4px;
     }
-    .note-body-textarea::-webkit-scrollbar-thumb {
-      background:rgba(255,215,0,0.2);
-      border-radius:4px;
+    .note-body::-webkit-scrollbar-thumb {
+      background:rgba(255,215,0,0.15);
+      border-radius:10px;
     }
+
     .note-footer {
       display:flex;
       align-items:center;
@@ -233,7 +236,7 @@
       background:var(--gold-bg);
     }
     .note-actions .btn-expand {
-      color:var(--text-3);
+      color:var(--text-2);
     }
     .note-actions .btn-expand:hover {
       background:var(--gold-bg);
@@ -610,6 +613,12 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
     return div.innerHTML;
   }
 
+  // Auto-resize textarea
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
   function render() {
     const sorted = [...notes].sort((a,b) => {
       if (a.pinned && !b.pinned) return -1;
@@ -638,7 +647,7 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
             <i class="fas fa-thumbtack" style="${note.pinned ? 'color:var(--gold);transform:rotate(-45deg);' : 'opacity:0.4;'}"></i>
           </button>
         </div>
-        <textarea class="note-body-textarea" placeholder="Tulis catatan di sini..." data-field="body">${escapeHtml(note.body)}</textarea>
+        <textarea class="note-body" placeholder="Tulis catatan di sini..." data-field="body">${escapeHtml(note.body)}</textarea>
         <div class="note-footer">
           <span class="note-date"><i class="far fa-clock"></i> ${formatDate(note.updatedAt)}</span>
           <div class="note-actions">
@@ -656,24 +665,28 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
       // Title - simpan saat blur
       const titleInput = card.querySelector('.note-title');
       titleInput.addEventListener('blur', function() {
-        const note = notes.find(n => n.id === id);
-        if (note && note.title !== this.value) {
-          note.title = this.value;
-          note.updatedAt = Date.now();
-          saveNotes();
-        }
+        updateNoteField(id, 'title', this.value);
+      });
+      titleInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') this.blur();
       });
 
-      // Body textarea - simpan saat blur
-      const bodyInput = card.querySelector('.note-body-textarea');
-      bodyInput.addEventListener('blur', function() {
-        const note = notes.find(n => n.id === id);
-        if (note && note.body !== this.value) {
-          note.body = this.value;
-          note.updatedAt = Date.now();
-          saveNotes();
-        }
+      // Body textarea - simpan saat blur & auto-resize
+      const bodyTextarea = card.querySelector('.note-body');
+      bodyTextarea.addEventListener('input', function() {
+        autoResize(this);
+        // Simpan dengan debounce sederhana
+        clearTimeout(this._saveTimer);
+        this._saveTimer = setTimeout(() => {
+          updateNoteField(id, 'body', this.value);
+        }, 300);
       });
+      bodyTextarea.addEventListener('blur', function() {
+        clearTimeout(this._saveTimer);
+        updateNoteField(id, 'body', this.value);
+      });
+      // Auto-resize awal
+      setTimeout(() => autoResize(bodyTextarea), 10);
 
       // Pin button
       const pinBtn = card.querySelector('[data-action="pin"]');
@@ -696,12 +709,30 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
         openModal(id);
       });
 
-      // Double-click card (but not on input/button)
+      // Double-click card (but not on input/button) -> open modal
       card.addEventListener('dblclick', function(e) {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.closest('button')) return;
         openModal(id);
       });
     });
+  }
+
+  function updateNoteField(id, field, value) {
+    const note = notes.find(n => n.id === id);
+    if (!note) return;
+    note[field] = value;
+    note.updatedAt = Date.now();
+    // Simpan tapi tanpa render ulang penuh agar textarea tidak kehilangan fokus
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    // Update badge & date saja tanpa re-render penuh
+    countBadge.textContent = notes.length;
+    pinnedBadge.textContent = notes.filter(n => n.pinned).length;
+    // Update date di footer
+    const card = document.querySelector(`.note-card[data-id="${id}"]`);
+    if (card) {
+      const dateEl = card.querySelector('.note-date');
+      if (dateEl) dateEl.innerHTML = `<i class="far fa-clock"></i> ${formatDate(note.updatedAt)}`;
+    }
   }
 
   function togglePin(id) {
@@ -747,12 +778,9 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
   }
 
   // ===== MODAL =====
-  let activeModalId = null;
-
   function openModal(id) {
     const note = notes.find(n => n.id === id);
     if (!note) return;
-    activeModalId = id;
     modalTitle.textContent = note.title || 'Tanpa Judul';
     modalContent.textContent = note.body || '(Kosong)';
     modalOverlay.classList.add('active');
@@ -762,7 +790,6 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
   function closeModal() {
     modalOverlay.classList.remove('active');
     document.body.style.overflow = '';
-    activeModalId = null;
   }
 
   function copyModalContent() {
