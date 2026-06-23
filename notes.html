@@ -119,7 +119,7 @@
 
     .notes-grid {
       display:grid;
-      grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
       gap:18px;
     }
 
@@ -145,7 +145,7 @@
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
-      margin-bottom:8px;
+      margin-bottom:6px;
       gap:8px;
     }
     .note-title {
@@ -166,40 +166,34 @@
       background:rgba(245,200,66,0.06);
       box-shadow:0 0 0 2px var(--gold);
     }
-    .note-body-preview {
+    .note-body-textarea {
       font-size:0.78rem;
       color:var(--text-2);
-      line-height:1.5;
-      max-height: 120px;
-      overflow: hidden;
-      position: relative;
-      cursor:pointer;
-      padding:4px;
+      background:transparent;
+      border:none;
+      outline:none;
+      resize:vertical;
+      width:100%;
+      min-height:70px;
+      max-height:200px;
+      font-family:'Outfit',sans-serif;
+      padding:4px 4px;
       border-radius:4px;
       transition:var(--ease);
-      white-space:pre-wrap;
-      word-break:break-word;
+      line-height:1.5;
+      flex:1;
+      cursor:text;
     }
-    .note-body-preview:hover {
+    .note-body-textarea:focus {
       background:rgba(245,200,66,0.04);
+      box-shadow:0 0 0 2px var(--gold);
     }
-    .note-body-preview::after {
-      content: '…';
-      position:absolute;
-      bottom:0;
-      right:0;
-      background:linear-gradient(to right, transparent, var(--bg-card) 60%);
-      padding-left:20px;
+    .note-body-textarea::-webkit-scrollbar {
+      width:4px;
     }
-    .note-card.pinned .note-body-preview::after {
-      background:linear-gradient(to right, transparent, rgba(245,200,66,0.04) 60%);
-    }
-    .note-body-preview .expand-hint {
-      display:block;
-      font-size:0.6rem;
-      color:var(--gold);
-      margin-top:6px;
-      opacity:0.6;
+    .note-body-textarea::-webkit-scrollbar-thumb {
+      background:rgba(255,215,0,0.2);
+      border-radius:4px;
     }
     .note-footer {
       display:flex;
@@ -237,6 +231,13 @@
     }
     .note-actions .btn-pin:hover {
       background:var(--gold-bg);
+    }
+    .note-actions .btn-expand {
+      color:var(--text-3);
+    }
+    .note-actions .btn-expand:hover {
+      background:var(--gold-bg);
+      color:var(--gold);
     }
 
     .note-card.pinned {
@@ -637,13 +638,11 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
             <i class="fas fa-thumbtack" style="${note.pinned ? 'color:var(--gold);transform:rotate(-45deg);' : 'opacity:0.4;'}"></i>
           </button>
         </div>
-        <div class="note-body-preview" data-action="open-modal">
-          ${escapeHtml(note.body).replace(/\n/g, '<br>')}
-          <span class="expand-hint"><i class="fas fa-expand"></i> Klik untuk lihat lengkap</span>
-        </div>
+        <textarea class="note-body-textarea" placeholder="Tulis catatan di sini..." data-field="body">${escapeHtml(note.body)}</textarea>
         <div class="note-footer">
           <span class="note-date"><i class="far fa-clock"></i> ${formatDate(note.updatedAt)}</span>
           <div class="note-actions">
+            <button class="btn-expand" data-action="expand" title="Lihat lengkap"><i class="fas fa-expand"></i></button>
             <button data-action="delete" title="Hapus catatan"><i class="fas fa-trash"></i></button>
           </div>
         </div>
@@ -654,14 +653,25 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
     grid.querySelectorAll('.note-card').forEach(card => {
       const id = card.dataset.id;
 
-      // Title - simpan saat blur (bukan input)
+      // Title - simpan saat blur
       const titleInput = card.querySelector('.note-title');
       titleInput.addEventListener('blur', function() {
         const note = notes.find(n => n.id === id);
         if (note && note.title !== this.value) {
           note.title = this.value;
           note.updatedAt = Date.now();
-          saveNotes(); // render ulang setelah blur
+          saveNotes();
+        }
+      });
+
+      // Body textarea - simpan saat blur
+      const bodyInput = card.querySelector('.note-body-textarea');
+      bodyInput.addEventListener('blur', function() {
+        const note = notes.find(n => n.id === id);
+        if (note && note.body !== this.value) {
+          note.body = this.value;
+          note.updatedAt = Date.now();
+          saveNotes();
         }
       });
 
@@ -679,16 +689,16 @@ Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 j
         deleteNote(id);
       });
 
-      // Preview click -> open modal
-      const preview = card.querySelector('[data-action="open-modal"]');
-      preview.addEventListener('click', function(e) {
+      // Expand button -> open modal
+      const expandBtn = card.querySelector('[data-action="expand"]');
+      expandBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         openModal(id);
       });
 
       // Double-click card (but not on input/button)
       card.addEventListener('dblclick', function(e) {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
         openModal(id);
       });
     });
