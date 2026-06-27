@@ -357,6 +357,12 @@
             position: relative;
             box-shadow: var(--shadow-xl), var(--shadow-gold);
             backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-frame-wrapper.hidden {
+            display: none;
         }
 
         iframe {
@@ -409,7 +415,29 @@
             text-transform: uppercase;
         }
 
-        /* Mobile */
+        /* ========================================
+           PREDICTOR CONTAINER (embedded)
+           ======================================== */
+        #predictorContainer {
+            flex: 1;
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl), var(--shadow-gold);
+            padding: 20px;
+            position: relative;
+        }
+
+        #predictorContainer.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ========================================
+           Mobile
+           ======================================== */
         .mobile-header {
             display: none;
             padding: 14px 20px;
@@ -472,6 +500,7 @@
             .main-content { padding: 12px; gap: 12px; }
             .top-header { display: none; }
             .content-frame-wrapper { border-radius: var(--radius-md); }
+            #predictorContainer { border-radius: var(--radius-md); padding: 12px; }
         }
 
         @media (min-width: 993px) {
@@ -487,6 +516,731 @@
             .nav-icon { width: 32px; height: 32px; min-width: 32px; font-size: 0.85rem; margin-right: 10px; }
             .nav-title { font-size: 0.75rem; }
             .nav-desc { font-size: 0.55rem; }
+        }
+
+        /* ============================================================
+           PREDICTOR STYLES (scoped under .predictor-container)
+           ============================================================ */
+        .predictor-container {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: transparent;
+            border-radius: inherit;
+            overflow: hidden;
+        }
+
+        .predictor-container .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(18, 22, 32, 0.70);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 22px 24px 24px;
+            border: 1px solid rgba(255, 215, 0, 0.08);
+            transition: background 0.4s, border-color 0.4s;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .predictor-container .panel-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px 16px;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+            flex-shrink: 0;
+        }
+
+        .predictor-container .panel-head-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .predictor-container .panel-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f9b84a, #f59e0b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #1a1e2a;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+        }
+        .predictor-container .panel-title {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #f5e7c8;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+        .predictor-container .panel-subtitle {
+            font-size: 12px;
+            color: rgba(255, 215, 0, 0.50);
+            font-weight: 400;
+            margin-top: 1px;
+        }
+        .predictor-container .panel-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .predictor-container .p-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.04);
+            color: #c8bda8;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .predictor-container .p-badge.b-rose {
+            background: rgba(244, 63, 94, 0.12);
+            color: #f8717a;
+            border-color: rgba(244, 63, 94, 0.10);
+        }
+        .predictor-container .p-badge.b-gold {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.08);
+        }
+        .predictor-container .p-badge.b-cyan {
+            background: rgba(0, 200, 255, 0.08);
+            color: #67e8f9;
+            border-color: rgba(0, 200, 255, 0.06);
+        }
+        .predictor-container #predictorClock {
+            font-variant-numeric: tabular-nums;
+            min-width: 44px;
+            display: inline-block;
+        }
+
+        /* Grid */
+        .predictor-container .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 220px;
+            gap: 18px;
+            flex: 1;
+            min-height: 0;
+        }
+        @media (max-width: 820px) {
+            .predictor-container .tool-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .predictor-container .panel { padding: 16px; }
+        }
+
+        .predictor-container .card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 16px 18px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .predictor-container .card-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            flex: 1;
+        }
+        .predictor-container .card-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .predictor-container .card-top-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(245, 158, 11, 0.10);
+            color: #fbbf24;
+        }
+        .predictor-container .card-top h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #e8ddcc;
+            letter-spacing: 0.3px;
+        }
+
+        .predictor-container .action-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .predictor-container .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.04);
+            color: #d4cbb8;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+        }
+        .predictor-container .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.30);
+        }
+        .predictor-container .btn-fire {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #1a1e2a;
+            border: none;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.20);
+        }
+        .predictor-container .btn-fire:hover {
+            box-shadow: 0 6px 24px rgba(245, 158, 11, 0.35);
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        }
+        .predictor-container .btn-ghost {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .predictor-container .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .predictor-container .market-select {
+            position: relative;
+            flex: 1;
+            min-width: 140px;
+        }
+        .predictor-container .market-input {
+            width: 100%;
+            padding: 8px 14px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.30);
+            color: #e8ddcc;
+            font-size: 13px;
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s;
+            cursor: pointer;
+        }
+        .predictor-container .market-input::placeholder {
+            color: rgba(255, 255, 255, 0.20);
+        }
+        .predictor-container .market-input:focus {
+            border-color: rgba(245, 158, 11, 0.30);
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.06);
+        }
+        .predictor-container .market-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: rgba(18, 22, 32, 0.96);
+            backdrop-filter: blur(12px);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            max-height: 220px;
+            overflow-y: auto;
+            display: none;
+            z-index: 60;
+            padding: 4px 0;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.60);
+        }
+        .predictor-container .market-dropdown.open {
+            display: block;
+        }
+        .predictor-container .market-opt {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background 0.12s;
+            color: #d4cbb8;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .predictor-container .market-opt:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+        .predictor-container .market-opt img {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            object-fit: contain;
+            background: rgba(0, 0, 0, 0.20);
+        }
+        .predictor-container .market-dropdown::-webkit-scrollbar {
+            width: 3px;
+        }
+        .predictor-container .market-dropdown::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.15);
+            border-radius: 10px;
+        }
+
+        .predictor-container .output-wrap {
+            flex: 1;
+            min-height: 0;
+            margin-top: 4px;
+        }
+        .predictor-container .output-box {
+            background: rgba(0, 0, 0, 0.30);
+            border-radius: 14px;
+            padding: 16px 18px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.65;
+            color: #d4d0c4;
+            white-space: pre-wrap;
+            word-break: break-word;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            min-height: 260px;
+            max-height: 100%;
+            overflow-y: auto;
+            height: 100%;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .predictor-container .output-box.flash {
+            border-color: rgba(245, 158, 11, 0.20);
+            box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.04), inset 0 0 30px rgba(245, 158, 11, 0.02);
+        }
+        .predictor-container .output-box::-webkit-scrollbar {
+            width: 3px;
+        }
+        .predictor-container .output-box::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.12);
+            border-radius: 10px;
+        }
+
+        /* Side panel */
+        .predictor-container .side-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 20px 14px 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .predictor-container .side-ring {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.04);
+            border: 2px solid rgba(255, 215, 0, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            transition: border-color 0.3s;
+        }
+        .predictor-container .side-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            object-fit: contain;
+            background: rgba(0, 0, 0, 0.20);
+            transition: transform 0.4s ease;
+        }
+        .predictor-container .side-logo.anim {
+            animation: logoPop 0.45s ease forwards;
+        }
+        @keyframes logoPop {
+            0% { transform: scale(0.60) rotate(-6deg); opacity: 0.4; }
+            60% { transform: scale(1.10) rotate(2deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .predictor-container .side-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #f5e7c8;
+            letter-spacing: 0.5px;
+            margin-bottom: 1px;
+        }
+        .predictor-container .side-sub {
+            font-size: 10px;
+            color: rgba(255, 215, 0, 0.30);
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .predictor-container .side-divider {
+            width: 40px;
+            height: 2px;
+            border-radius: 4px;
+            background: rgba(255, 215, 0, 0.08);
+            margin: 14px auto 16px;
+        }
+        .predictor-container .side-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 12px;
+            width: 100%;
+            margin-bottom: 14px;
+        }
+        .predictor-container .s-stat {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            padding: 8px 4px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+        .predictor-container .s-stat-val {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fbbf24;
+            letter-spacing: 0.3px;
+        }
+        .predictor-container .s-stat-lbl {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: rgba(255, 255, 255, 0.15);
+            margin-top: 1px;
+        }
+        .predictor-container .disclaimer {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: rgba(255, 215, 0, 0.18);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 6px 12px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+        .predictor-container .disclaimer i {
+            color: rgba(255, 215, 0, 0.12);
+        }
+
+        /* Theme overrides for predictor */
+        [data-theme="light"] .predictor-container .panel {
+            background: rgba(245, 240, 235, 0.85);
+            border-color: rgba(180, 150, 80, 0.12);
+        }
+        [data-theme="light"] .predictor-container .panel-title {
+            color: #3d2e1a;
+            text-shadow: none;
+        }
+        [data-theme="light"] .predictor-container .panel-subtitle {
+            color: rgba(80, 60, 30, 0.50);
+        }
+        [data-theme="light"] .predictor-container .p-badge {
+            background: rgba(200, 180, 150, 0.10);
+            color: #4d3e28;
+            border-color: rgba(180, 150, 80, 0.08);
+        }
+        [data-theme="light"] .predictor-container .p-badge.b-rose {
+            background: rgba(220, 50, 70, 0.08);
+            color: #b91c2c;
+        }
+        [data-theme="light"] .predictor-container .p-badge.b-gold {
+            background: rgba(200, 150, 30, 0.08);
+            color: #8a6d0b;
+        }
+        [data-theme="light"] .predictor-container .p-badge.b-cyan {
+            background: rgba(0, 160, 200, 0.08);
+            color: #0a6b80;
+        }
+        [data-theme="light"] .predictor-container .card {
+            background: rgba(255, 248, 240, 0.40);
+            border-color: rgba(200, 180, 150, 0.10);
+        }
+        [data-theme="light"] .predictor-container .card-top h3 {
+            color: #3d2e1a;
+        }
+        [data-theme="light"] .predictor-container .card-top-icon {
+            background: rgba(200, 150, 30, 0.08);
+            color: #a67c0e;
+        }
+        [data-theme="light"] .predictor-container .btn {
+            background: rgba(200, 180, 150, 0.08);
+            color: #3d2e1a;
+            border-color: rgba(180, 150, 80, 0.08);
+        }
+        [data-theme="light"] .predictor-container .btn-fire {
+            background: linear-gradient(135deg, #d4a02a, #b8860b);
+            color: #fff;
+        }
+        [data-theme="light"] .predictor-container .btn-fire:hover {
+            background: linear-gradient(135deg, #e0b030, #c8920e);
+        }
+        [data-theme="light"] .predictor-container .btn-ghost {
+            background: rgba(200, 180, 150, 0.06);
+            border-color: rgba(180, 150, 80, 0.08);
+        }
+        [data-theme="light"] .predictor-container .btn-ghost:hover {
+            background: rgba(200, 180, 150, 0.12);
+        }
+        [data-theme="light"] .predictor-container .market-input {
+            background: rgba(255, 248, 240, 0.50);
+            border-color: rgba(180, 150, 80, 0.10);
+            color: #2d1f0e;
+        }
+        [data-theme="light"] .predictor-container .market-input::placeholder {
+            color: rgba(80, 60, 30, 0.30);
+        }
+        [data-theme="light"] .predictor-container .market-input:focus {
+            border-color: rgba(180, 150, 80, 0.30);
+        }
+        [data-theme="light"] .predictor-container .market-dropdown {
+            background: rgba(245, 240, 235, 0.96);
+            border-color: rgba(180, 150, 80, 0.08);
+        }
+        [data-theme="light"] .predictor-container .market-opt {
+            color: #3d2e1a;
+        }
+        [data-theme="light"] .predictor-container .market-opt:hover {
+            background: rgba(200, 180, 150, 0.08);
+        }
+        [data-theme="light"] .predictor-container .output-box {
+            background: rgba(255, 248, 240, 0.40);
+            color: #2d1f0e;
+            border-color: rgba(180, 150, 80, 0.06);
+        }
+        [data-theme="light"] .predictor-container .output-box.flash {
+            border-color: rgba(180, 150, 80, 0.20);
+        }
+        [data-theme="light"] .predictor-container .side-panel {
+            background: rgba(255, 248, 240, 0.30);
+            border-color: rgba(180, 150, 80, 0.06);
+        }
+        [data-theme="light"] .predictor-container .side-name {
+            color: #3d2e1a;
+        }
+        [data-theme="light"] .predictor-container .side-sub {
+            color: rgba(80, 60, 30, 0.35);
+        }
+        [data-theme="light"] .predictor-container .s-stat {
+            background: rgba(255, 248, 240, 0.20);
+            border-color: rgba(180, 150, 80, 0.04);
+        }
+        [data-theme="light"] .predictor-container .s-stat-val {
+            color: #a67c0e;
+        }
+        [data-theme="light"] .predictor-container .s-stat-lbl {
+            color: rgba(80, 60, 30, 0.30);
+        }
+        [data-theme="light"] .predictor-container .disclaimer {
+            color: rgba(80, 60, 30, 0.25);
+            border-color: rgba(180, 150, 80, 0.04);
+        }
+        [data-theme="light"] .predictor-container .disclaimer i {
+            color: rgba(180, 150, 80, 0.10);
+        }
+        [data-theme="light"] .predictor-container .side-ring {
+            border-color: rgba(180, 150, 80, 0.10);
+        }
+
+        [data-theme="cyan"] .predictor-container .panel {
+            background: rgba(10, 30, 45, 0.82);
+            border-color: rgba(0, 255, 255, 0.08);
+        }
+        [data-theme="cyan"] .predictor-container .panel-title {
+            color: #b0f0ff;
+            text-shadow: 0 0 20px rgba(0, 200, 255, 0.15);
+        }
+        [data-theme="cyan"] .predictor-container .panel-subtitle {
+            color: rgba(0, 255, 255, 0.40);
+        }
+        [data-theme="cyan"] .predictor-container .p-badge {
+            background: rgba(0, 255, 255, 0.04);
+            color: #8ddbff;
+            border-color: rgba(0, 255, 255, 0.04);
+        }
+        [data-theme="cyan"] .predictor-container .p-badge.b-rose {
+            background: rgba(0, 255, 255, 0.06);
+            color: #ff6b7a;
+            border-color: rgba(0, 255, 255, 0.04);
+        }
+        [data-theme="cyan"] .predictor-container .p-badge.b-gold {
+            background: rgba(0, 255, 255, 0.06);
+            color: #ffe066;
+            border-color: rgba(0, 255, 255, 0.04);
+        }
+        [data-theme="cyan"] .predictor-container .p-badge.b-cyan {
+            background: rgba(0, 255, 255, 0.08);
+            color: #7ff5ff;
+            border-color: rgba(0, 255, 255, 0.06);
+        }
+        [data-theme="cyan"] .predictor-container .card {
+            background: rgba(0, 200, 255, 0.03);
+            border-color: rgba(0, 255, 255, 0.04);
+        }
+        [data-theme="cyan"] .predictor-container .card-top h3 {
+            color: #b0f0ff;
+        }
+        [data-theme="cyan"] .predictor-container .card-top-icon {
+            background: rgba(0, 255, 255, 0.06);
+            color: #4dd9ff;
+        }
+        [data-theme="cyan"] .predictor-container .btn {
+            background: rgba(0, 255, 255, 0.03);
+            color: #9ddbff;
+            border-color: rgba(0, 255, 255, 0.04);
+        }
+        [data-theme="cyan"] .predictor-container .btn-fire {
+            background: linear-gradient(135deg, #00d4ff, #0088cc);
+            color: #0a1e2d;
+            box-shadow: 0 4px 16px rgba(0, 200, 255, 0.20);
+        }
+        [data-theme="cyan"] .predictor-container .btn-fire:hover {
+            box-shadow: 0 6px 28px rgba(0, 200, 255, 0.35);
+            background: linear-gradient(135deg, #33ddff, #0099dd);
+        }
+        [data-theme="cyan"] .predictor-container .btn-ghost {
+            background: rgba(0, 255, 255, 0.02);
+            border-color: rgba(0, 255, 255, 0.04);
+        }
+        [data-theme="cyan"] .predictor-container .btn-ghost:hover {
+            background: rgba(0, 255, 255, 0.06);
+        }
+        [data-theme="cyan"] .predictor-container .market-input {
+            background: rgba(0, 200, 255, 0.03);
+            border-color: rgba(0, 255, 255, 0.06);
+            color: #b0f0ff;
+        }
+        [data-theme="cyan"] .predictor-container .market-input::placeholder {
+            color: rgba(0, 255, 255, 0.15);
+        }
+        [data-theme="cyan"] .predictor-container .market-input:focus {
+            border-color: rgba(0, 255, 255, 0.30);
+        }
+        [data-theme="cyan"] .predictor-container .market-dropdown {
+            background: rgba(10, 30, 45, 0.96);
+            border-color: rgba(0, 255, 255, 0.04);
+        }
+        [data-theme="cyan"] .predictor-container .market-opt {
+            color: #b0f0ff;
+        }
+        [data-theme="cyan"] .predictor-container .market-opt:hover {
+            background: rgba(0, 255, 255, 0.04);
+        }
+        [data-theme="cyan"] .predictor-container .output-box {
+            background: rgba(0, 200, 255, 0.03);
+            color: #b0f0ff;
+            border-color: rgba(0, 255, 255, 0.03);
+        }
+        [data-theme="cyan"] .predictor-container .output-box.flash {
+            border-color: rgba(0, 255, 255, 0.15);
+        }
+        [data-theme="cyan"] .predictor-container .side-panel {
+            background: rgba(0, 200, 255, 0.02);
+            border-color: rgba(0, 255, 255, 0.03);
+        }
+        [data-theme="cyan"] .predictor-container .side-name {
+            color: #b0f0ff;
+        }
+        [data-theme="cyan"] .predictor-container .side-sub {
+            color: rgba(0, 255, 255, 0.25);
+        }
+        [data-theme="cyan"] .predictor-container .s-stat {
+            background: rgba(0, 255, 255, 0.02);
+            border-color: rgba(0, 255, 255, 0.02);
+        }
+        [data-theme="cyan"] .predictor-container .s-stat-val {
+            color: #4dd9ff;
+        }
+        [data-theme="cyan"] .predictor-container .s-stat-lbl {
+            color: rgba(0, 255, 255, 0.15);
+        }
+        [data-theme="cyan"] .predictor-container .disclaimer {
+            color: rgba(0, 255, 255, 0.12);
+            border-color: rgba(0, 255, 255, 0.02);
+        }
+        [data-theme="cyan"] .predictor-container .disclaimer i {
+            color: rgba(0, 255, 255, 0.08);
+        }
+        [data-theme="cyan"] .predictor-container .side-ring {
+            border-color: rgba(0, 255, 255, 0.06);
+        }
+
+        /* Toast khusus predictor (di dalam container) */
+        .predictor-container .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: rgba(18, 22, 32, 0.94);
+            backdrop-filter: blur(14px);
+            padding: 12px 24px 12px 18px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.06);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.50);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.40s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 999;
+        }
+        .predictor-container .toast.on {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0px);
+            pointer-events: auto;
+        }
+        .predictor-container .toast-ic {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(52, 211, 153, 0.12);
+            color: #34d399;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .predictor-container .toast-msg {
+            display: flex;
+            flex-direction: column;
+        }
+        .predictor-container .toast-msg span {
+            font-weight: 600;
+            font-size: 13px;
+            color: #e8ddcc;
+        }
+        .predictor-container .toast-msg small {
+            font-size: 10px;
+            color: rgba(255, 215, 0, 0.20);
+            margin-top: -1px;
+        }
+        [data-theme="light"] .predictor-container .toast {
+            background: rgba(245, 240, 235, 0.95);
+            border-color: rgba(180, 150, 80, 0.08);
+        }
+        [data-theme="light"] .predictor-container .toast-msg span {
+            color: #3d2e1a;
+        }
+        [data-theme="light"] .predictor-container .toast-msg small {
+            color: rgba(80, 60, 30, 0.30);
+        }
+        [data-theme="cyan"] .predictor-container .toast {
+            background: rgba(10, 30, 45, 0.94);
+            border-color: rgba(0, 255, 255, 0.06);
+        }
+        [data-theme="cyan"] .predictor-container .toast-msg span {
+            color: #b0f0ff;
+        }
+        [data-theme="cyan"] .predictor-container .toast-msg small {
+            color: rgba(0, 255, 255, 0.15);
         }
     </style>
 </head>
@@ -573,12 +1327,12 @@
                 </div>
             </button>
 
-            <!-- Prediksi Generator -->
-            <button class="nav-item" onclick="navigate(this, 'prediksi-generator.html', 'Prediksi Generator', 'Buat prediksi &amp; tabel', 'fa-wand-magic-sparkles')">
-                <div class="nav-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <!-- Prediksi Generator (sekarang mengarah ke predictor) -->
+            <button class="nav-item" onclick="navigate(this, 'predictor', 'Lottery Predictor', 'Prediksi angka semua pasaran', 'fa-dice')">
+                <div class="nav-icon"><i class="fa-solid fa-dice"></i></div>
                 <div class="nav-text">
-                    <span class="nav-title">Prediksi Generator</span>
-                    <span class="nav-desc">Buat prediksi &amp; tabel</span>
+                    <span class="nav-title">Lottery Predictor</span>
+                    <span class="nav-desc">Prediksi angka</span>
                 </div>
             </button>
 
@@ -617,12 +1371,122 @@
         </header>
 
         <!-- Iframe -->
-        <div class="content-frame-wrapper">
+        <div class="content-frame-wrapper" id="frameWrapper">
             <div class="loader-overlay hidden" id="loader">
                 <div class="spinner"></div>
                 <div class="loading-text">Memuat Sistem…</div>
             </div>
             <iframe src="ticket.html" id="mainFrame" title="Content" class="loaded"></iframe>
+        </div>
+
+        <!-- ========================================
+        PREDICTOR CONTAINER (embedded)
+        ======================================== -->
+        <div id="predictorContainer">
+            <div class="predictor-container">
+                <div class="panel">
+                    <!-- Header -->
+                    <div class="panel-head">
+                        <div class="panel-head-left">
+                            <div class="panel-icon"><i class="fas fa-dice"></i></div>
+                            <div>
+                                <div class="panel-title">LOTTERY PREDICTOR</div>
+                                <div class="panel-subtitle">Prediksi angka untuk semua pasaran</div>
+                            </div>
+                        </div>
+                        <div class="panel-badges">
+                            <div class="p-badge b-rose"><i class="fas fa-dice"></i> 24 Pasaran</div>
+                            <div class="p-badge b-gold"><i class="fas fa-bolt"></i> Real-time</div>
+                            <div class="p-badge b-cyan"><i class="fas fa-clock"></i> <span id="predictorClock">07:01</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Tool Grid -->
+                    <div class="tool-grid">
+
+                        <!-- Main -->
+                        <div class="card">
+                            <div class="card-inner">
+                                <div class="card-top">
+                                    <div class="card-top-icon icon-predict"><i class="fas fa-wand-magic-sparkles"></i></div>
+                                    <h3>Generator</h3>
+                                </div>
+                                <div class="action-bar">
+                                    <button class="btn btn-fire" id="btnGenerate">
+                                        <i class="fas fa-dice"></i>
+                                        <span>Acak Angka</span>
+                                    </button>
+                                    <button class="btn btn-ghost" id="btnCopy">
+                                        <i class="fas fa-copy"></i>
+                                        <span>Copy</span>
+                                    </button>
+                                    <div class="market-select">
+                                        <input type="text" class="market-input" id="marketInput" placeholder="Pilih Pasaran..." autocomplete="off">
+                                        <div class="market-dropdown" id="marketDropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="output-wrap">
+                                    <div class="output-box flash" id="predictOutput">PREDIKSI HOKI DRAW
+Sabtu, 27 Jun 2026
+─────────────────────────
+BBFS KUAT : 74397929
+Angka Ikut : 7439
+5D (BB)   : 69001  12172  53296  82146
+4D (BB)   : 4780  3140  3993  4569
+3D (BB)   : 992  084  256  420
+2D (BB)   : 09  45  88  86  08  71  56  79  15  68
+─────────────────────────
+Colok Bebas : 7 / 4
+Colok Macau : 75 / 27 / 21
+Colok Shio  : HARIMAU / ULAR / MONYET
+Invest Twin : 33 / 99 / 77
+─────────────────────────
+UPS - UTAMAKAN PREDIKSI SENDIRI</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Side -->
+                        <div class="side-panel">
+                            <div class="side-ring">
+                                <img id="marketLogo" class="side-logo" src="https://png-res.png999.com/assets/LOTTERY-Web/cardList/HKDW/icon/icon.png" alt="Market">
+                            </div>
+                            <div class="side-name" id="marketName">HOKI DRAW</div>
+                            <div class="side-sub">Official Prediction</div>
+                            <div class="side-divider"></div>
+                            <div class="side-stats">
+                                <div class="s-stat">
+                                    <div class="s-stat-val" id="statBBFS">74397929</div>
+                                    <div class="s-stat-lbl">BBFS</div>
+                                </div>
+                                <div class="s-stat">
+                                    <div class="s-stat-val" id="statAI">7439</div>
+                                    <div class="s-stat-lbl">Angka Ikut</div>
+                                </div>
+                                <div class="s-stat">
+                                    <div class="s-stat-val" id="statCB">7/4</div>
+                                    <div class="s-stat-lbl">Colok Bebas</div>
+                                </div>
+                                <div class="s-stat">
+                                    <div class="s-stat-val" id="statShio">Har</div>
+                                    <div class="s-stat-lbl">Shio</div>
+                                </div>
+                            </div>
+                            <div class="disclaimer">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>UPS - Utamakan Prediksi Sendiri</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Toast khusus predictor -->
+                <div class="toast" id="predictorToast">
+                    <div class="toast-ic"><i class="fas fa-check"></i></div>
+                    <div class="toast-msg"><span id="tMsg">OK</span><small id="tSub"></small></div>
+                </div>
+            </div>
         </div>
 
     </main>
@@ -644,13 +1508,16 @@
                 pageTitle: document.getElementById('pageTitle'),
                 pageDesc: document.getElementById('pageDesc'),
                 headerIcon: document.getElementById('headerIcon'),
-                navItems: document.querySelectorAll('.nav-item')
+                navItems: document.querySelectorAll('.nav-item'),
+                frameWrapper: document.getElementById('frameWrapper'),
+                predictorContainer: document.getElementById('predictorContainer')
             };
 
             let currentUrl = 'ticket.html';
+            let isPredictorActive = false;
 
             // ==========================================
-            // CLOCK
+            // CLOCK (dashboard)
             // ==========================================
             function updateClock() {
                 const now = new Date();
@@ -677,18 +1544,32 @@
                 els.pageDesc.textContent = desc;
                 els.headerIcon.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
 
-                // Same page?
-                if (currentUrl === url) {
-                    if (window.innerWidth <= 992) toggleSidebar();
-                    return;
+                // Tampilkan predictor atau iframe
+                if (url === 'predictor') {
+                    // Tampilkan predictor, sembunyikan iframe
+                    els.frameWrapper.classList.add('hidden');
+                    els.predictorContainer.classList.add('active');
+                    isPredictorActive = true;
+                    // Inisialisasi predictor jika belum
+                    if (typeof initPredictor === 'function') {
+                        initPredictor();
+                    }
+                } else {
+                    // Tampilkan iframe, sembunyikan predictor
+                    els.frameWrapper.classList.remove('hidden');
+                    els.predictorContainer.classList.remove('active');
+                    isPredictorActive = false;
+
+                    // Load iframe jika beda
+                    if (currentUrl !== url) {
+                        currentUrl = url;
+                        els.loader.classList.remove('hidden');
+                        els.iframe.classList.remove('loaded');
+                        els.iframe.src = url;
+                    }
                 }
 
-                // Load
-                currentUrl = url;
-                els.loader.classList.remove('hidden');
-                els.iframe.classList.remove('loaded');
-                els.iframe.src = url;
-
+                // Close sidebar mobile
                 if (window.innerWidth <= 992) toggleSidebar();
             }
 
@@ -708,7 +1589,6 @@
                 els.backdrop.classList.toggle('active');
             };
 
-            // Close sidebar on resize to desktop
             window.addEventListener('resize', function() {
                 if (window.innerWidth > 992) {
                     els.sidebar.classList.remove('active');
@@ -716,8 +1596,275 @@
                 }
             });
 
-            // Expose navigate globally
             window.navigate = navigate;
+
+            // ============================================================
+            // PREDICTOR LOGIC (diinisialisasi saat pertama kali ditampilkan)
+            // ============================================================
+            window.initPredictor = function() {
+                // Hanya jalankan sekali
+                if (window._predictorInited) return;
+                window._predictorInited = true;
+
+                // DOM refs di dalam predictor
+                var $p = function(id) {
+                    var el = document.getElementById(id);
+                    if (!el) console.warn('Predictor: element not found', id);
+                    return el;
+                };
+
+                var marketInput = $p('marketInput');
+                var marketDropdown = $p('marketDropdown');
+                var predictOutput = $p('predictOutput');
+                var btnGenerate = $p('btnGenerate');
+                var btnCopy = $p('btnCopy');
+                var marketLogo = $p('marketLogo');
+                var marketName = $p('marketName');
+                var statBBFS = $p('statBBFS');
+                var statAI = $p('statAI');
+                var statCB = $p('statCB');
+                var statShio = $p('statShio');
+                var predictorClock = $p('predictorClock');
+
+                // Toast
+                var toastEl = document.getElementById('predictorToast');
+                var tMsg = document.getElementById('tMsg');
+                var tSub = document.getElementById('tSub');
+
+                function toast(m, s) {
+                    if (!tMsg || !tSub || !toastEl) return;
+                    tMsg.textContent = m;
+                    tSub.textContent = s || '';
+                    toastEl.classList.add('on');
+                    clearTimeout(toastEl._t);
+                    toastEl._t = setTimeout(function() { toastEl.classList.remove('on'); }, 2800);
+                }
+
+                var currentMarket = 'Hoki Draw';
+                var currentPrediction = '';
+
+                var markets = [
+                    { name: "Bangkok", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/BKK01/icon/icon.png" },
+                    { name: "Brunei", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/BRU14/icon/icon.png" },
+                    { name: "Bullseye", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/BLE/icon/icon.png" },
+                    { name: "California", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/CLF/icon/icon.png" },
+                    { name: "Carolina Evening", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/NCD2/icon/icon.png" },
+                    { name: "Chelsea", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/CHS11/icon/icon.png" },
+                    { name: "Florida", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/FLM/icon/icon.png" },
+                    { name: "New York", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/NYM/icon/icon.png" },
+                    { name: "Hoki Draw", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/HKDW/icon/icon.png" },
+                    { name: "Hongkong Lotto", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/HKGLT/icon/icon.png" },
+                    { name: "Huahin", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/HUA02/icon/icon.png" },
+                    { name: "Kentucky", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/KTE/icon/icon.png" },
+                    { name: "King Kong4D", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/KK1/icon/icon.png" },
+                    { name: "Magnum4D", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/MAG/icon/icon.png" },
+                    { name: "Nevada", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/NVD/icon/icon.png" },
+                    { name: "North Carolina Day", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/NCD/icon/icon.png" },
+                    { name: "Oregon", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/ORG12/icon/icon.png" },
+                    { name: "PCSO", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/PCO/icon/icon.png" },
+                    { name: "Poipet", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/PPT12/icon/icon.png" },
+                    { name: "Singapore", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/SGD/icon/icon.png" },
+                    { name: "Sydney Lotto", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/SYDLT/icon/icon.png" },
+                    { name: "Toto Cambodia Live", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/TTC/icon/icon.png" },
+                    { name: "Toto Macau", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/TTM1/icon/icon.png" },
+                    { name: "Toto Mali", img: "https://png-res.png999.com/assets/LOTTERY-Web/cardList/MALI15/icon/icon.png" }
+                ];
+
+                var shioData = [
+                    { n: "Kuda", v: "01,13,25,37,49,61,73,85,97" },
+                    { n: "Ular", v: "02,14,26,38,50,62,74,86,98" },
+                    { n: "Naga", v: "03,15,27,39,51,63,75,87,99" },
+                    { n: "Kelinci", v: "04,16,28,40,52,64,76,88,00" },
+                    { n: "Harimau", v: "05,17,29,41,53,65,77,89" },
+                    { n: "Kerbau", v: "06,18,30,42,54,66,78,90" },
+                    { n: "Tikus", v: "07,19,31,43,55,67,79,91" },
+                    { n: "Babi", v: "08,20,32,44,56,68,80,92" },
+                    { n: "Anjing", v: "09,21,33,45,57,69,81,93" },
+                    { n: "Ayam", v: "10,22,34,46,58,70,82,94" },
+                    { n: "Monyet", v: "11,23,35,47,59,71,83,95" },
+                    { n: "Kambing", v: "12,24,36,48,60,72,84,96" }
+                ];
+
+                // Dropdown
+                function showList() { if (marketDropdown) { marketDropdown.classList.add('open');
+                        filterList(); } }
+
+                function filterList() {
+                    if (!marketDropdown || !marketInput) return;
+                    var q = marketInput.value.toUpperCase();
+                    var f = markets.filter(function(m) { return m.name.toUpperCase().indexOf(q) !== -1; });
+                    marketDropdown.innerHTML = f.map(function(m) {
+                        return '<div class="market-opt" data-name="' + m.name + '"><img src="' + m.img + '" alt="' + m
+                            .name + '"><span>' + m.name + '</span></div>';
+                    }).join('');
+                    marketDropdown.querySelectorAll('.market-opt').forEach(function(opt) {
+                        opt.addEventListener('click', function() {
+                            currentMarket = opt.dataset.name;
+                            if (marketInput) marketInput.value = opt.dataset.name;
+                            if (marketDropdown) marketDropdown.classList.remove('open');
+                            generate('market');
+                        });
+                    });
+                }
+
+                if (marketInput) {
+                    marketInput.addEventListener('focus', showList);
+                    marketInput.addEventListener('input', filterList);
+                }
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.market-select') && marketDropdown) {
+                        marketDropdown.classList.remove('open');
+                    }
+                });
+
+                // Helpers
+                function rd(len) { var s = ''; for (var j = 0; j < len; j++) s += Math.floor(Math.random() * 10)
+                        .toString(); return s; }
+
+                function rm(len, count) { var a = []; for (var i = 0; i < count; i++) a.push(rd(len)); return a.join(
+                    '  '); }
+
+                // Generate
+                function generate(type) {
+                    var m = null;
+                    for (var i = 0; i < markets.length; i++) { if (markets[i].name === currentMarket) { m = markets[i];
+                            break; } }
+                    if (!m) m = markets[8];
+
+                    var now = new Date();
+                    var days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+                    var ds = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now
+                    .getFullYear();
+
+                    var bbfs = '';
+                    for (var b = 0; b < 8; b++) bbfs += Math.floor(Math.random() * 10).toString();
+                    var ai = bbfs.substring(0, 4);
+                    var cb = bbfs[0] + ' / ' + bbfs[1];
+
+                    var ss = shioData.slice().sort(function() { return 0.5 - Math.random(); });
+                    var topShio = ss.slice(0, 3).map(function(s) { return s.n.toUpperCase(); }).join(' / ');
+
+                    var out = 'PREDIKSI ' + m.name.toUpperCase() + '\n';
+                    out += ds + '\n';
+                    out += '─────────────────────────\n';
+                    out += 'BBFS KUAT : ' + bbfs + '\n';
+                    out += 'Angka Ikut : ' + ai + '\n';
+                    if (currentMarket === 'Hoki Draw') out += '5D (BB)   : ' + rm(5, 4) + '\n';
+                    out += '4D (BB)   : ' + rm(4, 4) + '\n';
+                    out += '3D (BB)   : ' + rm(3, 4) + '\n';
+                    out += '2D (BB)   : ' + rm(2, 10) + '\n';
+                    out += '─────────────────────────\n';
+                    out += 'Colok Bebas : ' + cb + '\n';
+                    out += 'Colok Macau : ' + rd(2) + ' / ' + rd(2) + ' / ' + rd(2) + '\n';
+                    out += 'Colok Shio  : ' + topShio + '\n';
+                    out += 'Invest Twin : ' + bbfs[2] + bbfs[2] + ' / ' + bbfs[3] + bbfs[3] + ' / ' + bbfs[4] + bbfs[
+                        4] + '\n';
+                    out += '─────────────────────────\n';
+                    out += 'UPS - UTAMAKAN PREDIKSI SENDIRI';
+
+                    currentPrediction = out;
+
+                    if (predictOutput) {
+                        predictOutput.textContent = out;
+                        predictOutput.classList.remove('flash');
+                        void predictOutput.offsetWidth;
+                        predictOutput.classList.add('flash');
+                    }
+
+                    if (marketLogo) {
+                        if (type === 'market') { marketLogo.classList.remove('anim');
+                            void marketLogo.offsetWidth;
+                            marketLogo.classList.add('anim'); }
+                        marketLogo.src = m.img;
+                    }
+                    if (marketName) marketName.textContent = m.name.toUpperCase();
+
+                    if (statBBFS) statBBFS.textContent = bbfs;
+                    if (statAI) statAI.textContent = ai;
+                    if (statCB) statCB.textContent = bbfs[0] + '/' + bbfs[1];
+                    if (statShio) statShio.textContent = ss[0].n.substring(0, 3);
+
+                    if (type === 'btn') toast('Angka berhasil diacak', 'Prediksi baru di-generate');
+                    if (type === 'market') toast('Pasaran terpilih', m.name);
+                }
+
+                // Event listeners
+                if (btnGenerate) btnGenerate.addEventListener('click', function() { generate('btn'); });
+                if (btnCopy) {
+                    btnCopy.addEventListener('click', function() {
+                        if (!currentPrediction) generate('copy');
+                        navigator.clipboard.writeText(currentPrediction).then(function() {
+                            toast('Berhasil disalin!', 'Prediksi di clipboard');
+                        }).catch(function() {
+                            toast('Gagal menyalin', 'Coba manual copy');
+                        });
+                    });
+                }
+
+                // Clock predictor
+                function tickPredictor() {
+                    if (!predictorClock) return;
+                    var n = new Date();
+                    predictorClock.textContent = String(n.getHours()).padStart(2, '0') + ':' + String(n.getMinutes())
+                        .padStart(2, '0');
+                }
+                tickPredictor();
+                setInterval(tickPredictor, 10000);
+
+                // Init
+                if (marketInput) marketInput.value = 'Hoki Draw';
+                generate('init');
+
+                // Theme sync (already handled by dashboard)
+                // Re-apply theme if needed
+                var savedTheme = localStorage.getItem('cs-theme');
+                var validThemes = ['dark', 'light', 'cyan'];
+                if (savedTheme && validThemes.includes(savedTheme)) {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+
+                // Listen for storage changes from dashboard
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'cs-theme') {
+                        var newTheme = e.newValue;
+                        if (newTheme && validThemes.includes(newTheme)) {
+                            document.documentElement.setAttribute('data-theme', newTheme);
+                        }
+                    }
+                });
+
+                window.addEventListener('message', function(e) {
+                    if (e.data && e.data.type === 'themeChange' && validThemes.includes(e.data.theme)) {
+                        document.documentElement.setAttribute('data-theme', e.data.theme);
+                    }
+                });
+
+                console.log('Predictor initialized');
+            };
+
+            // Inisialisasi predictor saat pertama kali predictor aktif (tapi kita panggil dari navigate)
+            // Tapi kita juga bisa langsung panggil jika predictor aktif di awal? Tidak, defaultnya tidak aktif.
+            // Kita akan panggil dari navigate.
+
+            // Tapi kita perlu memastikan bahwa jika halaman dimuat dan menu predictor tidak aktif, tidak apa.
+            // Kita set active pertama ke Kode Tiket.
+
+            // Set initial active
+            var firstNav = document.querySelector('.nav-item.active');
+            if (!firstNav) {
+                var first = document.querySelector('.nav-item');
+                if (first) first.classList.add('active');
+            }
+
+            // Jika currentUrl adalah ticket.html, maka frame sudah terlihat, predictor tidak aktif.
+            // Kita set frame wrapper visible, predictor hidden (default)
+            els.frameWrapper.classList.remove('hidden');
+            els.predictorContainer.classList.remove('active');
+
+            // Tapi jika user mengklik predictor, navigate akan dipanggil dan initPredictor dijalankan.
 
         })();
     </script>
