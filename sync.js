@@ -1,8 +1,6 @@
 // =============================================
 // SYNC.JS - Sinkronisasi Cloud dengan JSONBin.io
 // =============================================
-alert('sync.js loaded!');
-console.log('sync.js loaded!');
 const BIN_KEY = 'latoto_jsonbin_bin';
 const API_KEY_KEY = 'latoto_jsonbin_key';
 
