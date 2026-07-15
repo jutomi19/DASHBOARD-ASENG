@@ -1,7 +1,3 @@
-<script>
-  console.log('Script bottom berjalan');
-  alert('Script bottom berjalan');
-</script>
 <!DOCTYPE html>
 <html lang="id" data-theme="dark">
 <head>
@@ -494,6 +490,11 @@
   <div class="toast-ic"><i class="fas fa-check"></i></div>
   <div class="toast-msg"><span id="tMsg">OK</span><small id="tSub"></small></div>
 </div>
+
+<!-- ============================================================ -->
+<!-- LOAD SYNC.JS DULU (WAJIB) -->
+<!-- ============================================================ -->
+<script src="sync.js"></script>
 
 <script>
 (function(){
@@ -1465,8 +1466,7 @@ Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw and
   // ============================================================
   // TAMBAHAN UNTUK SINKRONISASI DENGAN JSONBIN
   // ============================================================
-  // Import sync.js dan mulai sinkronisasi
-  // Pastikan file sync.js berada di folder yang sama
+  // sync.js sudah di-load di atas
   // Kode ini akan dijalankan setelah semua fungsi siap
 
   if (typeof startSync === 'function') {
