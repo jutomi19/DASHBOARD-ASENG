@@ -491,11 +491,6 @@
   <div class="toast-msg"><span id="tMsg">OK</span><small id="tSub"></small></div>
 </div>
 
-<!-- ============================================================ -->
-<!-- LOAD SYNC.JS DULU (WAJIB) -->
-<!-- ============================================================ -->
-<script src="sync.js"></script>
-
 <script>
 (function(){
   const $ = id => document.getElementById(id);
@@ -1466,7 +1461,8 @@ Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw and
   // ============================================================
   // TAMBAHAN UNTUK SINKRONISASI DENGAN JSONBIN
   // ============================================================
-  // sync.js sudah di-load di atas
+  // Import sync.js dan mulai sinkronisasi
+  // Pastikan file sync.js berada di folder yang sama
   // Kode ini akan dijalankan setelah semua fungsi siap
 
   if (typeof startSync === 'function') {
