@@ -1,3 +1,7 @@
+<script>
+  console.log('Script bottom berjalan');
+  alert('Script bottom berjalan');
+</script>
 <!DOCTYPE html>
 <html lang="id" data-theme="dark">
 <head>
@@ -1329,6 +1333,8 @@ Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw and
       const dateEl = card.querySelector('.note-date');
       if (dateEl) dateEl.innerHTML = `<i class="far fa-clock"></i> ${formatDate(note.updatedAt)}`;
     }
+    // Panggil sync setelah update
+    if (typeof syncData === 'function') syncData('notes', notes);
   }
 
   function togglePin(id) {
@@ -1338,6 +1344,7 @@ Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw and
     note.updatedAt = Date.now();
     saveNotes();
     toast(note.pinned ? 'Catatan disematkan' : 'Pin dilepas');
+    if (typeof syncData === 'function') syncData('notes', notes);
   }
 
   function deleteNote(id) {
@@ -1345,6 +1352,7 @@ Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw and
     notes = notes.filter(n => n.id !== id);
     saveNotes();
     toast('Catatan dihapus');
+    if (typeof syncData === 'function') syncData('notes', notes);
   }
 
   function addNote() {
@@ -1360,6 +1368,7 @@ Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw and
     notes.unshift(newNote);
     saveNotes();
     toast('Catatan baru ditambahkan');
+    if (typeof syncData === 'function') syncData('notes', notes);
 
     setTimeout(() => {
       const firstCard = grid.querySelector('.note-card');
@@ -1452,6 +1461,24 @@ Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw and
       }
     });
   })();
+
+  // ============================================================
+  // TAMBAHAN UNTUK SINKRONISASI DENGAN JSONBIN
+  // ============================================================
+  // Import sync.js dan mulai sinkronisasi
+  // Pastikan file sync.js berada di folder yang sama
+  // Kode ini akan dijalankan setelah semua fungsi siap
+
+  if (typeof startSync === 'function') {
+    // Override saveNotes dengan versi yang sync ke cloud
+    const sync = startSync('notes', notes, saveNotes);
+    saveNotes = sync.newSave;
+    // Kirim data awal ke cloud
+    syncData('notes', notes);
+    console.log('🔄 Sinkronisasi cloud aktif untuk notes');
+  } else {
+    console.warn('⚠️ sync.js tidak ditemukan, sinkronisasi nonaktif');
+  }
 
 })();
 </script>
