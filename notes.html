@@ -508,7 +508,7 @@
   let notes = [];
   const STORAGE_KEY = 'latoto_notes';
 
-  // ===== 27 CATATAN, 8 PINNED =====
+  // ===== 28 CATATAN, 8 PINNED =====
   const now = Date.now();
   const DEFAULT_NOTES = [
     {
@@ -616,7 +616,7 @@ Terima kasih atas perhatian anda.`,
       createdAt: now - 420000,
       updatedAt: now - 420000
     },
-    // ===== 19 catatan tidak disematkan =====
+    // ===== 20 catatan tidak disematkan =====
     {
       id: 'mqtv8vub9alq',
       title: 'Mahjong ways 1 & 2',
@@ -1175,6 +1175,58 @@ Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw and
       pinned: false,
       createdAt: now - 1560000,
       updatedAt: now - 1560000
+    },
+    // ===== CATATAN BARU: Kendala QRIS =====
+    {
+      id: 'mqkris001qris',
+      title: 'Kendala QRIS',
+      body: `Judul : Minta RRN QRIS DAN CARA NGAMBIL RRN BUKTI BCA DAN MYBCA
+
+Yth terkait Bukti Deposit Tujuan QRIS kami memerlukan bukti detail transaksi yang menampilkan RRN ya bosku , maka dari itu dibantu ya bosku ?
+=========================
+Silahkan dibantu kembali bukti transfer anda yang memperlihatkan kode RRN QRIS nya ya bosku
+=========================
+Mohon di bantu bukti pengiriman anda dengan memperlihatkan RRN QRIS agar kami dapat mengecek lebih lanjut dana deposit anda ya bosku
+=========================
+Kami harap Anda dapat mengirimkan pengiriman anda dengan memperlihatkan RRN QRIS agar kami dapat mengecek lebih lanjut dana deposit anda ya bosku
+=========================
+Cara mengambil mutasi QRIS pada Mobile BCA
+1. Buka menu pembayaran QRIS di M-BCA
+2. Masuk ke menu Inbox Lampiran : https://prnt.sc/d1TAZBeXkco0
+3. Klik mutasi transaksi QRIS yang anda cari. Lampiran : https://prnt.sc/mxnZkSw9bP-X
+4.Kemudia klik permbayaran QRIS anda Lampiran : https://prnt.sc/QCQRDSnzK7Fg
+=========================
+Berikut adalah panduan lebih detailnya :
+1. Login ke Aplikasi myBCA: Buka aplikasi myBCA di ponsel Anda.
+2. Cek Riwayat/Mutasi: Masuk ke menu "Akun Saya" atau riwayat transaksi.
+3. Pilih Transaksi: Temukan transaksi QRIS yang ingin dicek kode RRN-nya.
+4. Lihat Detail: Klik pada transaksi tersebut untuk melihat rincian, di mana akan tercantum nomor referensi/referensi transaksi (RRN).
+5. Alternatif (e-Statement): Anda juga bisa mengunduh e-Statement melalui fitur "e-Statement" di myBCA untuk melihat riwayat transaksi, termasuk nomor referensi
+https://sleekshot.app/v/Aa0Ar4zwuSkD
+
+
+Judul : Pembayaran qris DI bukti GAGAL pembayaran
+=========================
+Yth Kami informasikan Bukti Tujuan QRIS yang Anda lakukan Mengalami "Payment failed/Pembayaran gagal" Namun saldo kepotong , Kami sarankan kepada untuk menghubungi Pihak layanan bank terkait ya bosku.
+=========================
+Sehubung Bukti Tujuan QRIS yang Anda lakukan Mengalami "Payment failed/Pembayaran gagal" Namun saldo kepotong , Tetap kami informasikan untuk menghubungi Pihak layanan bank terkait agar mengetahui status Tersebut ya bosku
+=========================
+Kami informasikan terkait Status Bukti Tersebut Tetap kami arahkan untuk Menghubungi pihak layanan bank agar mengetahui status dari pengiriman bukti tersebut ya bosku
+
+Judul : Bukti QRIS Nya sudah ke proses 
+=========================
+Yth Kami Informasikan untuk Bukti tersebut dengan tanggal yang Anda lampirkan Sudah berhasil di proses deposit nya ya bosku.
+=========================
+Sudah kami lakukan pengchekan Deposit Anda telah berhasil di proses , sesuai dengan bukti Yang Anda lampirkan dengan tanggal dan jam pengiriman Kode RRN tersebut ya bosku.
+=========================
+Yth Mohon untuk Melampirkan Bukti yang belum di claim / belum di proses deposit nya Dengan tujuan QRIS Kami ya bosku , apabila yang sudah di Proses Depositnya tidak dapat di claim kembali ya bosku.
+
+Judul : Bukti dengan refund berhasil
+=========================
+Kami chek disini untuk Bukti yang anda lampirkan dengan Status Refund berhasil ya bosku , dibantu dengan bukti Status berhasil anda dan menampilkan rrn ya bosku.`,
+      pinned: false,
+      createdAt: now - 100000,
+      updatedAt: now - 100000
     }
   ];
 
@@ -1240,7 +1292,7 @@ Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw and
       grid.innerHTML = `
         <div class="empty-state">
           <i class="fas fa-sticky-note"></i>
-          <p>Belum ada catatan. Klik <strong>“Tambah Catatan”</strong> untuk mulai menulis.</p>
+          <p>Belum ada catatan. Klik <strong>"Tambah Catatan"</strong> untuk mulai menulis.</p>
         </div>
       `;
       return;
@@ -1329,7 +1381,6 @@ Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw and
       const dateEl = card.querySelector('.note-date');
       if (dateEl) dateEl.innerHTML = `<i class="far fa-clock"></i> ${formatDate(note.updatedAt)}`;
     }
-    // Panggil sync setelah update
     if (typeof syncData === 'function') syncData('notes', notes);
   }
 
@@ -1458,18 +1509,9 @@ Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw and
     });
   })();
 
-  // ============================================================
-  // TAMBAHAN UNTUK SINKRONISASI DENGAN JSONBIN
-  // ============================================================
-  // Import sync.js dan mulai sinkronisasi
-  // Pastikan file sync.js berada di folder yang sama
-  // Kode ini akan dijalankan setelah semua fungsi siap
-
   if (typeof startSync === 'function') {
-    // Override saveNotes dengan versi yang sync ke cloud
     const sync = startSync('notes', notes, saveNotes);
     saveNotes = sync.newSave;
-    // Kirim data awal ke cloud
     syncData('notes', notes);
     console.log('🔄 Sinkronisasi cloud aktif untuk notes');
   } else {
