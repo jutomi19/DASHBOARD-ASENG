@@ -8,10 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- ===== SUPABASE - PAKAI UNPKG ===== -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
-  
   <style>
     /* ===== THEME GOLD NEON ===== */
     :root {
@@ -120,29 +116,6 @@
       transform:translateY(-2px);
       box-shadow:0 8px 28px var(--gold-glow);
     }
-    .btn-sync {
-      padding:10px 18px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid var(--border);
-      border-radius:100px;
-      color:var(--text-2);
-      font-weight:600;
-      font-size:0.75rem;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      gap:6px;
-      transition:var(--ease);
-      font-family:'Outfit',sans-serif;
-    }
-    .btn-sync:hover {
-      border-color:var(--border-hover);
-      color:var(--text);
-      background:var(--gold-bg);
-    }
-    .btn-sync i { font-size:0.7rem; }
-    .btn-sync.syncing i { animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
     .notes-grid {
       display:grid;
@@ -483,17 +456,13 @@
       <div class="p-badge b-gold"><i class="fas fa-layer-group"></i> <span id="countBadge">0</span> Catatan</div>
       <div class="p-badge b-gold"><i class="fas fa-thumbtack"></i> <span id="pinnedBadge">0</span> Disematkan</div>
       <div class="p-badge b-coral"><i class="fas fa-clock"></i> <span id="clock">--:--</span></div>
-      <div class="p-badge b-gold" id="syncStatus" title="Status sinkronisasi">
-        <i class="fas fa-cloud"></i> <span id="syncStatusText">Terkoneksi</span>
-      </div>
     </div>
   </div>
 
   <div class="toolbar">
     <button class="btn-add" id="btnAddNote"><i class="fas fa-plus"></i> Tambah Catatan</button>
-    <button class="btn-sync" id="btnSync"><i class="fas fa-sync"></i> Sinkronisasi</button>
     <div style="flex:1"></div>
-    <span style="font-size:0.65rem;color:var(--text-3);"><i class="fas fa-database"></i> <span id="storageLabel">Cloud</span></span>
+    <span style="font-size:0.65rem;color:var(--text-3);"><i class="fas fa-save"></i> Tersimpan otomatis</span>
   </div>
 
   <div class="notes-grid" id="notesGrid"></div>
@@ -524,63 +493,6 @@
 
 <script>
 (function(){
-  'use strict';
-
-  // ============================================================
-  // 1. KONFIGURASI SUPABASE
-  // ============================================================
-  const SUPABASE_URL = 'https://dfvovzaoxdcqsfbbvkmo.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmdm92emFveGRjcXNmYmJ2a21vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMjc4OTgsImV4cCI6MjA5OTcwMzg5OH0.xym81aI5rVjEZtGOY-SFE4oPuRcrNMQvyzHHPxqqaX8';
-  const TABLE_NAME = 'notes';
-
-  // ============================================================
-  // 2. INISIALISASI SUPABASE (DENGAN FALLBACK)
-  // ============================================================
-  let supabase = null;
-  let isSupabaseReady = false;
-
-  // Coba berbagai cara inisialisasi
-  try {
-    // Cara 1: window.supabase (dari CDN)
-    if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      isSupabaseReady = true;
-      console.log('✅ Supabase terhubung via window.supabase');
-    }
-    // Cara 2: supabase global
-    else if (typeof supabase !== 'undefined' && supabase.createClient) {
-      supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      isSupabaseReady = true;
-      console.log('✅ Supabase terhubung via supabase global');
-    }
-    // Cara 3: supabaseJs (dari CDN)
-    else if (typeof supabaseJs !== 'undefined' && supabaseJs.createClient) {
-      supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      isSupabaseReady = true;
-      console.log('✅ Supabase terhubung via supabaseJs');
-    }
-    else {
-      console.warn('⚠️ Supabase tidak ditemukan, jalankan mode offline');
-      // Buat mock supabase agar tidak error
-      supabase = {
-        from: function() {
-          return {
-            select: function() { return { order: function() { return { then: function(cb) { cb({ data: [], error: null }); return { catch: function() {} }; } }; } }; },
-            upsert: function() { return { then: function(cb) { cb({ error: null }); return { catch: function() {} }; } }; },
-            delete: function() { return { eq: function() { return { then: function(cb) { cb({ error: null }); return { catch: function() {} }; } }; } }; }
-          };
-        }
-      };
-      isSupabaseReady = false;
-    }
-  } catch (e) {
-    console.warn('⚠️ Gagal inisialisasi Supabase:', e.message);
-    isSupabaseReady = false;
-  }
-
-  // ============================================================
-  // 3. VARIABEL GLOBAL
-  // ============================================================
   const $ = id => document.getElementById(id);
   const grid = $('notesGrid');
   const countBadge = $('countBadge');
@@ -592,72 +504,809 @@
   const modalCopy = $('modalCopy');
   const modalClose = $('modalClose');
   const modalCloseBtn = $('modalCloseBtn');
-  const syncStatusText = $('syncStatusText');
-  const storageLabel = $('storageLabel');
 
   let notes = [];
-  let isSyncing = false;
-  let syncEnabled = false;
   const STORAGE_KEY = 'latoto_notes';
-  const SYNC_KEY = 'latoto_synced';
 
-  // ============================================================
-  // 4. DATA DEFAULT + TAMBAHAN REVISI
-  // ============================================================
+  // ===== CATATAN =====
   const now = Date.now();
   const DEFAULT_NOTES = [
-    { id: 'mrcgvp22dudp', title: 'BONUS TURNOVER Kamis', body: 'Untuk pembagian Bonus Cashback Turnover Sportbook, Live Games & Slot Games yang jadwalnya pada hari KAMIS mohon ditunggu paling lambat dalam waktu 1x24 jam ya bosku.', pinned: true, createdAt: now, updatedAt: now },
-    { id: 'mr83ly76gniu', title: 'XPAY RIJEK', body: 'Yth, Member Setia LATOTO, Kami informasikan terlebih dahulu kepada anda bahwa untuk saat ini sistem penarikan dana anda pada situs kami saat ini sedang tidak stabil.', pinned: true, createdAt: now - 60000, updatedAt: now - 60000 },
-    { id: 'mqpr83nxfmgw', title: 'Lucky Wheel', body: 'Yth Member Setia LATOTO,Kami informasikan saat ini kami memiliki fitur terbaru yaitu Lucky Wheel yang bisa anda dapatkan setiap harinya.', pinned: true, createdAt: now - 120000, updatedAt: now - 120000 },
-    { id: 'mratqtd1dyck', title: 'Tidak valid xpay', body: 'Yth member setia setelah melakukan pengchekan Withdraw anda di batalkan sistem.', pinned: true, createdAt: now - 180000, updatedAt: now - 180000 },
-    { id: 'mqsas3nnkhxi', title: 'QRIS PENDING', body: 'Yth member setia berikut kami cek untuk dana yang anda kirimkan belum tercetak di mutasi QRIS kami.', pinned: true, createdAt: now - 240000, updatedAt: now - 240000 },
-    { id: 'mqpr8m99yusw', title: 'Bonus kekalahan SENIN', body: 'Untuk pembagian Bonus Cashback Kekalahan Sportbook, Live Games & Slot Games yang jadwalnya pada hari Senin mohon ditunggu paling lambat dalam waktu 1x24 jam ya bosku.', pinned: true, createdAt: now - 300000, updatedAt: now - 300000 },
-    { id: 'mqpqxsbbaq4h', title: 'WITHDRAW QRIS PENDING', body: 'Untuk perihal penarikan dana withdraw anda dengan nominal xxx , saat ini masih dalam proses pengecekan oleh tim kami ya bosku.', pinned: true, createdAt: now - 360000, updatedAt: now - 360000 },
-    { id: 'mqpr2vpmu0ii', title: 'DANA Ke QRIS', body: 'Yth, Member setia LATOTO, Kami ingin menginformasikan untuk saat ini perihal deposit E-Wallet DANA sedang di alihkan ke QRIS.', pinned: true, createdAt: now - 420000, updatedAt: now - 420000 },
-    // 19 catatan tidak disematkan
-    { id: 'mqtv8vub9alq', title: 'Mahjong ways 1 & 2', body: 'EVENT SCATTER MAHJONG WAYS 1 & 2 LATOTO\nSyarat dan Ketentuan :\nEvent hanya berlaku pada permainan Slot PG SOFT', pinned: false, createdAt: now - 480000, updatedAt: now - 480000 },
-    { id: 'mri6v0vq123q', title: 'Cara melihat RRN MOBILE BCA', body: 'Untuk melihat kode RRN (Reference Retrieval Number) dari transaksi QRIS di BCA mobile.', pinned: false, createdAt: now - 540000, updatedAt: now - 540000 },
-    { id: 'mrgipbg61745', title: 'KENDALA LOGIN', body: 'Mohon dibantu klik link yang kami berikan gunakan melakukan pengecekan lebih lanjut.', pinned: false, createdAt: now - 600000, updatedAt: now - 600000 },
-    { id: 'mr9fxm79mhvc', title: 'user id di nonaktifkan', body: 'Mohon maaf atas ketidaknyamanannya. berdasarkan hasil pengecekan, User ID akun tersebut saat ini dalam kondisi terlock.', pinned: false, createdAt: now - 660000, updatedAt: now - 660000 },
-    { id: 'mr84hyao4mb8', title: 'Transaksi Sedang diproses', body: 'withdraw anda sebelumnya sudah dilakukan proses namun saat dilakukan proses Dengan status transaksi sedang diproses.', pinned: false, createdAt: now - 720000, updatedAt: now - 720000 },
-    { id: 'mr5chjvn9ilr', title: 'LUCKY WHELL MENIT 00:00 - 04:00', body: 'Yth Kepada Member Setia\nKami ingin Menginformasikan bahwa untuk bonus Lucky Wheel pada setiap Pukul 00:00 hingga pukul 04:00 WIB akan diberlakukan update.', pinned: false, createdAt: now - 780000, updatedAt: now - 780000 },
-    { id: 'mr6u1bhl9wfy', title: 'WD MANUAL ANTRIAN', body: 'Permintaan withdraw anda sedang dalam antrian, dan akan kami proses sesuai antrian yang berlangsung ya.', pinned: false, createdAt: now - 840000, updatedAt: now - 840000 },
-    { id: 'mr583w73uvum', title: 'SUPER SCATTER DAILY BONUS', body: 'GATES OF OLYMPUS SUPER SCATTER\nBONUS SETIAP HARI DARI PUKUL 00.00 - 23.59 WIB', pinned: false, createdAt: now - 900000, updatedAt: now - 900000 },
-    { id: 'mr3m4ket9hop', title: 'Keterlambatan event scatter', body: 'Yth. Member setia Kami. Kami informasikan bahwa saat ini proses bonus event scatter mahjong ways 1 & 2 sedang mengalami sedikit keterlambatan.', pinned: false, createdAt: now - 960000, updatedAt: now - 960000 },
-    { id: 'mr11ojywpy1p', title: 'Live games Gangguan', body: 'Yth, Member setia LATOTO, Kami ingin menginformasikan untuk permainan provider EVOLUTION sedang dalam gangguan.', pinned: false, createdAt: now - 1020000, updatedAt: now - 1020000 },
-    { id: 'mr0x5zf3l03c', title: 'CARA isi Form', body: 'Cara mengisi form deposit\n-Login akun\n-Pilih menu deposit\n-Pilih sesuai dengan bank yang Anda tuju', pinned: false, createdAt: now - 1080000, updatedAt: now - 1080000 },
-    { id: 'mqzlua7zluxi', title: 'Bettingan bola Running', body: 'Mohon maaf bossku\nUntuk pertandingan yang berstatus running\nKami sarankan agar anda menunggu 3 x 24 jam ya bossku', pinned: false, createdAt: now - 1140000, updatedAt: now - 1140000 },
-    { id: 'mqzhtm0lsyez', title: 'SLOT dibatasi negara', body: 'Untuk SLOT PRAGMATIC kami sarankan untuk tidak menggunakan VPN yang ada di bawah ini', pinned: false, createdAt: now - 1200000, updatedAt: now - 1200000 },
-    { id: 'mqsd5893jvfc', title: 'BONUS REFERAL', body: 'Cara mengajak orang lain menggunakan link referral anda, silahkan ikuti cara berikut', pinned: false, createdAt: now - 1260000, updatedAt: now - 1260000 },
-    { id: 'mqse5cuvhzsb', title: 'CARA CEK TO KE PL', body: 'mohon maaf bosku untuk turnover tidak dapat kami cek ya bosku', pinned: false, createdAt: now - 1320000, updatedAt: now - 1320000 },
-    { id: 'mqv16lmhh1dy', title: 'HADIAH ALL PASARANG TOGEL', body: 'List Hadiah yang diberikan oleh LATOTO di seluruh pasaran Togel', pinned: false, createdAt: now - 1380000, updatedAt: now - 1380000 },
-    { id: 'mqv0zjpzjk9w', title: 'Colok bebas all', body: 'berikut cara betting colok bebas :\nmenebak bebas 1 angka dari 4D', pinned: false, createdAt: now - 1440000, updatedAt: now - 1440000 },
-    { id: 'mqsbfvf0r23b', title: 'QRIS OFFLINE', body: 'Yth, Member setia LATOTO, Kami ingin menginformasikan untuk saat ini Q-ris kami sedang Offline ya bosku', pinned: false, createdAt: now - 1500000, updatedAt: now - 1500000 },
-    { id: 'mqr5kikvwkf7', title: 'BUKTI XPAY WD', body: 'Untuk pengiriman dana withdraw anda sudah kami proseskan sesuai dengan data rekening yang terdaftar pada akun.', pinned: false, createdAt: now - 1560000, updatedAt: now - 1560000 },
+    // ===== 8 PINNED =====
+    {
+      id: 'mrcgvp22dudp',
+      title: 'BONUS TURNOVER Kamis',
+      body: `Untuk pembagian Bonus Cashback Turnover Sportbook, Live Games & Slot Games yang jadwalnya pada hari KAMIS mohon ditunggu paling lambat dalam waktu 1x24 jam ya bosku.
+======================
+Untuk perihal Bonus Cashback mohon ditunggu paling lambat 1x24 jam ya bosku, karena masih dalam perhitungan dan jika sudah sesuai dengan syarat & ketentuan maka akan otomatis masuk ke dalam akun anda ya bosku.
+====================
+Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 jam ya bosku.`,
+      pinned: true,
+      createdAt: now,
+      updatedAt: now
+    },
+    {
+      id: 'mr83ly76gniu',
+      title: 'XPAY RIJEK',
+      body: `Yth, Member Setia LATOTO, Kami informasikan terlebih dahulu kepada anda bahwa untuk saat ini sistem penarikan dana anda pada situs kami saat ini sedang tidak stabil, dan kami sarankan anda melakukan pengisian / pengajuan penarikan dana kembali beberapa saat kedepan agar tidak terjadi kendala pada saat penarikan dana ya bosku, Mohon maaf atas ketidaknyamanan anda, Terima kasih.
+=================
+kami sarankan anda melakukan pengisian / pengajuan penarikan dana kembali beberapa saat kedepan agar tidak terjadi kendala pada saat penarikan dana ya bosku, Mohon maaf atas ketidaknyamanan anda, Terima kasih.`,
+      pinned: true,
+      createdAt: now - 60000,
+      updatedAt: now - 60000
+    },
+    {
+      id: 'mqpr83nxfmgw',
+      title: 'Lucky Wheel ',
+      body: `Yth Member Setia LATOTO,Kami informasikan saat ini kami memiliki fitur terbaru yaitu Lucky Wheel yang bisa anda dapatkan setiap harinya dengan syarat dan ketentuan sebagai berikut :
 
-    // ========== TAMBAHAN REVISI ==========
-    { id: 'rev1', title: 'Minta RRN QRIS DAN CARA NGAMBIL RRN BUKTI BCA DAN MYBCA', body: 'Yth terkait Bukti Deposit Tujuan QRIS kami memerlukan bukti detail transaksi yang menampilkan RRN ya bosku , maka dari itu dibantu ya bosku ?\n=========================\nSilahkan dibantu kembali bukti transfer anda yang memperlihatkan kode RRN QRIS nya ya bosku\n=========================\nMohon di bantu bukti pengiriman anda dengan memperlihatkan RRN QRIS agar kami dapat mengecek lebih lanjut dana deposit anda ya bosku\n=========================\nKami harap Anda dapat mengirimkan pengiriman anda dengan memperlihatkan RRN QRIS agar kami dapat mengecek lebih lanjut dana deposit anda ya bosku\n=========================\nCara Melihat Kode RRN di myBCA\n1. Buka aplikasi myBCA.\n2. Login menggunakan BCA ID.\n3. Pilih menu Aktivitas atau Riwayat Transaksi.\n4. Cari transaksi Pembayaran QRIS yang ingin dilihat.\n5. Tekan transaksi tersebut untuk membuka Detail Transaksi.\n6. Scroll hingga bagian paling bawah.\n7. Akan terlihat informasi:\n- Tanggal Transaksi\n- Jenis Transaksi\n- Total Bayar\n- RRN\n- Nomor Referensi\n=========================\nBCA mobile, bukti transaksi QRIS dapat diakses melalui:\n\n1. Buka BCA mobile.\n2. Login ke m-BCA.\n3. Tekan tombol QRIS yang berada di bagian tengah bawah.\n4. Pilih menu Inbox atau Riwayat (tergantung versi aplikasi).\n5. Buka transaksi QRIS yang diinginkan.\n6. Scroll ke bagian bawah hingga terlihat:\n- RRN\n- Nomor Referensi', pinned: false, createdAt: now - 1600000, updatedAt: now - 1600000 },
+1.Memiliki transaksi deposit di hari sebelumnya
+2. Apabila ditemukan kecurangan atau transaksi tidak normal, maka bonus dianggap hangus.
+3. Semua keputusan management bersifat mutlak dan tidak dapat diganggu gugat.
 
-    { id: 'rev2', title: 'Pembayaran qris DI bukti GAGAL pembayaran', body: 'Yth Kami informasikan Bukti Tujuan QRIS yang Anda lakukan Mengalami "Payment failed/Pembayaran gagal" Namun saldo kepotong , Kami sarankan kepada untuk menghubungi Pihak layanan bank terkait ya bosku.\n=========================\nSehubung Bukti Tujuan QRIS yang Anda lakukan Mengalami "Payment failed/Pembayaran gagal" Namun saldo kepotong , Tetap kami informasikan untuk menghubungi Pihak layanan bank terkait agar mengetahui status Tersebut ya bosku\n=========================\nKami informasikan terkait Status Bukti Tersebut Tetap kami arahkan untuk Menghubungi pihak layanan bank agar mengetahui status dari pengiriman bukti tersebut ya bosku', pinned: false, createdAt: now - 1660000, updatedAt: now - 1660000 },
+List Bonus Freespin :
 
-    { id: 'rev3', title: 'Bukti QRIS Nya sudah ke proses', body: 'Yth Kami Informasikan untuk Bukti tersebut dengan tanggal yang Anda lampirkan Sudah berhasil di proses deposit nya ya bosku.\n=========================\nSudah kami lakukan pengchekan Deposit Anda telah berhasil di proses , sesuai dengan bukti Yang Anda lampirkan dengan tanggal dan jam pengiriman Kode RRN tersebut ya bosku.\n=========================\nYth Mohon untuk Melampirkan Bukti yang belum di claim / belum di proses deposit nya Dengan tujuan QRIS Kami ya bosku , apabila yang sudah di Proses Depositnya tidak dapat di claim kembali ya bosku.', pinned: false, createdAt: now - 1720000, updatedAt: now - 1720000 },
+1. Free chips Rp. 5,000,- ( Bonus langsung masuk ke saldo akun anda ).
+2. Bonus deposit 15%, Bonus deposit, diambil dari last deposit di hari sebelumnya kemudian di kali dengan angka persentase bonus. Contoh deposit terakhir adalah 100.000 x 15% = 15.000,-
+3. Bonus cashback kekalahan 5%, Bonus cashback kekalahan, nilai kekalahan diambil dari keseluruhan nilai kalah di hari sebelumnya di kali dengan persentase bonus. Contoh di hari sebelumnya 00.01 wib se 23.59 wib total kalahnya 100.000 x 5% = 5.000,-
+4. Bonus rollingan turnover 1%, Bonus rolling turnover, nilai turnover diambil dari keseluruhan turnover di hari sebelumnya. Contoh TO 00.01 sd 23.59 di hari sebelumnya adalah 1.000.000 x 1% = 10.000,-
+5. Zonk artinya anda belum beruntung dan tidak mendapatkan bonus. Silahkan dicoba kembali di hari berikutnya`,
+      pinned: true,
+      createdAt: now - 120000,
+      updatedAt: now - 120000
+    },
+    {
+      id: 'mratqtd1dyck',
+      title: 'Tidak valid xpay ',
+      body: `Yth member setia setelah melakukan pengchekan Withdraw anda di batalkan sistem saat pengiriman terjadi kegagalan pengiriman dikarenakan Tidak valid pada nomor rekening anda ya bosku. Dibantu dengan nomor rekening valid anda ya bosku .`,
+      pinned: true,
+      createdAt: now - 180000,
+      updatedAt: now - 180000
+    },
+    {
+      id: 'mqsas3nnkhxi',
+      title: 'QRIS PENDING',
+      body: `Yth member setia berikut kami cek untuk dana yang anda kirimkan belum tercetak di mutasi QRIS kami ya bosku untuk itu mohon di tunggu ya bosku
+jika sudah tercetak di mutasi rekening QRIS kami akan secara otomatis terproseskan ya bosku
 
-    { id: 'rev4', title: 'Bukti dengan refund berhasil', body: 'Kami chek disini untuk Bukti yang anda lampirkan dengan Status Refund berhasil ya bosku , dibantu dengan bukti Status berhasil anda dan menampilkan rrn ya bosku.', pinned: false, createdAt: now - 1780000, updatedAt: now - 1780000 },
+Yth, Dana deposit yang anda kirimkan saat ini kemungkinan terjadi PENDING karena Jaringan sistem QRIS, sehingga dana yang anda kirimkan tidak tercetak pada mutasi bank QRIS kami.
+dan sistem kami tidak dapat proses dana deposit, jika dana yang anda kirimkan tidak tercetak pada mutasi bank kami, terima kasih
 
-    { id: 'rev5', title: 'Tidak ada melakukan pengisian from QRIS', body: 'Untuk user id yang anda berikan tidak ada melakukan pengisian form Q-ris pada tanggal / waktu bukti transfer yang anda berikan kepada kami ya bosku, Untuk mendapatkan barcode Q-ris dan transfer ke Q-ris perlu melakukan pengisian form nominal Q-ris terlebih dahulu agar bisa mendapatkan barcode Q-ris dan transfer ke tujuan Q-ris kami ya bosku\n==============================\nSilahkan konfirmasikan user id yang anda gunakan untuk melakukan pengisian form Q-ris tersebut dengan benar, agar kami lakukan pengecekan terkait transaksi anda ya bosku, Terima kasih', pinned: false, createdAt: now - 1840000, updatedAt: now - 1840000 },
+saat ini kami belum menerima pembayaran yang anda lakukan di bank QRIS kami ya bosku,
+untuk kendala yang anda alami kami sarankan untuk menunggu 1x24 jam, atau mencoba untuk ulangi transaksi anda yabosku, terima kasih
 
-    { id: 'rev6', title: 'PK LIVE CHAT STAY PL', body: 'Mohon untuk tidak keluar masuk livechat saat kendala anda belum terselesaikan ya bosku\n\nMohon maaf bosku saran kami untuk tidak meninggal kan livechat jika kendala anda belum selesai di karena kan jika keluar dan masuk kembali history chat yang sebelumnya akan ter reset/terhapus ya bosku, Terima kasih\n\nMohon maaf ya bosku, Jika anda keluar dari LiveChat ketika kendala anda belum terselesaikan maka chat sebelumnya akan Direset ulang oleh Sistem ya bossku.', pinned: false, createdAt: now - 1900000, updatedAt: now - 1900000 },
+saat ini kami belum menerima pembayaran yang Anda lakukan di bank QRIS kami ya bosku.
+Untuk kendala yang Anda alami kami sarankan untuk menunggu 1x24 jam terlebih dahulu dan selambatnya dalam waktu 3x24 jam ya bosku.`,
+      pinned: true,
+      createdAt: now - 240000,
+      updatedAt: now - 240000
+    },
+    {
+      id: 'mqpr8m99yusw',
+      title: 'Bonus kekalahan SENIN',
+      body: `Untuk pembagian Bonus Cashback Kekalahan Sportbook, Live Games & Slot Games yang jadwalnya pada hari Senin mohon ditunggu paling lambat dalam waktu 1x24 jam ya bosku.
+======================
+Untuk perihal Bonus Cashback mohon ditunggu paling lambat 1x24 jam ya bosku, karena masih dalam perhitungan dan jika sudah sesuai dengan syarat & ketentuan maka akan otomatis masuk ke dalam akun anda ya bosku.
+====================
+Untuk perihal Bonus nya mohon ditunggu paling lambat dalam estimasi waktu 1x24 jam ya bosku.`,
+      pinned: true,
+      createdAt: now - 300000,
+      updatedAt: now - 300000
+    },
+    {
+      id: 'mqpqxsbbaq4h',
+      title: 'WITHDRAW QRIS PENDING',
+      body: `Untuk perihal penarikan dana withdraw anda dengan nominal xxx , saat ini masih dalam proses pengecekan oleh tim kami ya bosku. tidak perlu khawatir saldo anda aman dan akan langsung kami proses setelah pengecekan selesai. mohon kesabarannya untuk menunggu Estimasi tidak dapat kami pastikan ya bosku 
+=====
 
-    { id: 'rev7', title: 'PENGCHEKAN TO', body: 'Yth, Member setia LATOTO\nPerihal pengecekan turnover anda tidak dapat di lakukan dikarenakan akses tersebut tidak tersedia terimakasih', pinned: false, createdAt: now - 1960000, updatedAt: now - 1960000 },
+Terkait penarikan dana withdraw anda saat ini masih dalam proses pengecekan oleh tim kami. saldo pengajuan withdraw anda tetap aman dan akan segera kami proses setelah pengecekan selesai ya bosku.
 
-    { id: 'rev8', title: 'PENGERTIAN RRN QRIS', body: 'RRN adalah singkatan dari Retrieval Reference Number. Ini adalah kode identifikasi unik (biasanya terdiri dari 12 digit angka) yang dihasilkan oleh sistem untuk menandai setiap transaksi yang berhasil diproses ya bosku', pinned: false, createdAt: now - 2020000, updatedAt: now - 2020000 },
+=====
 
-    { id: 'rev9', title: 'replay Permainan Slot anda di Provider PG SOFT', body: 'Berikut cara melihat replay Permainan Slot anda di Provider PG SOFT ya bosku :\n\n1. Login ke dalam akun anda.\n2. Klik menu Slot.\n3. Pilih Provider PG SOFT .\n4. Klik Garis 3 bagian kanan bawah lalu klik menu riwayat seperti contoh berikut :\n- https://sleekshot.app/v/X1vwizpe3oLN\n- https://sleekshot.app/v/XYSOLnylZcdF\n5. Klik pada Bettingan yang anda ingin lihat replaynya ya bosku\n- https://sleekshot.app/v/YIpNRrv32rkW', pinned: false, createdAt: now - 2080000, updatedAt: now - 2080000 }
+Kami informasikan bahwa proses withdraw akan saat ini dalam pengecekan tim kami. silakan cek mutasi rekening anda secara berkala ya bosku Dan untuk estimasi Tidak dapat kami pastikan , Hingga Pengchekan selesai dilakukan ya bosku .
+Terima kasih atas perhatian anda.`,
+      pinned: true,
+      createdAt: now - 360000,
+      updatedAt: now - 360000
+    },
+    {
+      id: 'mqpr2vpmu0ii',
+      title: 'DANA Ke QRIS',
+      body: `Yth, Member setia LATOTO, Kami ingin menginformasikan untuk saat ini perihal deposit E-Wallet DANA sedang di alihkan ke QRIS terlebih dahulu dan silahkan melakukan deposit menggunakan scan barcode tersebut ya. Terimakasih
+.`,
+      pinned: true,
+      createdAt: now - 420000,
+      updatedAt: now - 420000
+    },
+    // ===== CATATAN TIDAK DISEMATKAN =====
+    {
+      id: 'mqtv8vub9alq',
+      title: 'Mahjong ways 1 & 2',
+      body: `EVENT SCATTER MAHJONG WAYS 1 & 2 LATOTO
+Syarat dan Ketentuan :
+Event hanya berlaku pada permainan Slot PG SOFT :
+Mahjong Ways 1
+Mahjong Ways 2
+Hadiah :
+Bet : 1.600 - 2.000
+3 scatter : 15.000,-
+4 scatter : 30.000,-
+5 scatter : 75.000,-
+
+Bet : 4.000 - 8.000
+3 scatter : 35.000,-
+4 scatter : 70.000,-
+5 scatter : 140.000,-
+
+Bet : 10.000 - 18.000
+3 scatter : 50.000,-
+4 scatter : 100.000,-
+5 scatter : 200.000,-
+
+Bet : 20.000 - 1.000.000
+3 scatter : 100.000,-
+4 scatter : 200.000,-
+5 scatter : 400.000,-
+
+Syarat & Ketentuan Claim :
+1. SS DAPAT SCATTER
+2. SS KEMENANGAN AKHIR
+3. SS HISTORY KEMENANGAN
+-Claim melalui LIVECHAT
+- Nama Rekening dan Nomor Rekening Wajib Valid, Apabila tidak valid maka tidak dapat melakukan claim / bonus di hanguskan
+- Maksimal Claim Perhari 2 x Dalam Sehari
+- Batas klaim pada pukul 23:50 WIB dan akan reset di pukul 00:01 WIB setiap harinya.
+- Syarat dan ketentuan dapat berubah sewaktu waktu
+- Keputusan LATOTO bersifat mutlak dan tidak dapat diganggu gugat`,
+      pinned: false,
+      createdAt: now - 480000,
+      updatedAt: now - 480000
+    },
+    {
+      id: 'mri6v0vq123q',
+      title: 'Cara melihat RRN MOBILE BCA',
+      body: `Untuk melihat kode RRN (Reference Retrieval Number) dari transaksi QRIS di BCA mobile, Anda dapat menggunakan dua cara utama: melalui menu QRIS atau Mutasi Rekening.
+Berikut adalah langkah-langkah mudahnya:
+Cara 1: Melalui Menu QRIS
+1. Buka aplikasi BCA mobile dan pilih menu QRIS di bagian bawah layar.
+2. Masuk ke ikon Inbox yang berada di pojok kanan atas.
+3. Pilih dan klik transaksi yang ingin Anda periksa.
+4. Kode RRN akan muncul pada detail transaksi tersebut.`,
+      pinned: false,
+      createdAt: now - 540000,
+      updatedAt: now - 540000
+    },
+    {
+      id: 'mrgipbg61745',
+      title: 'KENDALA LOGIN - Your ip address is banned, please contact customer service',
+      body: `Mohon dibantu klik link yang kami berikan gunakan melakukan pengecekan lebih lanjut terkait kendala anda ya bosku.
+Silahkan klik link berikut : https://whoer.net
+
+Jika sudah melakukan klik pada link yang kami berikan , silahkan anda screenshoot tampilan tersebut dan berikan pada kami ya bosku`,
+      pinned: false,
+      createdAt: now - 600000,
+      updatedAt: now - 600000
+    },
+    {
+      id: 'mr9fxm79mhvc',
+      title: 'user id di nonaktifkan dan aktfikan ke user id lain',
+      body: `Mohon maaf atas ketidaknyamanannya. berdasarkan hasil pengecekan, User ID akun tersebut saat ini dalam kondisi terlock dan tidak dapat dibuka kembali ya bosku. dikarenakan sebelumnya anda telah menyetujui proses perpindahan nomor rekening ke akun lain.
+Saat ini, akun aktif anda adalah User ID lain ya bosku.
+Terima kasih atas pengertiannya.
+=============
+Untuk akun tersebut tidak dapat digunakan kembali karena sebelumnya anda telah menyetujui ketentuan terkait hal ini. Silakan login menggunakan akun aktif anda, User ID xx ya bosku.
+
+============
+Sudah kami informasikan bahwa User ID akun tersebut tidak dapat dibuka atau diaktifkan kembali. hal ini dikarenakan ketentuan perpindahan nomor rekening, dan sebelumnya telah anda setujui.
+Silahkan login menggunakan akun aktif anda saat ini, sesuai dengan informasi yang telah kami sampaikan di atas ya bosku.`,
+      pinned: false,
+      createdAt: now - 660000,
+      updatedAt: now - 660000
+    },
+    {
+      id: 'mr84hyao4mb8',
+      title: 'Transaksi Sedang diproses Withdraw',
+      body: `withdraw anda sebelumnya sudah dilakukan proses namun saat dilakukan proses Dengan status transaksi sedang diproses , silahkan untuk menunggu 1 x 24 jam ya bosku untuk kendala anda tersbut ya bosku.
+
+========================
+
+withdraw anda sebelumnya sudah dilakukan proses namun status transaksi sedang diproses ya bosku , harap untuk meunggu 1 x 24 jam ya bosku`,
+      pinned: false,
+      createdAt: now - 720000,
+      updatedAt: now - 720000
+    },
+    {
+      id: 'mr5chjvn9ilr',
+      title: 'LUCKY WHELL MENIT 00:00 - 04:00',
+      body: `Yth Kepada Member Setia
+Kami ingin Menginformasikan bahwa untuk bonus Lucky Wheel pada setiap Pukul 00:00 hingga pukul 04:00 WIB akan diberlakukan update oleh sistem kami dan dalam jangka waktu tersebut tidak dapat melalukan spin ya bosku , Anda akan dapat melakukan Spin lucky wheel nya kembali setelah Update dari Sistem selesai ya bosku . Mohon maaf atas ketidak nyamanannya kami ucapkan Terima kasih telah menjadi Member setia Latoto`,
+      pinned: false,
+      createdAt: now - 780000,
+      updatedAt: now - 780000
+    },
+    {
+      id: 'mr6u1bhl9wfy',
+      title: 'WD MANUAL ANTRIAN 1 x 24 jam',
+      body: `Permintaan withdraw anda sedang dalam antrian, dan akan kami proses sesuai antrian yang berlangsung ya, kami sarankan anda untuk memeriksa kembali mutasi dan saldo rekening anda secara berkala, Terimakasih
+Jika withdraw / penarikan dana anda tidak masuk dalam waktu 1x24 jam silahkan infokan kembali kepada kami ya bosku,
+Terima kasih bosku`,
+      pinned: false,
+      createdAt: now - 840000,
+      updatedAt: now - 840000
+    },
+    {
+      id: 'mr583w73uvum',
+      title: 'SUPER SCATTER DAILY BONUS',
+      body: `GATES OF OLYMPUS SUPER SCATTER
+BONUS SETIAP HARI DARI PUKUL 00.00 - 23.59 WIB
+
+BONUS:
+BET 800 - 1600
+1 Super scatter : 50rb
+2 Super scatter : 100rb
+3 Super scatter : 150rb
+4 Super scatter : 250rb
+
+BET 2000 - 4.000
+1 Super scatter : 100rb
+2 Super scatter : 200rb
+3 Super scatter : 300rb
+4 Super scatter : 500rb
+
+BET 5.000 - 7.000
+1 Super scatter : 250rb
+2 Super scatter : 500rb
+3 Super scatter : 750rb
+4 Super scatter : 1jt
+
+Syarat & Ketentuan:
+1. Wajib membeli FreeSpin Super Scatter di GATES OF OLYMPUS SUPER SCATTER
+2. Event ini berlaku untuk semua member LATOTO yang bermain slot GATES OF OLYMPUS SUPER SCATTER
+3. Hadiah Akan Di Berikan Dari Total Mendapatkan GATES OF OLYMPUS SUPER SCATTER.
+4. Maksimal Bonus yang di berikan untuk Event ini adalah Rp 1.000.000,- per Hari.
+5. Maksimal Claim Bonus GATES OF OLYMPUS SUPER SCATTER 1 User ID per harinya yaitu 3x.
+6. Maksimal Bonus per 1x claim Event GATES OF OLYMPUS SUPER SCATTER yaitu Rp 1.000.000,-
+7. Share bukti Kemenangan (Screenshoot JP) dan bukti history kemenangan di Grup Facebook LATOTO dengan menggunakan kata - kata pujian untuk LATOTO .
+8. Wajib melakukan proses Claim melalui livechat LATOTO
+9. Batas klaim pada pukul 23:50 WIB dan akan di reset kembali pukul 00:01 setiap harinya
+10. Event ini tidak dapat digabungkan dengan event slot lainnya.
+11. Semua keputusan LATOTO bersifat mutlak dan tidak dapat diganggu gugat.`,
+      pinned: false,
+      createdAt: now - 900000,
+      updatedAt: now - 900000
+    },
+    {
+      id: 'mr3m4ket9hop',
+      title: 'Keterlambatan event scatter',
+      body: `Yth. Member setia Kami. Kami informasikan bahwa saat ini proses bonus event scatter mahjong ways 1 & 2 sedang mengalami sedikit keterlambatan , Untuk claim bonus anda akan otomatis terproses apabila telah memenuhi syarat dan ketentuan yang berlaku pada event tersebut, Untuk estimasi waktu masih belum dapat kami pastikan, namun akan diusahakan sesegera mungkin. Mohon maaf atas ketidaknyamanan ini dan terima kasih atas kesabaran Anda menunggu`,
+      pinned: false,
+      createdAt: now - 960000,
+      updatedAt: now - 960000
+    },
+    {
+      id: 'mr11ojywpy1p',
+      title: 'Live games Gangguan',
+      body: `Yth, Member setia LATOTO, Kami ingin menginformasikan untuk permainan provider EVOLUTION sedang dalam gangguan. mohon kesediaannya menunggu sampai normal kembali. Untuk estimasinya belum dapat dipastikan tetapi akan diusahakan secepatnya agar dapat di akses kembali, mohon maaf atas ketidaknyamanannya dan terimakasih`,
+      pinned: false,
+      createdAt: now - 1020000,
+      updatedAt: now - 1020000
+    },
+    {
+      id: 'mr0x5zf3l03c',
+      title: 'CARA isi From',
+      body: `Cara mengisi form deposit
+-Login akun
+-Pilih menu deposit
+-Pilih sesuai dengan bank yang Anda tuju
+-Isi jumlah deposit sesuai dengan yang Anda transfer
+-klik menu kirim
+Setelah berhasil deposit akan diproses selambat-lambatnya 10 menit`,
+      pinned: false,
+      createdAt: now - 1080000,
+      updatedAt: now - 1080000
+    },
+    {
+      id: 'mqzlua7zluxi',
+      title: 'Bettingan bola Running / berjalan',
+      body: `Mohon maaf bossku
+Untuk pertandingan yang berstatus running
+Kami sarankan agar anda menunggu 3 x 24 jam ya bossku
+Dikarenakan pertandingan tersebut terindikasi belum terselesaikan
+Atau pihak provider sedang melakukan pengecekkan lebih lanjut terhadap pertandingan tersebut ya bossku
+Kami meminta maaf atas ketidaknyamanannya ya bossku
+Terima kasih
+
+============================
+
+Untuk pembayaran bettingannya mohon ditunggu sampai bettingannya terupdate dari outstanding (berjalan/ running) menjadi winlose ya bosku. Estimasi dalam waktu 1x24 jam dikarenakan proses pembayaran sesuai antrian bettingan di pihak provider ya bosku.
+
+============================ 
+
+Kami informasikan jika kami cek untuk bettingan anda masih outstanding / berjalan ya bosku. Untuk status bettingannya mohon ditunggu sampai bettingannya terupdate dari outstanding (berjalan/ running) menjadi winlose ya bosku
+
+============================ 
+nan kami cek untuk bettingan anda masih outstanding / berjalan ya bosku. Untuk status bettingannya mohon ditunggu sampai bettingannya terupdate dari outstanding (berjalan/ running) menjadi winlose ya bosku.`,
+      pinned: false,
+      createdAt: now - 1140000,
+      updatedAt: now - 1140000
+    },
+    {
+      id: 'mqzhtm0lsyez',
+      title: 'SLOT dibatasi negara ',
+      body: `Untuk SLOT PRAGMATIC kami sarankan untuk tidak menggunakan VPN yang ada di bawah ini :
+- USA
+- FRANCE
+- ISRAEL
+- UKRAINE
+- TAIWAN
+- AUSTRALIA
+- NORTH KOREA
+- CYPRUS
+- SINGAPORE
+- INDIA
+Untuk PG SOFT kami sarankan untuk tidak menggunakan VPN yang ada di bawah ini :
+- MALAYSIA
+- SINGAPORE
+- TAIWAN
+- UNITED STATES
+- MACAU
+- NORTH KOREA
+- ISRAEL
+- IRAN
+- AUSTRALIA
+
+===========================
+Yth. Member Setia Kami,
+Untuk saat ini jika anda terkendala login pada permainan slot, kami sarankan untuk Menggunakan VPN 1.1.1.1 + Warp terlebih dahulu ya bosku.
+
+Berikut link downloadnya di bawah ini
+PlayStore : https://cutt.ly/OwcuVfzJ
+AppStore : https://cutt.ly/2wcuMCkz
+
+Silahkan Bosku`,
+      pinned: false,
+      createdAt: now - 1200000,
+      updatedAt: now - 1200000
+    },
+    {
+      id: 'mqsd5893jvfc',
+      title: 'BONUS REFERAL',
+      body: `Cara mengajak orang lain menggunakan link referral anda , silahkan ikuti cara berikut ya bosku :
+1. Silahkan klik menu profile anda
+2. Lalu pilih menu referral ( https://prnt.sc/iWf3WfXEH9dD )
+3. Lalu , copy link referral anda ( https://prnt.sc/u6pxkt94mnCi ) , dan bagikan link tersebut pada teman yang ingin anda ajak ikut bergabung menggunakan referral anda ya bosku 
+========================================
+Syarat & Ketentuan Bonus Referral :
+- Memiliki downline atau member yang di daftarkan menggunakan Link atau Kode Referral akun anda.
+- Downline yang anda miliki wajib melakukan bettingan aktif pada setiap harinya.
+- Bonus Referral permainan Togel akan di bagikan otomatis setiap pasaran tersebut Result.
+- Bonus Referral permainan lainnya akan di bagikan otomatis setiap hari pada pukul 09.00 WIB.LATOTO menyediakan 6 Jenis Referral yaitu :
+- Referral Permainan Togel sebesar 0.1% - 0,5%
+- Referral Permainan Sportsbook sebesar 0,1%
+- Referral Permainan Slot Games sebesar 0,1%
+- Referral Permainan Live Games sebesar 0,1%
+- Referral Permainan Arcade Game sebesar 0,1%
+- Referral Permainan Fishing sebesar 0,1%
+1. Komisi Referral Permainan Togel :
+4D : 0,5%
+3D : 0,5%
+2D : 0,5%
+Colok Bebas : 0,1%
+Colok Bebas 2D : 0,1%
+Colok Naga : 0,1%
+Colok Jitu : 0,1%
+SHIO : 0,1%
+Kombinasi : 0,1%
+Tengah Tepi : 0,1%
+Dasar : 0,1%
+50-50 : 0,1%
+Silang Homo : 0,1%
+Kembang Kempis : 0,1%2. Komisi Referral Permainan Slot 0,1% ( Seluruh Provider Slot Games yang tersedia ).
+3. Komisi Referral Permainan Live Games 0,1% ( Seluruh jenis Live Games yang tersedia ).
+4. Komisi Referral Permainan Sportbook 0,1% ( Seluruh jenis Sportbook yang tersedia ).
+5. Komisi Referral Permainan Card Games 0,1% ( Seluruh jenis Arcade game yang tersedia ).
+6. Komisi Referral Permainan Fishing 0,1% ( Seluruh jenis Fishing Games yang tersedia ).
+
+=======================
+
+Langkah - Langkah KYC :
+1. Tahap awal member mengakses menu Referral, dan
+akan muncul keterangan tombol KYC
+Setelah diklik maka akan terbuka page baru dan
+**form KYC akan muncul** yang berisikan data-data yang harus diisi oleh user
+sebagai syarat menjadi referral. Terdiri dari :
+- Nama Lengkap
+- Nomor KTP
+- Tanggal Lahir
+- Alamat Email
+- Nomor HP —> akan ada tombol request
+OTP
+- Masukan Kode
+OTP
+- Upload KTP
+3. ketika member melakukan request OTP. Countdown akan muncul setelah user mengklik tombol “Request OTP”, countdown
+ini bertujuan agar user dapat melakukan resend OTP jika ia tidak menerima SMS
+4. Contoh SMS OTP yang diterima oleh user saat
+melakukan Request OTP
+
+5.Lalu klik tombol "Pengiriman" jika sudah selesai
+6.Setelah Submit akan **muncul Syarat dan
+Ketentuan** dan ada 2 pilihan
+Saya Setuju —> akan lanjut ke tahap selanjutnya
+- Saya Tidak Setuju —> akan kembali ke menu awal
+7. Setelah semuanya
+selesai silahkan konfirmasi kembali akan kami vertifikasi dan anda akan
+mendapatkan kode link refferal ya bosku
+=============================================
+User yang telah menjadi referral sebelum adanya
+sistem KYC ini, wajib melakukan KYC agar dapat mendapatkan bonus referral
+selanjutnya. Sehingga sistem akan menahan bonus referral milik anda hingga anda
+berhasil menyelesaikan proses KYC, setelah berhasil bonus referral akan masuk ke
+dalam saldo utama akun secara otomatis dan dapat dilakukan
+withdraw
+==========================================
+KYC ( Know Your Costumer ) dan untuk minimalisir
+penipuan refferal , serta dokumentasi ya bosku dan wajib melakukan aktivasi agar
+dapat mendapatkan bonus referral dari downline anda sebesar 0.1%
+==========================================
+Tujuan KYC ini untuk minimalisir penipuan refferal, serta dokumentasi ya bosku`,
+      pinned: false,
+      createdAt: now - 1260000,
+      updatedAt: now - 1260000
+    },
+    {
+      id: 'mqse5cuvhzsb',
+      title: 'CARA CEK TO KE PL ',
+      body: `mohon maaf bosku untuk turnover tidak dapat kami cek ya bosku di karenakan kami tidak memilik akses untuk cek turnover,untuk perihal tersebut turnover di hitung otomatis oleh sistem kami ya bosku`,
+      pinned: false,
+      createdAt: now - 1320000,
+      updatedAt: now - 1320000
+    },
+    {
+      id: 'mqv16lmhh1dy',
+      title: 'HADIAH ALL PASARANG TOGEL',
+      body: `List Hadiah yang diberikan oleh LATOTO di seluruh pasaran Togel :
+
+Berikut adalah pasaran Togel yang menyediakan Tipe Bettingan Prize 123 :
+TOTO CAMBODIA LIVE
+POIPET LOTTERY
+HUAHIN LOTTERY
+SYDNEY LOTTO
+SINGAPORE 4D (Hari Rabu, Sabtu & Minggu)
+MAGNUM4D
+NEVADA
+BANGKOK POOLS
+BRUNEI POOLS
+CHELSEA POOLS
+HONGKONG LOTTO
+TOTO MALI
+
+Hadiah Bet Prize 123 :
+1. Prize 1 4D : x6,500 - 3D HADIAH : x650 - 2D HADIAH : x70
+2. Prize 2 4D : x2,100 - 3D HADIAH : x210 - 2D HADIAH : x20
+3. Prize 3 4D : x1,100 - 3D HADIAH : x110 - 2D HADIAH : x8
+
+Hadiah Bet Full All Pasaran  :
+1. Hadiah 4D : x10.000
+2. Hadiah 3D : x1.000
+3. Hadiah 2D : x100
+
+Hadiah Bet Full HOKI DRAW :
+1. Hadiah 5D : x88,000
+2. Hadiah 4D : x10.000
+3. Hadiah 3D : x1.000
+4. Hadiah 2D : x100
+
+Hadiah Bet BB All Pasaran (Tebakan Tepat atau Tidak Tepat) :
+1. Hadiah 4D BB
+Tebakan Tepat : x4,000
+Tebakan BB : x200
+
+2. Hadiah 3D BB
+Tebakan Tepat : x400
+Tebakan BB : x100
+
+3. Hadiah 2D BB
+Tebakan Tepat : x70
+Tebakan BB : x20
+
+Hadiah Bet Discount (Selain Pasaran TOTOMALI & KINGKONG 4D) :
+1. Hadiah 4D : x3,000
+Discount : 66.50%
+
+2. Hadiah 3D : x400
+Discount : 59.50%
+
+3. Hadiah 2D
+2D Depan : x65
+2D Tengah : x65
+2D Belakang : x70
+Discount : 29.50%
+
+Hadiah Bet Discount TOTOMALI :
+1. Hadiah 4D : x3,000
+Discount : 67%
+
+2. Hadiah 3D : x400
+Discount : 57%
+
+3. Hadiah 2D
+2D Depan : x70
+2D Tengah : x70
+2D Belakang : x70
+Discount : 27%
+
+Hadiah Bet Discount KINGKONG 4D :
+1. Hadiah 4D : x6,000
+Discount : 33%
+
+2. Hadiah 3D : x700
+Discount : 24%
+
+3. Hadiah 2D
+2D Depan : x80
+2D Tengah : x80
+2D Belakang : x80
+Discount : 15%
+
+Hadiah Segala Jenis Bet Colok Dll All Pasaran :
+1. Colok Bebas :
+x1.5 ( 1 Digit )
+x3 ( 2 Digit )
+x4.5 ( 3 Digit )
+x6 ( 4 Digit )
+
+2. Colok Bebas 2D atau Colok Macau :
+x7 ( 2 Digit )
+x11 ( 3 Digit )
+x18 ( 4 Digit )
+
+3. Colok Naga :
+x23 ( 3 Digit )
+x35 ( 4 Digit )
+
+4. Colok Jitu : x8
+5. Shio : x9.5
+6. Kombinasi : x2.6
+7. Tepi Tengah : KEI -3%
+8. Silang Homo : KEI -3%
+
+9. Dasar :
+Ganjil / Besar = KEI -25%
+Genap / Kecil = KEI 10%
+
+10. 50 – 50 : KEI -3%
+11. Kembang Kempis : KEI -3%`,
+      pinned: false,
+      createdAt: now - 1380000,
+      updatedAt: now - 1380000
+    },
+    {
+      id: 'mqv0zjpzjk9w',
+      title: 'Colok bebas all',
+      body: `berikut cara betting colok bebas :
+menebak bebas 1 angka dari 4D
+
+1.pilih jenis pasaran togel yang anda sukai
+2. pilih colok bebas
+3. untuk angka sudah tertera pada tampilan colok bebas contoh : angka 0 dan 9
+4. isi nominal taruhan anda
+5. pilih tombol submit untuk konfirmasi taruhan anda
+6. pastikan taruhan anda berhasil
+
+=========================
+
+Penjelasan bettingan Togel Colok Bebas :
+Menebak satu angka dari 4D Posisi angka bisa dimana saja.
+
+Struktur : ABCD
+
+Analisis I :
+Keluar : 4321
+Misalnya dibeli 3 dengan nilai 100rb.
+Berarti menang:
+100rb + [Indeks kemenangan untuk colok bebas]
+
+Analisis II :
+Keluar : 4331
+Misalnya dibeli 3 dengan nilai 100rb.
+Berarti menang:
+100rb + ([Indeks kemenangan untuk colok bebas] x 2)
+
+Dan seterusnya untuk setiap kembaran yang berhasil ditebak, otomatis mendapat kelipatan [Indeks kemenangan untuk colok bebas]
+
+=========================
+
+Hadiah Segala Jenis Bet Colok Dll All Pasaran :
+1. Colok Bebas :
+x1.5 ( 1 Digit )
+x3 ( 2 Digit )
+x4.5 ( 3 Digit )
+x6 ( 4 Digit )
+
+2. Colok Bebas 2D atau Colok Macau :
+x7 ( 2 Digit )
+x11 ( 3 Digit )
+x18 ( 4 Digit )
+
+3. Colok Naga :
+x23 ( 3 Digit )
+x35 ( 4 Digit )
+
+4. Colok Jitu : x8
+5. Shio : x9.5
+6. Kombinasi : x2.6
+7. Tepi Tengah : KEI -3%
+8. Silang Homo : KEI -3%
+
+9. Dasar :
+Ganjil / Besar = KEI -25%
+Genap / Kecil = KEI 10%
+
+10. 50 – 50 : KEI -3%
+11. Kembang Kempis : KEI -3%
+
+=========================
+
+Colok Bebas Terdiri Dari : 
+1.Colok Bebas
+2.Colok Bebas 2D atau Colok Macau
+3.Colok Naga
+4.Colok Jitu`,
+      pinned: false,
+      createdAt: now - 1440000,
+      updatedAt: now - 1440000
+    },
+    {
+      id: 'mqsbfvf0r23b',
+      title: 'QRIS OFFLINE',
+      body: `Yth, Member setia LATOTO, Kami ingin menginformasikan untuk saat ini Q-ris kami sedang Offline ya bosku
+Silahkan transfer dana deposit ke rekening tujuan deposit kami lainnya yang berstatus aktif / normal ya bosku ,akan kami bantu proses setelah pergantian hari selesai estimasi 00:15 WIB, Terima kasih`,
+      pinned: false,
+      createdAt: now - 1500000,
+      updatedAt: now - 1500000
+    },
+    {
+      id: 'mqr5kikvwkf7',
+      title: 'BUKTI XPAY WD',
+      body: `Untuk pengiriman dana withdraw anda sudah kami proseskan sesuai dengan data rekening yang terdaftar pada akun. dana withdraw tersebut telah berhasil kami proseskan. Sehubungan dengan bukti transfer saat ini kami tidak dapat memberikannya karena keterbatasan akses ya bosku. Mohon untuk melakukan pengecekan penambahan saldo pada rekening anda ya bosku. Terima kasih atas pengertiannya.
+====================
+Kami cek saldo kami sudah terpotong dan withdraw anda sudah berhasil kami proseskan pada rekening yang terdaftar pada akun anda ,perihal bukti kami tidak dapat memberikannya karena keterbatasan akses ya bosku,dikarenakan saldo tidak masuk ke rekening anda namun saldo bank kami sudah terpotong kami sarankan anda silahkan hubungi pihak bank anda tersebut ya bosku
+===================
+Sesuai dengan apa yang sudah kami informasikan kepada anda ya bosku withdraw anda sudah berhasil kami proseskan pada rekening yang terdaftar pada akun anda kami sarankan kembali kepada anda silahkan hubungi pihak bank anda tersebut sekian dan terimakasi`,
+      pinned: false,
+      createdAt: now - 1560000,
+      updatedAt: now - 1560000
+    },
+    // ===== CATATAN BARU =====
+    {
+      id: 'mrrn001qris1',
+      title: 'Minta RRN QRIS DAN CARA NGAMBIL RRN BUKTI BCA DAN MYBCA',
+      body: `Yth terkait Bukti Deposit Tujuan QRIS kami memerlukan bukti detail transaksi yang menampilkan RRN ya bosku , maka dari itu dibantu ya bosku ?
+=========================
+Silahkan dibantu kembali bukti transfer anda yang memperlihatkan kode RRN QRIS nya ya bosku
+=========================
+Mohon di bantu bukti pengiriman anda dengan memperlihatkan RRN QRIS agar kami dapat mengecek lebih lanjut dana deposit anda ya bosku
+=========================
+Kami harap Anda dapat mengirimkan pengiriman anda dengan memperlihatkan RRN QRIS agar kami dapat mengecek lebih lanjut dana deposit anda ya bosku
+=========================
+Cara Melihat Kode RRN di myBCA
+1. Buka aplikasi myBCA.
+2. Login menggunakan BCA ID.
+3. Pilih menu Aktivitas atau Riwayat Transaksi.
+4. Cari transaksi Pembayaran QRIS yang ingin dilihat.
+5. Tekan transaksi tersebut untuk membuka Detail Transaksi.
+6. Scroll hingga bagian paling bawah.
+7. Akan terlihat informasi:
+- Tanggal Transaksi
+- Jenis Transaksi
+- Total Bayar
+- RRN
+- Nomor Referensi
+=========================
+BCA mobile, bukti transaksi QRIS dapat diakses melalui:
+
+1. Buka BCA mobile.
+2. Login ke m-BCA.
+3. Tekan tombol QRIS yang berada di bagian tengah bawah.
+4. Pilih menu Inbox atau Riwayat (tergantung versi aplikasi).
+5. Buka transaksi QRIS yang diinginkan.
+6. Scroll ke bagian bawah hingga terlihat:
+- RRN
+- Nomor Referensi`,
+      pinned: false,
+      createdAt: now - 1600000,
+      updatedAt: now - 1600000
+    },
+    {
+      id: 'mrrn002qris2',
+      title: 'Pembayaran qris DI bukti GAGAL pembayaran',
+      body: `Yth Kami informasikan Bukti Tujuan QRIS yang Anda lakukan Mengalami "Payment failed/Pembayaran gagal" Namun saldo kepotong , Kami sarankan kepada untuk menghubungi Pihak layanan bank terkait ya bosku.
+=========================
+Sehubung Bukti Tujuan QRIS yang Anda lakukan Mengalami "Payment failed/Pembayaran gagal" Namun saldo kepotong , Tetap kami informasikan untuk menghubungi Pihak layanan bank terkait agar mengetahui status Tersebut ya bosku
+=========================
+Kami informasikan terkait Status Bukti Tersebut Tetap kami arahkan untuk Menghubungi pihak layanan bank agar mengetahui status dari pengiriman bukti tersebut ya bosku`,
+      pinned: false,
+      createdAt: now - 1660000,
+      updatedAt: now - 1660000
+    },
+    {
+      id: 'mrrn003qris3',
+      title: 'Bukti QRIS Nya sudah ke proses',
+      body: `Yth Kami Informasikan untuk Bukti tersebut dengan tanggal yang Anda lampirkan Sudah berhasil di proses deposit nya ya bosku.
+=========================
+Sudah kami lakukan pengchekan Deposit Anda telah berhasil di proses , sesuai dengan bukti Yang Anda lampirkan dengan tanggal dan jam pengiriman Kode RRN tersebut ya bosku.
+=========================
+Yth Mohon untuk Melampirkan Bukti yang belum di claim / belum di proses deposit nya Dengan tujuan QRIS Kami ya bosku , apabila yang sudah di Proses Depositnya tidak dapat di claim kembali ya bosku.`,
+      pinned: false,
+      createdAt: now - 1720000,
+      updatedAt: now - 1720000
+    },
+    {
+      id: 'mrrn004qris4',
+      title: 'Bukti dengan refund berhasil',
+      body: `Kami chek disini untuk Bukti yang anda lampirkan dengan Status Refund berhasil ya bosku , dibantu dengan bukti Status berhasil anda dan menampilkan rrn ya bosku.`,
+      pinned: false,
+      createdAt: now - 1780000,
+      updatedAt: now - 1780000
+    },
+    {
+      id: 'mrrn005qris5',
+      title: 'Tidak ada melakukan pengisian from QRIS',
+      body: `Untuk user id yang anda berikan tidak ada melakukan pengisian form Q-ris pada tanggal / waktu bukti transfer yang anda berikan kepada kami ya bosku, Untuk mendapatkan barcode Q-ris dan transfer ke Q-ris perlu melakukan pengisian form nominal Q-ris terlebih dahulu agar bisa mendapatkan barcode Q-ris dan transfer ke tujuan Q-ris kami ya bosku
+==============================
+Silahkan konfirmasikan user id yang anda gunakan untuk melakukan pengisian form Q-ris tersebut dengan benar, agar kami lakukan pengecekan terkait transaksi anda ya bosku, Terima kasih`,
+      pinned: false,
+      createdAt: now - 1840000,
+      updatedAt: now - 1840000
+    },
+    {
+      id: 'mrrn006lc1',
+      title: 'PK LIVE CHAT STAY PL',
+      body: `Mohon untuk tidak keluar masuk livechat saat kendala anda belum terselesaikan ya bosku
+
+Mohon maaf bosku saran kami untuk tidak meninggal kan livechat jika kendala anda belum selesai di karena kan jika keluar dan masuk kembali history chat yang sebelumnya akan ter reset/terhapus ya bosku, Terima kasih
+
+Mohon maaf ya bosku, Jika anda keluar dari LiveChat ketika kendala anda belum terselesaikan maka chat sebelumnya akan Direset ulang oleh Sistem ya bossku.`,
+      pinned: false,
+      createdAt: now - 1900000,
+      updatedAt: now - 1900000
+    },
+    {
+      id: 'mrrn007to1',
+      title: 'PENGCHEKAN TO',
+      body: `Yth, Member setia LATOTO
+Perihal pengecekan turnover anda tidak dapat di lakukan dikarenakan akses tersebut tidak tersedia terimakasih`,
+      pinned: false,
+      createdAt: now - 1960000,
+      updatedAt: now - 1960000
+    },
+    {
+      id: 'mrrn008rrn1',
+      title: 'PENGERTIAN RRN QRIS',
+      body: `RRN adalah singkatan dari Retrieval Reference Number. Ini adalah kode identifikasi unik (biasanya terdiri dari 12 digit angka) yang dihasilkan oleh sistem untuk menandai setiap transaksi yang berhasil diproses ya bosku`,
+      pinned: false,
+      createdAt: now - 2020000,
+      updatedAt: now - 2020000
+    },
+    {
+      id: 'mrrn009pg1',
+      title: 'replay Permainan Slot anda di Provider PG SOFT',
+      body: `Berikut cara melihat replay Permainan Slot anda di Provider PG SOFT ya bosku :
+
+1. Login ke dalam akun anda.
+2. Klik menu Slot.
+3. Pilih Provider PG SOFT .
+4. Klik Garis 3 bagian kanan bawah lalu klik menu riwayat seperti contoh berikut :
+- https://sleekshot.app/v/X1vwizpe3oLN
+- https://sleekshot.app/v/XYSOLnylZcdF
+5. Klik pada Bettingan yang anda ingin lihat replaynya ya bosku
+- https://sleekshot.app/v/YIpNRrv32rkW`,
+      pinned: false,
+      createdAt: now - 2080000,
+      updatedAt: now - 2080000
+    }
   ];
 
-  // ============================================================
-  // 5. FUNGSI UTAMA
-  // ============================================================
   function loadNotes() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -676,9 +1325,6 @@
   function saveNotes() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
     render();
-    if (isSupabaseReady && syncEnabled) {
-      syncToSupabase();
-    }
   }
 
   function genId() {
@@ -748,6 +1394,7 @@
       </div>
     `).join('');
 
+    // Event listeners
     grid.querySelectorAll('.note-card').forEach(card => {
       const id = card.dataset.id;
 
@@ -811,9 +1458,7 @@
       const dateEl = card.querySelector('.note-date');
       if (dateEl) dateEl.innerHTML = `<i class="far fa-clock"></i> ${formatDate(note.updatedAt)}`;
     }
-    if (isSupabaseReady && syncEnabled) {
-      syncToSupabase();
-    }
+    if (typeof syncData === 'function') syncData('notes', notes);
   }
 
   function togglePin(id) {
@@ -823,6 +1468,7 @@
     note.updatedAt = Date.now();
     saveNotes();
     toast(note.pinned ? 'Catatan disematkan' : 'Pin dilepas');
+    if (typeof syncData === 'function') syncData('notes', notes);
   }
 
   function deleteNote(id) {
@@ -830,6 +1476,7 @@
     notes = notes.filter(n => n.id !== id);
     saveNotes();
     toast('Catatan dihapus');
+    if (typeof syncData === 'function') syncData('notes', notes);
   }
 
   function addNote() {
@@ -845,6 +1492,7 @@
     notes.unshift(newNote);
     saveNotes();
     toast('Catatan baru ditambahkan');
+    if (typeof syncData === 'function') syncData('notes', notes);
 
     setTimeout(() => {
       const firstCard = grid.querySelector('.note-card');
@@ -858,99 +1506,7 @@
     }, 50);
   }
 
-  // ============================================================
-  // 6. FUNGSI SUPABASE
-  // ============================================================
-  async function syncToSupabase() {
-    if (!isSupabaseReady || isSyncing) return;
-    isSyncing = true;
-    const syncBtn = $('btnSync');
-    syncBtn.classList.add('syncing');
-    syncStatusText.textContent = 'Menyimpan...';
-    
-    try {
-      const notesToSync = notes.map(n => ({
-        id: n.id,
-        title: n.title,
-        body: n.body,
-        pinned: n.pinned,
-        created_at: new Date(n.createdAt).toISOString(),
-        updated_at: new Date(n.updatedAt).toISOString()
-      }));
-      
-      const { error } = await supabase
-        .from(TABLE_NAME)
-        .upsert(notesToSync, { onConflict: 'id' });
-      
-      if (error) throw error;
-      
-      localStorage.setItem(SYNC_KEY, 'true');
-      syncStatusText.textContent = 'Tersimpan';
-      syncBtn.classList.remove('syncing');
-      toast('Catatan tersimpan ke cloud');
-    } catch (error) {
-      console.error('Sync error:', error);
-      syncStatusText.textContent = 'Gagal sync';
-      syncBtn.classList.remove('syncing');
-      toast('Gagal sync: ' + error.message);
-    } finally {
-      isSyncing = false;
-    }
-  }
-
-  async function loadFromSupabase() {
-    if (!isSupabaseReady) {
-      toast('Supabase tidak terhubung, gunakan mode offline');
-      return;
-    }
-    
-    isSyncing = true;
-    const syncBtn = $('btnSync');
-    syncBtn.classList.add('syncing');
-    syncStatusText.textContent = 'Memuat...';
-    
-    try {
-      const { data, error } = await supabase
-        .from(TABLE_NAME)
-        .select('*')
-        .order('updated_at', { ascending: false });
-      
-      if (error) throw error;
-      
-      if (data && data.length > 0) {
-        notes = data.map(item => ({
-          id: item.id,
-          title: item.title || 'Tanpa Judul',
-          body: item.body || '',
-          pinned: item.pinned || false,
-          createdAt: new Date(item.created_at).getTime(),
-          updatedAt: new Date(item.updated_at).getTime()
-        }));
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
-        localStorage.setItem(SYNC_KEY, 'true');
-        syncStatusText.textContent = 'Terkoneksi';
-        render();
-        toast(`Berhasil memuat ${notes.length} catatan dari cloud`);
-      } else {
-        syncStatusText.textContent = 'Upload data...';
-        await syncToSupabase();
-        toast('Data lokal diupload ke cloud');
-      }
-    } catch (error) {
-      console.error('Load from Supabase error:', error);
-      syncStatusText.textContent = 'Gagal load';
-      toast('Gagal memuat dari cloud: ' + error.message);
-      loadNotes();
-      render();
-    } finally {
-      isSyncing = false;
-      syncBtn.classList.remove('syncing');
-    }
-  }
-
-  // ============================================================
-  // 7. MODAL FUNGSI
-  // ============================================================
+  // ===== MODAL =====
   function openModal(id) {
     const note = notes.find(n => n.id === id);
     if (!note) return;
@@ -981,29 +1537,6 @@
     });
   }
 
-  // ============================================================
-  // 8. TOAST
-  // ============================================================
-  function toast(msg, sub='') {
-    $('tMsg').textContent = msg;
-    $('tSub').textContent = sub || '';
-    const t = $('toast');
-    t.classList.add('on');
-    clearTimeout(t._t);
-    t._t = setTimeout(() => t.classList.remove('on'), 2500);
-  }
-
-  // ============================================================
-  // 9. CLOCK
-  // ============================================================
-  function updateClock() {
-    const now = new Date();
-    clockEl.textContent = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
-  }
-
-  // ============================================================
-  // 10. INISIALISASI
-  // ============================================================
   modalClose.addEventListener('click', closeModal);
   modalCloseBtn.addEventListener('click', closeModal);
   modalOverlay.addEventListener('click', function(e) {
@@ -1014,36 +1547,28 @@
   });
   modalCopy.addEventListener('click', copyModalContent);
 
-  $('btnAddNote').addEventListener('click', addNote);
-  $('btnSync').addEventListener('click', loadFromSupabase);
+  function toast(msg, sub='') {
+    $('tMsg').textContent = msg;
+    $('tSub').textContent = sub || '';
+    const t = $('toast');
+    t.classList.add('on');
+    clearTimeout(t._t);
+    t._t = setTimeout(() => t.classList.remove('on'), 2500);
+  }
 
-  const hasSynced = localStorage.getItem(SYNC_KEY) === 'true';
-  
-  loadNotes();
-  render();
+  function updateClock() {
+    const now = new Date();
+    clockEl.textContent = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+  }
   updateClock();
   setInterval(updateClock, 10000);
 
-  if (isSupabaseReady) {
-    syncEnabled = true;
-    storageLabel.textContent = 'Cloud';
-    syncStatusText.textContent = 'Terkoneksi';
-    
-    if (hasSynced) {
-      setTimeout(loadFromSupabase, 500);
-    } else {
-      setTimeout(() => {
-        syncToSupabase();
-      }, 1000);
-    }
-  } else {
-    storageLabel.textContent = 'Lokal';
-    syncStatusText.textContent = 'Offline';
-  }
+  loadNotes();
+  render();
 
-  // ============================================================
-  // 11. THEME SYNC
-  // ============================================================
+  $('btnAddNote').addEventListener('click', addNote);
+
+  // Theme sync
   (function syncTheme() {
     const valid = ['dark','light','cyan'];
     const saved = localStorage.getItem('cs-theme');
@@ -1061,9 +1586,17 @@
     });
   })();
 
-  console.log('✅ Aplikasi catatan siap!');
-  console.log(`📝 ${notes.length} catatan dimuat`);
-  console.log(`🔗 Supabase: ${isSupabaseReady ? 'Terkoneksi' : 'Offline'}`);
+  // ============================================================
+  // TAMBAHAN UNTUK SINKRONISASI DENGAN JSONBIN
+  // ============================================================
+  if (typeof startSync === 'function') {
+    const sync = startSync('notes', notes, saveNotes);
+    saveNotes = sync.newSave;
+    syncData('notes', notes);
+    console.log('🔄 Sinkronisasi cloud aktif untuk notes');
+  } else {
+    console.warn('⚠️ sync.js tidak ditemukan, sinkronisasi nonaktif');
+  }
 
 })();
 </script>
